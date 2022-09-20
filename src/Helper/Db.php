@@ -5,14 +5,18 @@ $dontenv->load();
 
 
 Class Db{
-    private $host = $_ENV['DB_HOST'];
-    private $user = $_ENV['DB_USER'];
-    private $db = $_ENV['DATABASE'];
-    private $password = $_ENV['DB_PASS'];
+    private $host;
+    private $user;
+    private $db;
+    private $password;
     private \PDO $pdo;
 
     public function __construct()
     {
+        $this->host = $_ENV['DB_HOST'];
+        $this->user = $_ENV['DB_USER'];
+        $this->db = $_ENV['DATABASE'];
+        $this->password = $_ENV['DB_PASS'];
         try{
             $this->connect();
         }
@@ -28,7 +32,7 @@ Class Db{
         }
     }
 
-    private function connect()
+    public function connect()
     {
         $dsn = 'mysql:host='.$this->host.';db='.$this->db;
         $pdo = new \PDO($dsn, $this->user, $this->password);

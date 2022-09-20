@@ -9,7 +9,7 @@
  use \Codad5\Wemall\Helper\ResponseHandler as CustomResponse;
  use \Codad5\Wemall\Helper\CustomException as CustomException;
  use \Trulyao\PhpRouter\HTTP\Request as Request;
- use \Codad5\Wemall\View\V1\Lists as Lists;
+ use \Codad5\Wemall\Controller\V1\Lists as Lists;
  
 
 
@@ -25,10 +25,12 @@ $router->get('/signup', function ($req, $res) {
 $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $res) {
     try {
         $list = new Lists($req->params('filter'), $req->params('keyword'));
-    } catch (\Throwable $th) {
+        $data = $list->get_list();
+        return CustomResponse::success($res, 'list gotten', $data);
+    } catch (\Exception $e) {
         //throw $th;
+        return CustomResponse::error($res, $e);
     }
-    return $res->send('cool');
 });
 
 $router->serve();
