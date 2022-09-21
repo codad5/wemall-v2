@@ -32,9 +32,9 @@ Class Db{
         }
     }
 
-    public function connect()
+    public function connect(): \PDO
     {
-        $dsn = 'mysql:host='.$this->host.';db='.$this->db;
+        $dsn = 'mysql:host='.$this->host.';dbname='.$this->db;
         $pdo = new \PDO($dsn, $this->user, $this->password);
         $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         $this->pdo = $pdo;
@@ -63,13 +63,13 @@ Class Db{
 
     public function query_data(string $sql,array $params = []) : \PDOStatement
     {
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->connect()->prepare($sql);
         $stmt->execute($params);
         return $stmt;
     }
 
     public function select_data(string $sql,array $params = []) : array
-    {
+    {   
         $stmt = $this->query_data($sql, $params);
         return $stmt->fetchAll();
     }

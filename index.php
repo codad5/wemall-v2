@@ -10,16 +10,46 @@
  use \Codad5\Wemall\Helper\CustomException as CustomException;
  use \Trulyao\PhpRouter\HTTP\Request as Request;
  use \Codad5\Wemall\Controller\V1\Lists as Lists;
+ use \Codad5\Wemall\Controller\V1\Users as Users;
+ use \Codad5\Wemall\Helper\Validator as Validator;
+
  
 
 
-$router = new Router(__DIR__ . "/src/view/html", "/");
+$router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
 
-$router->get('/signup', function ($req, $res) {
-    // return isset($_SESSION['']) ? $res->use_engine()->render('signup.php')
-    return $res->use_engine()->render('signup.php');
+$router->route('/signup')
+->get(
+    function(Request $req, Response $res){
+    foreach ($req->query() as $key => $value) {
+        $req->append($key, $value);
+    }
+
+},function (Request $req, Response $res) {
+    return $res->use_engine()->render('html/signup.php', $req);
+})
+->post(function (Request $req, Response $res) {
+    try{
+    $name = $req->body('name');
+    $username = $req->body('username');
+    $email = $req->body('email');
+    $password = $req->body('password');
+    $confirm_password = $req->body('confirm_password');
+    if ($password !== $confirm_password) {
+        return $res->redirect('/signup?error=Password does not match');
+    }
+    $user = new Users($username, $name, $email, $password);
+    $user->validate_signup_user_data();
+    $user->create_user();
+    return $res->redirect('/signup?success=user created');
+    }
+    catch (\Exception $e) {
+        //throw $th;
+        return $res->redirect('/signup?error='.$e->getMessage());
+    }
+
 });
 
 $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $res) {
