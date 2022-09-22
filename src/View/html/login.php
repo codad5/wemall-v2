@@ -1,62 +1,52 @@
-<!doctype html>
-<html lang="en">
-  <head>
+<!Doctype html>
+<html>
+<head>
+    <title>Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.79.0">
-    <title> Admin Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- tailwind cssc cdn -->
+    <link href="https://unpkg.com/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+    <!-- tailwind js -->
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
-
-    
-
-    <!-- Bootstrap core CSS -->
-<link href="../css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
-
-    
-    <!-- Custom styles for this template -->
-    <link href="../css/signin.css" rel="stylesheet">
-  </head>
-  <body class="text-center">
-    
-<main class="form-signin">
-  <form action="inc/login.inc.php" method="post" enctype="">
-    <!-- <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
-    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-    <label for="inputEmail" class="visually-hidden">Email address</label>
-    <input type="email" name='email' id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-    <label for="inputPassword" class="visually-hidden">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-    <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" value="remember-me"> Remember me
-      </label>
-    </div>
-    <button class="w-100 btn btn-lg btn-primary" name='submit' type="submit">Sign in</button>
-    <p class="mt-5 mb-3 text-muted">&copy; 2015-2020</p>
-  </form>
-</main>
-
-
-    
-  </body>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Login</h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="/login" method="post">
+                                <div class="form-group">
+                                    <label for="name">Username / Email</label>
+                                    <input type="text" name="login" id="name" class="form-control">
+                                </div>
+                              
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" name="password" id="password" class="form-control">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <button type="submit" name="signup" class="btn btn-primary">Signup</button>
+                                </div>
+                                
+                                    <div class="alert alert-danger">
+                                        @data(error)
+                                    </div>
+                                    <div class="alert alert-success">
+                                        @data(success)
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
 </html>
-

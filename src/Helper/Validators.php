@@ -4,20 +4,23 @@ namespace Codad5\Wemall\Helper;
 use Codad5\Wemall\Helper\CustomException as CustomException;
 
 class Validators{
-    public static function validate_email(string $email)
+    public static function validate_email($email)
     {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new CustomException("Invalid email format", 400);
+            return false;
         }
+        return $email;
     }
     # check empty
     public static function validate_empty(array $data)
     {
         foreach ($data as $key => $value) {
             if (empty($value)) {
-                throw new CustomException("Please fill in all fields", 400, [$key => "Please fill in all fields"]);
+                return false;
+                // throw new CustomException("Please fill in all fields", 400, [$key => "Please fill in all fields"]);
             }
         }
+        return true;
     }
     # check if password is strong
     public static function validate_password(string $password)
@@ -37,13 +40,15 @@ class Validators{
         if (!preg_match("#\W+#", $password)) {
             throw new CustomException("Password must include at least one symbol!", 400);
         }
+        return $password;
     }
     # check if password and confirm password match
     public static function validate_password_match(string $password, string $confirm_password)
     {
         if ($password !== $confirm_password) {
-            throw new CustomException("Password and confirm password do not match", 400);
+            return false;
         }
+        return true;
     }
     
 }

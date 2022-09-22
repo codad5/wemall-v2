@@ -1,5 +1,5 @@
 <?php
-  
+session_start();
  require(__DIR__ . '/vendor/autoload.php');
  require(__DIR__ . '/src/index.php');
  $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__);
@@ -20,9 +20,17 @@ $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
 
+$router->get('/home', function($req, $res){
+    echo "home";
+    var_dump($_SESSION);
+});
+
 $router->route('/signup')
 ->get(
     function(Request $req, Response $res){
+    if(Users::any_is_logged_in()){
+        return $res->redirect('/home');
+    }
     foreach ($req->query() as $key => $value) {
         $req->append($key, $value);
     }
@@ -40,7 +48,7 @@ $router->route('/signup')
     if ($password !== $confirm_password) {
         return $res->redirect('/signup?error=Password does not match');
     }
-    $user = new Users($username, $name, $email, $password);
+    $user = new Users($username, $password, $email, $name);
     $user->validate_signup_user_data();
     $user->create_user();
     return $res->redirect('/signup?success=user created');
@@ -52,10 +60,47 @@ $router->route('/signup')
 
 });
 
+#login route
+$router->route('/login')
+->get(
+    function(Request $req, Response $res){
+    if(Users::any_is_logged_in()){
+        return $res->redirect('/home');
+    }
+    foreach ($req->query() as $key => $value) {
+        $req->append($key, $value);
+    }
+
+},function (Request $req, Response $res) {
+    return $res->use_engine()->render('html/login.php', $req);
+})
+->post(function (Request $req, Response $res) {
+    try{
+    $login = $req->body('login');
+    $password = $req->body('password');
+    $user = new Users($login, $password);
+    $user->validate_login_user_data();
+    $user->validate_login_user_data();
+    $user_data = $user->login();
+    if($user_data){
+        $user->set_login_session($user_data);
+        return $res->redirect('/home?success=login successful');
+    }
+    return $res->redirect('/login?error=an error occured');
+    }
+    catch (\Exception $e) {
+        //throw $th;
+        return $res->redirect('/login?error='.$e->getMessage());
+    }
+
+});
+
+
 $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $res) {
     try {
         $list = new Lists($req->params('filter'), $req->params('keyword'));
         $data = $list->get_list();
+        $data['server'] = $_SERVER;
         return CustomResponse::success($res, 'list gotten', $data);
     } catch (\Exception $e) {
         //throw $th;

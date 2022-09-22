@@ -23,14 +23,30 @@ Class User
 
     public function save($data)
     {
-        $sql = "INSERT INTO $this->table (name, username,  email, password, id) VALUES (?, ?, ?, ?, ?)";
-        $this->conn->query_data($sql, [
+        $sql = "INSERT INTO $this->table (name, username,  email, password, unique_id) VALUES (?, ?, ?, ?, ?)";
+        return $this->conn->query_data($sql, [
             $data['name'],
             $data['username'],
             $data['email'],
             $data['password'],
             $data['id'],
         ]);
+        
+    }
+    public function get_user_by(string $by, $value) : array|null
+    {
+        $sql = "SELECT * FROM $this->table WHERE $by = ?";
+        $data = $this->conn->select_data($sql, [
+            $value
         ]);
+        return count($data) > 0 ? $data : null;
+    }
+    public function get_all_users() : array|null
+    {
+        $sql = "SELECT * FROM $this->table;";
+        return $this->conn->select_data($sql, [
+            
+        ]);
+       
     }
 }

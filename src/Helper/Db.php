@@ -43,8 +43,8 @@ Class Db{
 
     private function initializeDb()
     {
-        $sql_setup = file_get_contents('db.sql');
-        if(!$sql_setup){
+        $sql_setup = file_get_contents(Helper::resolve_asset('private/db.sql'));
+        if($sql_setup){
             $conn = new \mysqli($this->host, $this->user, $this->password);
             if ($conn->connect_error) {
                 die("Connection failed: " . $conn->connect_error);
