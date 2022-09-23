@@ -20,7 +20,7 @@ class Users
     
     public function __construct(
         string $user_name,
-        string $password,
+        string $password = null,
         string $email = null,
         string $name = null
     )

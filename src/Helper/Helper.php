@@ -1,5 +1,8 @@
 <?php
 namespace Codad5\Wemall\Helper;
+use Codad5\Wemall\Controller\V1\Users;
+use Trulyao\PhpRouter\HTTP\Request;
+use Trulyao\PhpRouter\HTTP\Response;
 $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
 $dontenv->load();
 
@@ -46,6 +49,13 @@ Class Helper {
     {   
         // echo file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."asset".DIRECTORY_SEPARATOR."$file") ? "byeeee" : "calmmmmm";
         return $_SERVER['DOCUMENT_ROOT']."/asset"."/$file";
+    }
+
+    public static function redirect_if_logged_in(Request $req, Response $res){
+    if(Users::any_is_logged_in()){
+        return $res->redirect('/home');
+    }
+    return $res;
     }
 }
 

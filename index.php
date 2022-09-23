@@ -1,4 +1,5 @@
 <?php
+use Codad5\Wemall\Helper\Helper;
 session_start();
  require(__DIR__ . '/vendor/autoload.php');
  require(__DIR__ . '/src/index.php');
@@ -9,8 +10,7 @@ session_start();
  use \Codad5\Wemall\Helper\ResponseHandler as CustomResponse;
  use \Codad5\Wemall\Helper\CustomException as CustomException;
  use \Trulyao\PhpRouter\HTTP\Request as Request;
- use \Codad5\Wemall\Controller\V1\Lists as Lists;
- use \Codad5\Wemall\Controller\V1\Users as Users;
+ use \Codad5\Wemall\Controller\V1\{Lists, Users, Shops};
  use \Codad5\Wemall\Helper\Validator as Validator;
 
  
@@ -22,7 +22,8 @@ $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plai
 
 $router->get('/home', function($req, $res){
     echo "home";
-    var_dump($_SESSION);
+    // var_dump($_SESSION);
+    $res->use_engine()->render('html/home.php', $req);
 });
 
 $router->route('/signup')
@@ -63,15 +64,12 @@ $router->route('/signup')
 #login route
 $router->route('/login')
 ->get(
+    [Helper::class, "redirect_if_logged_in"],
     function(Request $req, Response $res){
-    if(Users::any_is_logged_in()){
-        return $res->redirect('/home');
-    }
     foreach ($req->query() as $key => $value) {
         $req->append($key, $value);
-    }
-
-},function (Request $req, Response $res) {
+    }},
+    function (Request $req, Response $res) {
     return $res->use_engine()->render('html/login.php', $req);
 })
 ->post(function (Request $req, Response $res) {
@@ -95,6 +93,15 @@ $router->route('/login')
 
 });
 
+$router->post('/shop/create', function($req, $res){
+    $name = $req->body('shop_name');
+    $description = $req->body('description');
+    $user = new Users($_SESSION['username']);
+    $shop = new Shops($name, $description, $user);
+    $shop->validate_shop_data();
+    $shop->create_shop();
+    return $res->redirect('/home?success=shop created');
+});
 
 $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $res) {
     try {
