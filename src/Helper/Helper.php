@@ -51,10 +51,18 @@ Class Helper {
         return $_SERVER['DOCUMENT_ROOT']."/asset"."/$file";
     }
 
+    public static function redirect_if_logged_out(Request $req, Response $res){
+    if(!Users::any_is_logged_in()){
+        return $res->redirect('/login');
+    }
+    
+    return $res;
+    }
     public static function redirect_if_logged_in(Request $req, Response $res){
     if(Users::any_is_logged_in()){
         return $res->redirect('/home');
     }
+    
     return $res;
     }
 }

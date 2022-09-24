@@ -23,7 +23,11 @@
                             <form action="/shop/create" method="post">
                                 <div class="form-group">
                                     <label for="name">shop name</label>
-                                    <input type="text" name="login" id="shop_name" class="form-control">
+                                    <input type="text" name="shop_name" id="shop_name" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">shop email</label>
+                                    <input type="email" name="email" id="email" class="form-control">
                                 </div>
                                 <!-- shop description -->
                                 <div class="form-group">
@@ -32,7 +36,7 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <button type="submit" name="signup" class="btn btn-primary">Signup</button>
+                                    <button type="submit" name="signup" class="btn btn-primary">Create Shop</button>
                                 </div>
                                 
                                     <div class="alert alert-danger">

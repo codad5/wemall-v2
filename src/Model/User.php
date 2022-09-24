@@ -23,13 +23,14 @@ Class User
 
     public function save($data)
     {
-        $sql = "INSERT INTO $this->table (name, username,  email, password, unique_id) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO $this->table (name, username,  email, password, unique_id, api_key) VALUES (?, ?, ?, ?, ?, ?)";
         return $this->conn->query_data($sql, [
             $data['name'],
             $data['username'],
             $data['email'],
             $data['password'],
-            $data['id'],
+            $data['unique_id'],
+            $data['api_key']
         ]);
         
     }

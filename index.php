@@ -20,18 +20,26 @@ $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
 
-$router->get('/home', function($req, $res){
+$router->get('/home',[Helper::class, "redirect_if_logged_out"], function($req, $res){
     echo "home";
     // var_dump($_SESSION);
     $res->use_engine()->render('html/home.php', $req);
 });
 
+$router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], function($req, $res){
+    $name = $req->body('shop_name');
+    $description = $req->body('description');
+    $email = $req->body('email');
+    $user = new Users($_SESSION['username']);
+    $shop = new Shops($name, $description, $email ,$user);
+    $shop->validate_shop_data();
+    $shop->create_shop();
+    return $res->redirect('/home?success=shop created');
+});
+
 $router->route('/signup')
-->get(
+->get([Helper::class, "redirect_if_logged_in"],
     function(Request $req, Response $res){
-    if(Users::any_is_logged_in()){
-        return $res->redirect('/home');
-    }
     foreach ($req->query() as $key => $value) {
         $req->append($key, $value);
     }
@@ -93,15 +101,7 @@ $router->route('/login')
 
 });
 
-$router->post('/shop/create', function($req, $res){
-    $name = $req->body('shop_name');
-    $description = $req->body('description');
-    $user = new Users($_SESSION['username']);
-    $shop = new Shops($name, $description, $user);
-    $shop->validate_shop_data();
-    $shop->create_shop();
-    return $res->redirect('/home?success=shop created');
-});
+
 
 $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $res) {
     try {

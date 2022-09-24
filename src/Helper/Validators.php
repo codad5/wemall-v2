@@ -6,10 +6,7 @@ use Codad5\Wemall\Helper\CustomException as CustomException;
 class Validators{
     public static function validate_email($email)
     {
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return false;
-        }
-        return $email;
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
     # check empty
     public static function validate_empty(array $data)

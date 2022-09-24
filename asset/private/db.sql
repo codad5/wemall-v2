@@ -24,17 +24,36 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admins`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   `name` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(300) NOT NULL,
   `password` varchar(300) NOT NULL,
   `unique_id` varchar(300) NOT NULL, 
+  `api_key` varchar(300) NOT NULL, 
   `main_role` varchar(300) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shops`
+--
+
+CREATE TABLE `shops` (
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` TEXT NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `email` varchar(300) NOT NULL,
+  `unique_id` varchar(300) NOT NULL, 
+  `api_key` varchar(300) NOT NULL, 
+  `admins` TEXT NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

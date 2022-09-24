@@ -11,11 +11,13 @@ class Users
     protected string|null $name;
     protected string $username;
     protected string|null $email;
-    protected string $password;
+    protected string|null $password;
     protected string $id;
+    protected string $unique_id;
     protected string $created_at;
     protected string $updated_at;
-    protected string $login;
+    public string $login;
+    protected string $api_key;
     
     
     public function __construct(
@@ -30,7 +32,8 @@ class Users
         $this->username = strtolower($user_name);
         $this->email = $email;
         $this->password = $password;
-        $this->id = $this->generate_user_id();
+        $this->unique_id = $this->generate_user_id();
+        $this->api_key = $this->generate_api_key();
         $this->created_at = $this->generate_timestamp();
         $this->user = new User();
     }
@@ -44,29 +47,44 @@ class Users
     #function to generate user unique id of 8 characters
     public function generate_user_id()
     {
-        return substr(md5(uniqid(rand(), true)), 0, 8);
+        return "uuid_".substr(md5(uniqid(rand(), true)), 0, 8);
     }
 
+    public static function get_user_unique_id($user){
+        $conn = (new User);
+        $user = Validator::validate_email($user) ?
+             $conn->get_user_by("email", $user) :
+             $conn->get_user_by("username", $user);
+        return $user ? $user[0]['unique_id'] : false;
+    }
+    // generate user unique api key of 32 characters
+    public function generate_api_key()
+    {
+        return "uk_".substr(md5(uniqid(rand(), true)), 0, 32);
+    }
+    
+
     #validate all user data
-    public function validate_login_user_data()
+    public function validate_login_user_data(bool $require_password = true)
     {
         if (empty($this->login)) {
             throw new CustomException("Username or Email is required", 400);
         }
-        if (empty($this->password)) {
+        if (empty($this->password) && $require_password) {
             throw new CustomException("Password is required", 400);
         }
         if (strlen($this->password) < 8) {
             throw new CustomException("Password must be at least 8 characters", 400);
         }
         //add validation to check if email already exists
-        if (!$this->get_user_by_email($this->email) && Validator::validate_email($this->email)) {
+        if (!$this->get_user_by_email($this->login) && Validator::validate_email($this->login)) {
             throw new CustomException("Email does not exists", 400);
         }
         //add validation to check if username already exists
-        if (!$this->get_user_by_username($this->username)) {
-            throw new CustomException("Username does not exists", 400);
+        if (!$this->get_user_by_username($this->login) && !Validator::validate_email($this->login)) {
+            throw new CustomException("Username does not exists >>".Validator::validate_email($this->login), 400);
         }
+        return true;
     }
     public function validate_signup_user_data()
     {
@@ -89,6 +107,9 @@ class Users
             throw new CustomException("Password must be at least 8 characters", 400);
         }
         //add validation to check if email already exists
+        if (!Validator::validate_email($this->email)) {
+            throw new CustomException("Invalid Email", 400);
+        }
         if ($this->get_user_by_email($this->email)) {
             throw new CustomException("Email already exists", 400);
         }
@@ -108,7 +129,8 @@ class Users
                     'username' => $this->username,
                     'email' => $this->email,
                     'password' => password_hash($this->password, PASSWORD_DEFAULT),
-                    'id' => $this->id,
+                    'unique_id' => $this->unique_id,
+                    "api_key" => $this->api_key,
                 ]
             );
             
@@ -188,7 +210,7 @@ class Users
     {
         try {
             $this->validate_login_user_data();
-            $user_data = Validator::validate_email($this->email) ? $this->get_user_by_email($this->login) : $this->get_user_by_username($this->login);
+            $user_data = Validator::validate_email($this->login) ? $this->get_user_by_email($this->login) : $this->get_user_by_username($this->login);
             if(!$user_data) {
                 throw new CustomException("User Not Found", 200);
             }
@@ -203,6 +225,10 @@ class Users
     }
         public function set_login_session($data){
             session_start();
+            // check user exists
+            if(!$this->user->get_user_by("id", $data['id'])){
+                throw new CustomException("User Not Found", 200);
+            }
             $_SESSION['username'] = $data['username'];
             $_SESSION['name'] = $data['name'];
             $_SESSION['email'] = $data['email'];
@@ -216,7 +242,8 @@ class Users
         isset($_SESSION['email']) &&
         isset($_SESSION['name']) &&
         isset($_SESSION['user_id']) &&
-        isset($_SESSION['user_unique']) ;
+        isset($_SESSION['user_unique']) &&
+        (new User)->get_user_by("id", $_SESSION['user_id']);
     }
 
     
