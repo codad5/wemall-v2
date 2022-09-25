@@ -49,7 +49,10 @@ class Users
     {
         return "uuid_".substr(md5(uniqid(rand(), true)), 0, 8);
     }
-
+    public function get_user_id()
+    {
+        return $this->unique_id;
+    }
     public static function get_user_unique_id($user){
         $conn = (new User);
         $user = Validator::validate_email($user) ?

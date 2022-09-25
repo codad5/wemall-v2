@@ -4,8 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "51eb1fedced51b8ea2944045a6d0c742",
+    "content-hash": "bb6e1d2f346e99e70843e0a2a4e02038",
     "packages": [
+        {
+            "name": "codad5/file-helper",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codad5/php-file-uploader.git",
+                "reference": "cb138c364a517f23df5fc2f69e3af9467ef0b3f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codad5/php-file-uploader/zipball/cb138c364a517f23df5fc2f69e3af9467ef0b3f0",
+                "reference": "cb138c364a517f23df5fc2f69e3af9467ef0b3f0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Codad5\\FileHelper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chibueze A",
+                    "email": "aniezeoformic@gmail.com"
+                }
+            ],
+            "description": "FIle Uploader is a php package to aid fast , easy and safe file upload",
+            "support": {
+                "issues": "https://github.com/codad5/php-file-uploader/issues",
+                "source": "https://github.com/codad5/php-file-uploader/tree/v1.0.2"
+            },
+            "time": "2022-08-08T03:54:43+00:00"
+        },
         {
             "name": "graham-campbell/result-type",
             "version": "v1.1.0",

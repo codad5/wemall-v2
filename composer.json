@@ -12,9 +12,13 @@
         "trulyao/php-router": "^2.0",
         "trulyao/neat-http": "^1.0",
         "guzzlehttp/guzzle": "^7.5",
-        "vlucas/phpdotenv": "^5.4"
+        "vlucas/phpdotenv": "^5.4",
+        "codad5/file-helper": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "9.5"
+    },
+    "scripts":{
+        "test":"./vendor/bin/phpunit"
     }
 }
