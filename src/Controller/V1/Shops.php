@@ -9,19 +9,19 @@ class Shops
 {
     private Shop $shop;
     protected string $id;
-    protected string $name;
-    protected string $email;
-    protected string $description;
+    protected string|null $name;
+    protected string|null $email;
+    protected string|null $description;
     protected string $api_key;
     protected Users $created_by;
 
-   public function __construct($name, $description, $email, Users $created_by)
+   public function __construct($name = null, $description = null, $email = null, Users $created_by = null)
    {
     $this->shop = new Shop;
     $this->name = $name;
     $this->email = $email;
     $this->description = $description;
-    $this->created_by = $created_by;
+    $this->created_by = $created_by ? $created_by : new Users('________________');
     $this->id = $this->generate_id();
     $this->api_key = $this->generate_api_key();
    }
@@ -50,6 +50,11 @@ class Shops
     }
     //  added validation for character free name and description to prevent cross site scripting
 
+   }
+   public static function get_details_by_id($id){
+    $id = "shid_".$id;
+    $shop = (new shop)->get_shop_by('unique_id', $id);
+    return $shop ? $shop[0] : false;
    }
 
    protected function generate_id() : string

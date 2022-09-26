@@ -19,17 +19,36 @@ session_start();
 $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
-
+// to go to the home page 
 $router->get('/home',[Helper::class, "redirect_if_logged_out"], function($req, $res){
     echo "home";
     // var_dump($_SESSION);
     $res->use_engine()->render('html/home.php', $req);
 });
+// to show a shop
+$router->get('/shop/:id', function(Request $req, Response $res){
+    try{
+        ['id' => $id] = $req->params();
+        $shop = shops::get_details_by_id($id);
+        if(!$shop){
+            throw new CustomException('Shop Dont Exist', 404);
+        }
+        foreach ($shop as $key => $value) {
+            $req->append($key, $value);
+        }
+        return $res->use_engine()->render('html/show_shop.php', $req);
+    }catch(Exception $e){
+        return $res->status(400)->send($e->getMessage());
+    }
+    
 
+
+});
+
+//to create a shop
 $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], function($req, $res){
-    $name = $req->body('shop_name');
-    $description = $req->body('description');
-    $email = $req->body('email');
+    ["shop_name" => $name, "email" => $email, "description" => $description] = $req->body();
+    var_dump($name, $email, $description);
     $user = new Users($_SESSION['username']);
     $shop = new Shops($name, $description, $email ,$user);
     $shop->validate_shop_data();
@@ -37,6 +56,7 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
     return $res->redirect('/home?success=shop created');
 });
 
+// signup post and get route
 $router->route('/signup')
 ->get([Helper::class, "redirect_if_logged_in"],
     function(Request $req, Response $res){
@@ -54,9 +74,7 @@ $router->route('/signup')
     $email = $req->body('email');
     $password = $req->body('password');
     $confirm_password = $req->body('confirm_password');
-    if ($password !== $confirm_password) {
-        return $res->redirect('/signup?error=Password does not match');
-    }
+    // [$username, $password, $email, $name] = $req->body();
     $user = new Users($username, $password, $email, $name);
     $user->validate_signup_user_data();
     $user->create_user();
@@ -69,7 +87,7 @@ $router->route('/signup')
 
 });
 
-#login route
+#login post and get route
 $router->route('/login')
 ->get(
     [Helper::class, "redirect_if_logged_in"],
@@ -102,6 +120,7 @@ $router->route('/login')
 });
 
 
+//  testing old api 
 
 $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $res) {
     try {

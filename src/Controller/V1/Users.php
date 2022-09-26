@@ -103,6 +103,9 @@ class Users
         if (empty($this->password)) {
             throw new CustomException("Password is required", 400);
         }
+        if(!Validator::validate_password($this->password)){
+            throw new CustomException("Invalid password format", 400);
+        }
         if (!Validator::validate_email($this->email)) {
             throw new CustomException("Invalid email format", 400);
         }
@@ -120,6 +123,7 @@ class Users
         if ($this->get_user_by_username($this->username)) {
             throw new CustomException("Username already exists", 400);
         }
+
     }
 
     public function create_user()
