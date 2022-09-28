@@ -12,6 +12,7 @@ Class ResponseHandler{
             "message" => $message, 
             "data" => $body
         ]);
+        
     }
     public static function error(Response $res, Exception|CustomException $e, array $header = []): Response
     {
