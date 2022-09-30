@@ -56,17 +56,22 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
     return $res->redirect('/home?success=shop created');
 });
 
+$router->route('/shop/:id/add')
+->get([Helper::class, "redirect_if_logged_out"], function($req, $res){
+    
+})
+->post();
 // signup post and get route
 $router->route('/signup')
-->get([Helper::class, "redirect_if_logged_in"],
+->get(
+    [Helper::class, "redirect_if_logged_in"],
     function(Request $req, Response $res){
     foreach ($req->query() as $key => $value) {
         $req->append($key, $value);
+    }},function (Request $req, Response $res) {
+        return $res->use_engine()->render('html/signup.php', $req);
     }
-
-},function (Request $req, Response $res) {
-    return $res->use_engine()->render('html/signup.php', $req);
-})
+)
 ->post(function (Request $req, Response $res) {
     try{
     $name = $req->body('name');
