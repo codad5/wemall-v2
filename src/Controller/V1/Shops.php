@@ -26,7 +26,8 @@ class Shops
     $this->api_key = $this->generate_api_key();
    }
 
-   public function validate_shop_data(){
+   public function validate_shop_data()
+   {
     if(empty($this->name)){
         return new CustomException("shop name required", 303);
     }
@@ -51,23 +52,14 @@ class Shops
     //  added validation for character free name and description to prevent cross site scripting
 
    }
-   public static function get_details_by_id($id){
+   public static function get_details_by_id($id)
+   {
     $id = "shid_".$id;
     $shop = (new shop)->get_shop_by('unique_id', $id);
     return $shop ? $shop[0] : false;
    }
-
-   protected function generate_id() : string
+   public function create_shop()
    {
-    return "shid_".substr(md5(uniqid(rand(), true)), 0, 8);
-   }
-
-   protected function generate_api_key() : string
-   {
-    return "shk_".substr(md5(uniqid(rand(), true)), 0, 32);
-   }
-
-   public function create_shop(){
         try{
             $this->validate_shop_data();
             $user_id = $this->created_by->get_user_unique_id($this->created_by->login);
@@ -96,7 +88,26 @@ class Shops
             throw new CustomException($e->getMessage(), $e->getCode());
         }
    }
-   public static function shop_exists($id){
-    return (new Shops)->shop->get_shop_by("unique_id", $id);
+   public static function shop_exists($id)
+   {
+    return self::get_details_by_id($id);
    }
+   //check number of total shops
+    public static function no_of_total_shops()
+    {
+        return count((new Shop)->get_all_shops());
+    }
+   protected function generate_id() : string
+   {
+    $no_of_shops = self::no_of_total_shops();
+    $no_of_shops++;
+    return "shid_$no_of_shops".substr(md5(uniqid(rand(), true)), 0, 6);
+   }
+
+   protected function generate_api_key() : string
+   {
+    return "shk_".substr(md5(uniqid(rand(), true)), 0, 32);
+   }
+
+   
 }

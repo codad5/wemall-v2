@@ -21,11 +21,17 @@ $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
 // to go to the home page 
-$router->get('/home',[Helper::class, "redirect_if_logged_out"], function($req, $res){
-    echo "home";
+$router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request $req, $res){
     // var_dump($_SESSION);
-    $res->use_engine()->render('html/home.php', $req);
+    // $res->use_engine()->render('html/home.php', $req);
+     return $res->send(Helper::load_view('html/home.php', ["errors" => [ $req->query('error')], "success" => [$req->query('success')]]));
 });
+// logout route
+$router->get('/logout', function (Request $req, Response $res) {
+    session_destroy();
+    return $res->redirect('/login');
+});
+
 // to show a shop
 $router->get('/shop/:id', function(Request $req, Response $res){
     try{
@@ -63,15 +69,24 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
 });
 
 $router->route('/shop/:id/add/product')
-->get([Helper::class, "redirect_if_logged_out"], function($req, $res){
-    try{
-        $me = $_GET['me'];
-    }catch(Exception $e){
-        return $res->redirect('/home?success=shop created');
+->get([Helper::class, "redirect_if_logged_out"],
+    [Helper::class, "redirect_if_shop_does_not_exist"],
+     function($req, $res){
+        try{
+            //get the shop id
+            ['id' => $id] = $req->params();
+            //get the shop details
+            $shop = shops::get_details_by_id($id);
+            //load add product page
+            return $res->send(Helper::load_view('html/add_product.php', ["request" => $req, "shop" => $shop]));
+        }catch(Exception $e){
+            return $res->redirect('/home?success=shop created');
 
-    }
+        }
 })
-->post([Helper::class, "redirect_if_logged_out"], function($req, $res){
+->post([Helper::class, "redirect_if_logged_out"],
+    [Helper::class, "redirect_if_shop_does_not_exist"],
+    function($req, $res){
     // ['product_name' => $product_name, ]
 });
 // signup post and get route
@@ -151,5 +166,7 @@ $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $
         return CustomResponse::error($res, $e);
     }
 });
+
+
 
 $router->serve();

@@ -76,16 +76,55 @@ Class Helper {
     {
         $file = self::resolve_view($file);
         if(!file_exists($file)){
-            return "File not found";
+            return self::load_error_page(404, "File not found");
         }
+        $_SESSIO['errors'][] = $_GET['errors'] ?? [];
+        $_SESSION['success'][] = $_GET['success'] ?? [];
         ob_start();
+        $data = array_merge($data, [
+            'asset' => function($file){
+                return self::resolve_asset($file);
+            },
+            'error' => 200,
+            "header" => function($title = "Wemall"){
+                return self::load_view('templates/header.php', [
+                    'app_name' => $_ENV['APP_NAME'] ?? "Wemall",
+                    'title' => $title,
+                    'success' => array_unique($_SESSION['success'] ?? []),
+                    'errors' => array_unique($_SESSION['error'] ?? []),
+                ]);
+            },
+            "footer" => function(){
+                return self::load_view('templates/footer.php');
+            },
+        ]);
         extract($data);
         require $file;
         $content = ob_get_contents();
         ob_end_clean();
+        unset($_SESSION['success']);
+        unset($_SESSION['error']);
         return $content;
     }
 
+    public function get_ip_address() : string
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
+    }
+    public static function load_error_page($code, $message){
+        $data = [
+            'code' => $code,
+            'message' => $message
+        ];
+        return self::load_view('templates/error.php', $data);
+    }
     //check if shop exists
     public static function shop_exists($id) {
         $shop = \Codad5\Wemall\Controller\V1\Shops::shop_exists($id);

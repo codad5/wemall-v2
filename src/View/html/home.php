@@ -1,16 +1,6 @@
-<!Doctype html>
-<html>
-<head>
-    <title>Home</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- tailwind cssc cdn -->
-    <link href="https://unpkg.com/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
-    <!-- tailwind js -->
-
-</head>
-<body>
+<?php
+echo $header("home");
+?>
     <main>
         <div class="container">
             <div class="row">
@@ -39,12 +29,8 @@
                                     <button type="submit" name="signup" class="btn btn-primary">Create Shop</button>
                                 </div>
                                 
-                                    <div class="alert alert-danger">
-                                        @data(error)
-                                    </div>
-                                    <div class="alert alert-success">
-                                        @data(success)
-                                    </div>
+                                       
+                                    
                             </form>
                         </div>
                     </div>
