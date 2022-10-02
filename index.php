@@ -6,6 +6,7 @@ session_start();
  $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__);
  $dontenv->load();
  use \Trulyao\PhpRouter\Router as Router;
+//  use Exception;
  use \Trulyao\PhpRouter\HTTP\Response as Response;
  use \Codad5\Wemall\Helper\ResponseHandler as CustomResponse;
  use \Codad5\Wemall\Helper\CustomException as CustomException;
@@ -47,6 +48,7 @@ $router->get('/shop/:id', function(Request $req, Response $res){
 
 //to create a shop
 $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], function($req, $res){
+    try{
     ["shop_name" => $name, "email" => $email, "description" => $description] = $req->body();
     var_dump($name, $email, $description);
     $user = new Users($_SESSION['username']);
@@ -54,13 +56,24 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
     $shop->validate_shop_data();
     $shop->create_shop();
     return $res->redirect('/home?success=shop created');
+    }catch(Exception $e){
+        return $res->redirect('/home?success=shop created');
+
+    }
 });
 
-$router->route('/shop/:id/add')
+$router->route('/shop/:id/add/product')
 ->get([Helper::class, "redirect_if_logged_out"], function($req, $res){
-    
+    try{
+        $me = $_GET['me'];
+    }catch(Exception $e){
+        return $res->redirect('/home?success=shop created');
+
+    }
 })
-->post();
+->post([Helper::class, "redirect_if_logged_out"], function($req, $res){
+    // ['product_name' => $product_name, ]
+});
 // signup post and get route
 $router->route('/signup')
 ->get(
@@ -85,7 +98,7 @@ $router->route('/signup')
     $user->create_user();
     return $res->redirect('/signup?success=user created');
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
         //throw $th;
         return $res->redirect('/signup?error='.$e->getMessage());
     }
@@ -117,7 +130,7 @@ $router->route('/login')
     }
     return $res->redirect('/login?error=an error occured');
     }
-    catch (\Exception $e) {
+    catch (Exception $e) {
         //throw $th;
         return $res->redirect('/login?error='.$e->getMessage());
     }
@@ -133,7 +146,7 @@ $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $
         $data = $list->get_list();
         $data['server'] = $_SERVER;
         return CustomResponse::success($res, 'list gotten', $data);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         //throw $th;
         return CustomResponse::error($res, $e);
     }

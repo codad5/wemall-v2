@@ -50,6 +50,11 @@ Class Helper {
         // echo file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."asset".DIRECTORY_SEPARATOR."$file") ? "byeeee" : "calmmmmm";
         return $_SERVER['DOCUMENT_ROOT']."/asset"."/$file";
     }
+    public static function resolve_view(string $file) 
+    {   
+        // echo file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."asset".DIRECTORY_SEPARATOR."$file") ? "byeeee" : "calmmmmm";
+        return $_SERVER['DOCUMENT_ROOT']."/src/view"."/$file";
+    }
 
     public static function redirect_if_logged_out(Request $req, Response $res){
     if(!Users::any_is_logged_in()){
@@ -65,6 +70,38 @@ Class Helper {
     
     return $res;
     }
+
+    // to load / render php files to html
+    public static function load_view(string $file, array $data = []) : string
+    {
+        $file = self::resolve_view($file);
+        if(!file_exists($file)){
+            return "File not found";
+        }
+        ob_start();
+        extract($data);
+        require $file;
+        $content = ob_get_contents();
+        ob_end_clean();
+        return $content;
+    }
+
+    //check if shop exists
+    public static function shop_exists($id) {
+        $shop = \Codad5\Wemall\Controller\V1\Shops::shop_exists($id);
+        if($shop){
+            return true;
+        }
+        return false;
+    }
+    //redirect if shop does not exist
+    public static function redirect_if_shop_does_not_exist(Request $req, Response $res){
+        if(!self::shop_exists($req->params('id'))){
+            return $res->redirect('/home');
+        }
+        return $res;
+    }
+
 }
 
 // class axios {

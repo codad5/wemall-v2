@@ -96,4 +96,7 @@ class Shops
             throw new CustomException($e->getMessage(), $e->getCode());
         }
    }
+   public static function shop_exists($id){
+    return (new Shops)->shop->get_shop_by("unique_id", $id);
+   }
 }
