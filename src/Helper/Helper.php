@@ -78,8 +78,10 @@ Class Helper {
         if(!file_exists($file)){
             return self::load_error_page(404, "File not found");
         }
-        $_SESSIO['errors'][] = $_GET['errors'] ?? [];
-        $_SESSION['success'][] = $_GET['success'] ?? [];
+        $_SESSION['messages']['errors'][] = $_GET['error'] ?? null;
+        $_SESSION['messages']['errors'] = array_merge($data['errors'], $_SESSION['messages']['errors']);
+        $_SESSION['messages']['success'][] = $_GET['success'] ?? null;
+        $_SESSION['messages']['success'] = array_merge($data['success'], $_SESSION['messages']['success']);
         ob_start();
         $data = array_merge($data, [
             'asset' => function($file){
@@ -90,20 +92,22 @@ Class Helper {
                 return self::load_view('templates/header.php', [
                     'app_name' => $_ENV['APP_NAME'] ?? "Wemall",
                     'title' => $title,
-                    'success' => array_unique($_SESSION['success'] ?? []),
-                    'errors' => array_unique($_SESSION['error'] ?? []),
+                    'success' => array_unique($_SESSION['messages']['success'] ?? []),
+                    'errors' => array_unique($_SESSION['messages']['errors'] ?? []),
                 ]);
             },
             "footer" => function(){
                 return self::load_view('templates/footer.php');
+            },
+            "include" => function($file, $data = []){
+                return self::load_view($file, $data);
             },
         ]);
         extract($data);
         require $file;
         $content = ob_get_contents();
         ob_end_clean();
-        unset($_SESSION['success']);
-        unset($_SESSION['error']);
+        unset($_SESSION['messages']);
         return $content;
     }
 

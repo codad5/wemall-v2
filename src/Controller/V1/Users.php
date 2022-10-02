@@ -4,6 +4,7 @@ namespace Codad5\Wemall\Controller\V1;
 use Codad5\Wemall\Model\User as User;   
 use Codad5\Wemall\Helper\CustomException as CustomException;
  use \Codad5\Wemall\Helper\Validators as Validator;
+ use Codad5\Wemall\Model\Shop;
 
 class Users
 {
@@ -242,6 +243,19 @@ class Users
             $_SESSION['user_id'] = $data['id'];
             $_SESSION['user_unique'] = $data['unique_id'];
         
+    }
+    
+    public static function get_all_shops($id) : array
+    {
+        try {
+            $shop = new Shop();
+            $users_shops = $shop->get_shops_where_admin_is($id);
+            return $users_shops;
+
+            
+        } catch (\Throwable $th) {
+            throw new CustomException($th->getMessage(), 500);
+        }
     }
 
     public static function any_is_logged_in(){

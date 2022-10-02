@@ -46,7 +46,7 @@
                 <?php
                     if (isset($errors)) {
                         foreach ($errors as $error) {
-                            echo "<div class='alert alert-danger' role='alert'>$error</div>";
+                            echo $error !== null ?  "<div class='alert alert-danger' role='alert'>$error</div>" : false;
                         }
                     }
                 ?>

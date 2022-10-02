@@ -43,7 +43,19 @@ class Shop{
         ]);
         return count($data) > 0 ? $data : null;
     }
-
+    //get all shops by a specific user
+    public function get_shops_where_admin_is(string $by) : array
+    {
+        $data = $this->get_all_shops();
+        $return_data = [];
+        foreach($data as $shop){
+            $admins = json_decode($shop['admins']);
+            if(in_array($by, $admins->all)){
+                $return_data[] = $shop;
+            }
+        }
+        return $return_data;
+    }
     public function get_all_shops() : array|null
     {
         $sql = "SELECT * FROM $this->table;";

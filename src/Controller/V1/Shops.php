@@ -71,7 +71,10 @@ class Shops
                     $user_id
                 ],
                 "second" => [],
-                "third" => []
+                "third" => [],
+                "all" => [
+                    $user_id
+                ]
             ]);
             return $this->shop->save([
                 "name" => $this->name,
