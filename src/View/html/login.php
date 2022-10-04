@@ -12,6 +12,9 @@
 </head>
 <body>
     <main>
+               <?php
+   $notification();
+   ?>
         <div class="container">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
@@ -35,12 +38,7 @@
                                     <button type="submit" name="Login" class="btn btn-primary">Login</button>
                                 </div>
                                 
-                                    <div class="alert alert-danger">
-                                        @data(error)
-                                    </div>
-                                    <div class="alert alert-success">
-                                        @data(success)
-                                    </div>
+                                   
                             </form>
                         </div>
                     </div>

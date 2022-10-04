@@ -87,6 +87,7 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
 $router->route('/shop/:id/add/product')
 ->get([Helper::class, "redirect_if_logged_out"],
     [Helper::class, "redirect_if_shop_does_not_exist"],
+    [Helper::class, "redirect_if_user_is_not_shop_owner"],
      function($req, $res){
         try{
             //get the shop id
@@ -109,11 +110,13 @@ $router->route('/shop/:id/add/product')
 $router->get('/shop/:id/delete',
         [Helper::class, "redirect_if_shop_does_not_exist"],
         [Helper::class, "redirect_if_logged_out"],
+        [Helper::class, "redirect_if_user_is_not_shop_owner"],
     function($req, $res){
     try{
         ['id' => $id] = $req->params();
         $shop = new Shops();
         $shop->delete_shop($id);
+
         return $res->redirect('/home?success=shop deleted');
     }catch(Exception $e){
         return $res->redirect('/home?error=shop not deleted');
@@ -128,7 +131,11 @@ $router->route('/signup')
     foreach ($req->query() as $key => $value) {
         $req->append($key, $value);
     }},function (Request $req, Response $res) {
-        return $res->use_engine()->render('html/signup.php', $req);
+       return $res->send(Helper::load_view('html/signup.php',
+        [
+        "errors" => [$req->query('error')],
+        "success" => [$req->query('success')]
+        ]));
     }
 )
 ->post(function (Request $req, Response $res) {
@@ -160,7 +167,11 @@ $router->route('/login')
         $req->append($key, $value);
     }},
     function (Request $req, Response $res) {
-    return $res->use_engine()->render('html/login.php', $req);
+    return $res->send(Helper::load_view('html/login.php',
+        [
+        "errors" => [$req->query('error')],
+        "success" => [$req->query('success')]
+        ]));
 })
 ->post(function (Request $req, Response $res) {
     try{
@@ -172,7 +183,8 @@ $router->route('/login')
     $user_data = $user->login();
     if($user_data){
         $user->set_login_session($user_data);
-        return $res->redirect('/home?success=login successful');
+        // return $res->redirect('/home?success=login successful');
+        return isset($_COOKIE['redirect_to_login']) ? $res->redirect($_COOKIE['redirect_to_login']."?info=welcome back") : $res->redirect('/home?success=login successful');
     }
     return $res->redirect('/login?error=an error occured');
     }

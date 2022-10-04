@@ -57,8 +57,17 @@ Class Helper {
     }
 
     public static function redirect_if_logged_out(Request $req, Response $res){
+    // setcookie('redirect_to_login', '', time() - 3600, '/');
     if(!Users::any_is_logged_in()){
-        return $res->redirect('/login');
+        //unset previous cookie
+        //set cookie for url that was for 10mins
+        $url = $_SERVER['REQUEST_URI'];
+        //remove the query string
+        $url = explode('?', $url)[0];
+         if(!isset($_COOKIE['redirect_to_login'])){
+            setcookie('redirect_to_login', $url, time() + (60 * 20), "/");
+        }
+        return $res->redirect('/login?error=login required for this action ');
     }
     
     return $res;
@@ -78,10 +87,8 @@ Class Helper {
         if(!file_exists($file)){
             return self::load_error_page(404, "File not found");
         }
-        $_SESSION['messages']['errors'][] = $_GET['error'] ?? null;
-        $_SESSION['messages']['errors'] = array_merge($data['errors'], $_SESSION['messages']['errors']);
-        $_SESSION['messages']['success'][] = $_GET['success'] ?? null;
-        $_SESSION['messages']['success'] = array_merge($data['success'], $_SESSION['messages']['success']);
+        self::set_notification_session($data);
+        
         ob_start();
         $data = array_merge($data, [
             'asset' => function($file){
@@ -91,13 +98,20 @@ Class Helper {
             "header" => function($title = "Wemall"){
                 return self::load_view('templates/header.php', [
                     'app_name' => $_ENV['APP_NAME'] ?? "Wemall",
-                    'title' => $title,
-                    'success' => array_unique($_SESSION['messages']['success'] ?? []),
-                    'errors' => array_unique($_SESSION['messages']['errors'] ?? []),
+                    'title' => $title
                 ]);
             },
             "footer" => function(){
                 return self::load_view('templates/footer.php');
+            },
+            "notification" => function($message = null, $type = "success"){
+                echo self::load_view('templates/alerts.php', [
+                    'message' => $message,
+                    'type' => $type,
+                    'success' => $_SESSION['messages']['success'],
+                    'errors' => $_SESSION['messages']['errors'],
+                    "info" => $_SESSION['messages']['info']
+                ]);
             },
             "include" => function($file, $data = []){
                 return self::load_view($file, $data);
@@ -140,19 +154,46 @@ Class Helper {
     //redirect if shop does not exist
     public static function redirect_if_shop_does_not_exist(Request $req, Response $res){
         if(!self::shop_exists($req->params('id'))){
-            return $res->redirect('/home');
+            return $res->redirect('/home?error=Shop does not exist');
         }
         return $res;
     }
-
+    
+    public static function redirect_if_user_is_not_shop_owner(Request $req, Response $res){
+        if(!self::is_user_shop_owner($req->params('id'), $_SESSION['user_unique'])){
+            return $res->redirect('/home?error=You are not the owner of this shop');
+        }
+        return $res;
+    }
+    public static function is_user_shop_owner($shop_id, $user_id){
+        if(!self::shop_exists($shop_id)){
+            return true;
+        }
+        if(\Codad5\Wemall\Controller\V1\Shops::is_shop_first_admin($shop_id, $user_id)){
+            return true;
+        }
+        return false;
+    }
+    public static function set_notification_session($data){
+        $_SESSION['messages']['errors'][] = $_GET['error'] ?? null;
+        $_SESSION['messages']['errors'] = array_merge($data['errors'] ?? [], $_SESSION['messages']['errors']);
+        $_SESSION['messages']['success'][] = $_GET['success'] ?? null;
+        $_SESSION['messages']['success'] = array_merge($data['success'] ?? [], $_SESSION['messages']['success']);
+        $_SESSION['messages']['info'][] = $_GET['info'] ?? null;
+        $_SESSION['messages']['info'] = array_merge($data['info'] ?? [], $_SESSION['messages']['info']);
+        // $infos =  array_unique($_SESSION['messages']['info'] ?? []);
+        // $_SESSION['messages']['info'] = count($infos) > 0 ? $infos : null;
+        // $errors =  array_unique($_SESSION['messages']['errors'] ?? []);
+        // $_SESSION['messages']['errors'] = count($errors) > 0 ? $errors : null;
+        // $success =  array_unique($_SESSION['messages']['success'] ?? []);
+        // $_SESSION['messages']['success'] = count($success) > 0 ? $success : null;
+        foreach($_SESSION['messages'] as $key => $value){
+            $_SESSION['messages'][$key] = array_unique($value ?? []);
+            // filter all null values
+            $_SESSION['messages'][$key] = array_filter($_SESSION['messages'][$key], function($value){
+                return $value !== null;
+            });
+            $_SESSION['messages'][$key] = count($_SESSION['messages'][$key]) > 0 ? $_SESSION['messages'][$key] : null;
+        }
+    }
 }
-
-// class axios {
-//     public $method;
-//     public function __construct(){
-
-//     }
-//     public function get($url, $headers = []){
-        
-//     }
-// }

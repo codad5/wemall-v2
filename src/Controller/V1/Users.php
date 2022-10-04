@@ -250,6 +250,9 @@ class Users
         try {
             $shop = new Shop();
             $users_shops = $shop->get_shops_where_admin_is($id);
+            foreach ($users_shops as $key => $value) {
+                $users_shops[$key]['public_unqiue_id'] = Shops::import_id($value['unique_id']);
+            }
             return $users_shops;
 
             

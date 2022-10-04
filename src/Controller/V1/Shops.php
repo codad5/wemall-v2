@@ -58,6 +58,39 @@ class Shops
     $shop = (new shop)->get_shop_by('unique_id', $id);
     return $shop ? $shop[0] : false;
    }
+   public static function get_details_by_email($email)
+   {
+    $shop = (new shop)->get_shop_by('email', $email);
+    return $shop ? $shop[0] : false;
+   }
+   public static function export_id($id)
+   {
+    return "shid_".$id;
+   }
+    public static function import_id($id)
+    {
+     return str_replace("shid_", "", $id);
+    }
+    public static function resolve_id($id)
+    {
+     if (strpos($id, 'shid_') !== false) {
+        return self::import_id($id);
+        }else{
+        return self::export_id($id);
+        }
+    }
+    public static function resolve_id_for_db($id)
+    {
+     if (strpos($id, 'shid_') !== false) {
+        return self::import_id($id);
+        }else{
+        return $id;
+        }
+    }
+    public function get_id()
+    {
+     return $this->id;
+    }
    public function create_shop()
    {
         try{
@@ -93,6 +126,7 @@ class Shops
    }
    public static function shop_exists($id)
    {
+    $id = self::resolve_id_for_db($id);
     return self::get_details_by_id($id);
    }
    //check number of total shops
@@ -111,6 +145,60 @@ class Shops
    {
     return "shk_".substr(md5(uniqid(rand(), true)), 0, 32);
    }
+
+   public function get_admins($id = null)
+   {
+    $id = $id ? $id : $this->id;
+    $admins = $this->get_details_by_id($id)['admins'];
+    return json_decode($admins, true);
+   }
+   public static function get_admins_by_level($level, $shop_id = null)
+   {
+    $shop_id = $shop_id ? $shop_id : self::$id;
+    $admins = (new Shops)->get_admins($shop_id);
+    return $admins[$level];
+   }
+
+   public static function is_shop_admin($shop_id, $user_id)
+   {
+    $admins = (new Shops)->get_admins($shop_id);
+    $all_admins = $admins['all'];
+    return in_array($user_id, $all_admins);
+   }
+    public static function is_shop_first_admin($shop_id, $user_id)
+    {
+     $admins = (new Shops)->get_admins($shop_id);
+     $first_admins = $admins['first'];
+     return in_array($user_id, $first_admins);
+    }
+    public static function is_shop_second_admin($shop_id, $user_id)
+    {
+     $admins = (new Shops)->get_admins($shop_id);
+     $second_admins = $admins['second'];
+     return in_array($user_id, $second_admins);
+    }
+   
+   public function delete_shop()
+    {
+     try{
+          $this->validate_shop_data();
+          $user_id = $this->created_by->get_user_unique_id($this->created_by->login);
+          if(!$user_id){
+                throw new CustomException("Invalid User data", 300);
+          }
+          $shop = $this->shop->get_shop_by("unique_id", $this->id);
+          if(!$shop){
+                throw new CustomException("Shop does not exist", 300);
+          }
+          $shop = $shop[0];
+          if($shop['created_by'] != $user_id){
+                throw new CustomException("You are not the owner of this shop", 300);
+          }
+          return $this->shop->delete_shop($this->id);
+     }catch(CustomException $e){
+          throw new CustomException($e->getMessage(), $e->getCode());
+     }
+    }
 
    
 }
