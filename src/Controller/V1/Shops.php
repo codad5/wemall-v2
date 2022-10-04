@@ -178,26 +178,31 @@ class Shops
      return in_array($user_id, $second_admins);
     }
    
-   public function delete_shop()
-    {
-     try{
-          $this->validate_shop_data();
-          $user_id = $this->created_by->get_user_unique_id($this->created_by->login);
-          if(!$user_id){
-                throw new CustomException("Invalid User data", 300);
-          }
-          $shop = $this->shop->get_shop_by("unique_id", $this->id);
-          if(!$shop){
-                throw new CustomException("Shop does not exist", 300);
-          }
-          $shop = $shop[0];
-          if($shop['created_by'] != $user_id){
-                throw new CustomException("You are not the owner of this shop", 300);
-          }
-          return $this->shop->delete_shop($this->id);
-     }catch(CustomException $e){
-          throw new CustomException($e->getMessage(), $e->getCode());
+   public static function delete_shop($id, $user_id) {
+    $id = self::resolve_id_for_db($id);
+    $shop = self::get_details_by_id($id);
+    if(!$shop){
+        return new CustomException("Shop not found", 303);
+    }
+    if(!self::is_shop_first_admin($id, $user_id)){
+        return new CustomException("You are not an admin of this shop", 303);
+    }
+    $shop = new Shop;
+    $shop->delete_shop(self::resolve_id($id));
+    return true;
+   }
+    public static function update_shop($id, $user_id, $data) {
+     $id = self::resolve_id_for_db($id);
+     $shop = self::get_details_by_id($id);
+     if(!$shop){
+          return new CustomException("Shop not found", 303);
      }
+     if(!self::is_shop_admin($id, $user_id)){
+          return new CustomException("You are not an admin of this shop", 303);
+     }
+     $shop = new Shop;
+     $shop->update_shop(self::resolve_id($id), $data);
+     return true;
     }
 
    

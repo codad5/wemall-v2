@@ -64,4 +64,11 @@ class Shop{
         ]);
        
     }
+    public function delete_shop($id)
+    {
+        $sql = "DELETE FROM $this->table WHERE unique_id = ?";
+        return $this->conn->query_data($sql, [
+            $id
+        ]);
+    } 
 }

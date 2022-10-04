@@ -42,6 +42,22 @@ $router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request
     
 });
 
+//shop delete route
+$router->get('/shop/:id/delete',
+        [Helper::class, "redirect_if_shop_does_not_exist"],
+        [Helper::class, "redirect_if_logged_out"],
+        [Helper::class, "redirect_if_user_is_not_shop_owner"],
+    function($req, $res){
+    try{
+        ['id' => $id] = $req->params();
+        Shops::delete_shop($id, $_SESSION['user_unique']);
+
+        return $res->redirect('/home?success=shop deleted');
+    }catch(Exception $e){
+        return $res->redirect('/home?error=shop not deleted&info=' . $e->getMessage());
+    }
+});
+
 // logout route
 $router->get('/logout', function (Request $req, Response $res) {
     session_destroy();
@@ -106,22 +122,7 @@ $router->route('/shop/:id/add/product')
     function($req, $res){
     // ['product_name' => $product_name, ]
 });
-//shop delete route
-$router->get('/shop/:id/delete',
-        [Helper::class, "redirect_if_shop_does_not_exist"],
-        [Helper::class, "redirect_if_logged_out"],
-        [Helper::class, "redirect_if_user_is_not_shop_owner"],
-    function($req, $res){
-    try{
-        ['id' => $id] = $req->params();
-        $shop = new Shops();
-        $shop->delete_shop($id);
 
-        return $res->redirect('/home?success=shop deleted');
-    }catch(Exception $e){
-        return $res->redirect('/home?error=shop not deleted');
-    }
-});
 
 // signup post and get route
 $router->route('/signup')

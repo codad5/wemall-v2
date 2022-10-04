@@ -65,7 +65,7 @@ Class Helper {
         //remove the query string
         $url = explode('?', $url)[0];
          if(!isset($_COOKIE['redirect_to_login'])){
-            setcookie('redirect_to_login', $url, time() + (60 * 20), "/");
+            setcookie('redirect_to_login', $url, time() + (60 * 15), "/");
         }
         return $res->redirect('/login?error=login required for this action ');
     }
