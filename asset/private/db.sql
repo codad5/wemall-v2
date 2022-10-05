@@ -52,13 +52,41 @@ CREATE TABLE `shops` (
   `created_by` varchar(255) NOT NULL,
   `email` varchar(300) NOT NULL,
   `unique_id` varchar(300) NOT NULL, 
-  `api_key` varchar(300) NOT NULL, 
+  `api_key` varchar(300) NOT NULL,
+  `shop_type` varchar(300) NOT NULL, 
   `admins` TEXT NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `products` (
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` TEXT NOT NULL,
+  `price` varchar(255) NOT NULL,
+  `created_by` varchar(255) NOT NULL,
+  `unique_id` varchar(300) NOT NULL, 
+  `product_type` varchar(300) NOT NULL,
+  `shop_id` varchar(300) NOT NULL, 
+  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- table for clothing products to inner join with products table
+CREATE TABLE `clothing_products` (
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `product_id` varchar(255) NOT NULL,
+  `size` varchar(255) NOT NULL,
+  `color` varchar(255) NOT NULL,
+  `quantity` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- table for food products to inner join with products table
+CREATE TABLE `food_products` (
+  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `product_id` varchar(255) NOT NULL,
+  `quantity` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- --------------------------------------------------------
 
 --

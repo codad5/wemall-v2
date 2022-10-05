@@ -24,6 +24,21 @@ echo $header("home");
                                     <label for="description">shop description</label>
                                     <input type="description" name="description" id="description" class="form-control">  
                                 </div>
+                                <!-- shop type option -->
+                                <!-- selcct field  -->
+                                <div class="form-group">
+                                    <label for="type">shop type</label>
+                                    <select name="type" id="type" class="form-control">
+                                        <option value="clothing">clothing</option>
+                                        <!-- <option value="phone">phone , laptop and accesories </option>
+                                        <option value="food">food</option>
+                                        <option value="cosmetics">cosmetics</option>
+                                        <option value="furniture">furniture</option>
+                                        <option value="automobile">automobile</option>
+
+                                        <option value="others">others</option> -->
+                                    </select>
+
                                 
                                 <div class="form-group">
                                     <button type="submit" name="signup" class="btn btn-primary">Create Shop</button>

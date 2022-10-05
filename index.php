@@ -87,10 +87,10 @@ $router->get('/shop/:id', function(Request $req, Response $res){
 //to create a shop
 $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], function($req, $res){
     try{
-    ["shop_name" => $name, "email" => $email, "description" => $description] = $req->body();
+    ["shop_name" => $name, "email" => $email, "description" => $description, "type" => $type] = $req->body();
     var_dump($name, $email, $description);
     $user = new Users($_SESSION['username']);
-    $shop = new Shops($name, $description, $email ,$user);
+    $shop = new Shops($name, $description, $email ,$user, $type);
     $shop->validate_shop_data();
     $shop->create_shop();
     return $res->redirect('/home?success=shop created');
@@ -100,6 +100,7 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
     }
 });
 
+//  add a product to a shop
 $router->route('/shop/:id/add/product')
 ->get([Helper::class, "redirect_if_logged_out"],
     [Helper::class, "redirect_if_shop_does_not_exist"],
@@ -210,6 +211,8 @@ $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $
         return CustomResponse::error($res, $e);
     }
 });
+
+
 
 
 

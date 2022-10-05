@@ -14,8 +14,10 @@ class Shops
     protected string|null $description;
     protected string $api_key;
     protected Users $created_by;
+    protected array $shop_type_array = ["clothing", "food", "automobile", "phones", "furnitures"];
+    protected string $shop_type;
 
-   public function __construct($name = null, $description = null, $email = null, Users $created_by = null)
+   public function __construct($name = null, $description = null, $email = null, Users $created_by = null, $shop_type = null)
    {
     $this->shop = new Shop;
     $this->name = $name;
@@ -23,6 +25,7 @@ class Shops
     $this->description = $description;
     $this->created_by = $created_by ? $created_by : new Users('________________');
     $this->id = $this->generate_id();
+    $this->shop_type = $shop_type;
     $this->api_key = $this->generate_api_key();
    }
 
@@ -36,6 +39,12 @@ class Shops
     }
     if(empty($this->id)){
         return new CustomException("Server Error", 303);
+    }
+    if(empty($this->shop_type)){
+        throw new CustomException('Please Select a shop type', 303);
+    }
+    if(!in_array($this->shop_type, $this->shop_type_array)){
+        throw new CustomExceptiom('Invalid Shop Type', 303);
     }
     //validate email
     if(!Validators::validate_email($this->email)){
