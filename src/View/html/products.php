@@ -1,8 +1,8 @@
 <?php
-    echo $header();
+    echo $header(["shop" => $shop]);
+    
 ?>
-
-
+        
 <!-- //add new product form with bootstrap styling -->
 <form action="/shop/<?=$shop['id']?>/add/product" method="post" enctype="multipart/form-data">
     <div class="form-group">

@@ -20,10 +20,11 @@ session_start();
 $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
+
 // to go to the home page 
 $router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request $req, $res){
     try{
-        $shops = Users::get_all_shops($_SESSION['user_unique']);
+        $shops = Users::get_all_shops_by($_SESSION['user_unique']);
          return $res->send(Helper::load_view('html/home.php',
         [
         "errors" => [$req->query('error')],
@@ -61,7 +62,11 @@ $router->get('/shop/:id/delete',
 // logout route
 $router->get('/logout', function (Request $req, Response $res) {
     session_destroy();
-    return $res->redirect('/login');
+    $new_query = "";
+    foreach($_GET as $query => $value){
+        $new_query.="$query=$value&";
+    }
+    return $res->redirect('/login?'.$new_query);
 });
 
 // to show a shop
@@ -95,13 +100,13 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
     $shop->create_shop();
     return $res->redirect('/home?success=shop created');
     }catch(Exception $e){
-        return $res->redirect('/home?success=shop created');
+        return $res->redirect('/home?success='.$e->getMessage());
 
     }
 });
 
 //  add a product to a shop
-$router->route('/shop/:id/add/product')
+$router->route('/shop/:id/product')
 ->get([Helper::class, "redirect_if_logged_out"],
     [Helper::class, "redirect_if_shop_does_not_exist"],
     [Helper::class, "redirect_if_user_is_not_shop_owner"],
@@ -112,7 +117,7 @@ $router->route('/shop/:id/add/product')
             //get the shop details
             $shop = shops::get_details_by_id($id);
             //load add product page
-            return $res->send(Helper::load_view('html/add_product.php', ["request" => $req, "shop" => $shop]));
+            return $res->send(Helper::load_view('html/products.php', ["request" => $req, "shop" => $shop]));
         }catch(Exception $e){
             return $res->redirect('/home?success=shop created');
 
@@ -211,6 +216,7 @@ $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $
         return CustomResponse::error($res, $e);
     }
 });
+
 
 
 

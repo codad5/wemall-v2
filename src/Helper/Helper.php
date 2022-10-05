@@ -47,8 +47,9 @@ Class Helper {
     }
     public static function resolve_asset(string $file) 
     {   
-        // echo file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."asset".DIRECTORY_SEPARATOR."$file") ? "byeeee" : "calmmmmm";
-        return $_SERVER['DOCUMENT_ROOT']."/asset"."/$file";
+        $http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+        //return absolute path to the file from server host
+        return "$http://".$_SERVER['HTTP_HOST'] . '/asset/' . $file;
     }
     public static function resolve_view(string $file) 
     {   
@@ -67,7 +68,7 @@ Class Helper {
          if(!isset($_COOKIE['redirect_to_login'])){
             setcookie('redirect_to_login', $url, time() + (60 * 15), "/");
         }
-        return $res->redirect('/login?error=login required for this action ');
+        return $res->redirect('/logout?error=login required for this action ');
     }
     
     return $res;
@@ -95,11 +96,11 @@ Class Helper {
                 return self::resolve_asset($file);
             },
             'error' => 200,
-            "header" => function($title = "Wemall"){
-                return self::load_view('templates/header.php', [
+            "header" => function(array $data = [], $title = "Wemall"){
+                return self::load_view('templates/header.php', array_merge([
                     'app_name' => $_ENV['APP_NAME'] ?? "Wemall",
                     'title' => $title
-                ]);
+                ], $data));
             },
             "footer" => function(){
                 return self::load_view('templates/footer.php');
@@ -108,9 +109,9 @@ Class Helper {
                 echo self::load_view('templates/alerts.php', [
                     'message' => $message,
                     'type' => $type,
-                    'success' => $_SESSION['messages']['success'],
-                    'errors' => $_SESSION['messages']['errors'],
-                    "info" => $_SESSION['messages']['info']
+                    'success' => $_SESSION['messages']['success'] ?? null,
+                    'errors' => $_SESSION['messages']['errors'] ?? null,
+                    "info" => $_SESSION['messages']['info'] ?? null
                 ]);
             },
             "include" => function($file, $data = []){

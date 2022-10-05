@@ -21,7 +21,7 @@ class Shop{
 
     public function save($data)
     {
-        $sql = "INSERT INTO $this->table (name, description, created_by,  email, unique_id, api_key, admins) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO $this->table (name, description, created_by,  email, unique_id, api_key, shop_type, admins) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         return $this->conn->query_data($sql, [
             $data['name'],
             $data['description'],
@@ -29,6 +29,7 @@ class Shop{
             $data['email'],
             $data['unique_id'],
             $data['api_key'],
+            $data['shop_type'],
             $data['admins']
         ]);
         

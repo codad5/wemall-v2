@@ -1,7 +1,7 @@
 <!Doctype html>
 <html>
 <head>
-    <title>Signup</title>
+    <title>Login</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -12,6 +12,9 @@
 </head>
 <body>
     <main>
+               <?php
+   $notification();
+   ?>
         <div class="container">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
@@ -45,12 +48,7 @@
                                     <button type="submit" name="signup" class="btn btn-primary">Signup</button>
                                 </div>
                                 
-                                    <div class="alert alert-danger">
-                                        @data(error)
-                                    </div>
-                                    <div class="alert alert-success">
-                                        @data(success)
-                                    </div>
+                                    
                             </form>
                         </div>
                     </div>

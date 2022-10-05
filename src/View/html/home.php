@@ -1,5 +1,5 @@
 <?php
-echo $header("home");
+echo $header([] , "home");
 ?>
     <main>
         <div class="container">

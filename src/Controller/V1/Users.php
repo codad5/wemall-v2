@@ -245,13 +245,13 @@ class Users
         
     }
     
-    public static function get_all_shops($id) : array
+    public static function get_all_shops_by($id) : array
     {
         try {
             $shop = new Shop();
             $users_shops = $shop->get_shops_where_admin_is($id);
             foreach ($users_shops as $key => $value) {
-                $users_shops[$key]['public_unqiue_id'] = Shops::import_id($value['unique_id']);
+                $users_shops[$key] = Shops::prepare_shop_data($value);
             }
             return $users_shops;
 
@@ -260,6 +260,7 @@ class Users
             throw new CustomException($th->getMessage(), 500);
         }
     }
+    
 
     public static function any_is_logged_in(){
         return isset($_SESSION['username']) && 

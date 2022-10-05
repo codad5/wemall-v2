@@ -15,7 +15,7 @@ class Shops
     protected string $api_key;
     protected Users $created_by;
     protected array $shop_type_array = ["clothing", "food", "automobile", "phones", "furnitures"];
-    protected string $shop_type;
+    protected string|null $shop_type;
 
    public function __construct($name = null, $description = null, $email = null, Users $created_by = null, $shop_type = null)
    {
@@ -44,7 +44,7 @@ class Shops
         throw new CustomException('Please Select a shop type', 303);
     }
     if(!in_array($this->shop_type, $this->shop_type_array)){
-        throw new CustomExceptiom('Invalid Shop Type', 303);
+        throw new CustomException('Invalid Shop Type', 303);
     }
     //validate email
     if(!Validators::validate_email($this->email)){
@@ -65,7 +65,7 @@ class Shops
    {
     $id = "shid_".$id;
     $shop = (new shop)->get_shop_by('unique_id', $id);
-    return $shop ? $shop[0] : false;
+    return $shop ? self::prepare_shop_data($shop[0]) : false;
    }
    public static function get_details_by_email($email)
    {
@@ -106,7 +106,7 @@ class Shops
             $this->validate_shop_data();
             $user_id = $this->created_by->get_user_unique_id($this->created_by->login);
             if(!$user_id){
-                throw new CustomException("Invalid User data", 300);
+                throw new CustomException("Invalid User data".$this->created_by->login, 300);
             }
             $admins = json_encode([
                 "first" => [
@@ -118,6 +118,9 @@ class Shops
                     $user_id
                 ]
             ]);
+            if(!$admins){
+                throw new CustomException("Error Creating Shop", 300);
+            }
             return $this->shop->save([
                 "name" => $this->name,
                 "description" => $this->description,
@@ -125,6 +128,7 @@ class Shops
                 "email" => $this->email,
                 "unique_id" => $this->id,
                 "api_key" => $this->api_key,
+                "shop_type" => $this->shop_type, 
                 "admins" => $admins
 
             ]);
@@ -212,6 +216,11 @@ class Shops
      $shop = new Shop;
      $shop->update_shop(self::resolve_id($id), $data);
      return true;
+    }
+    public static function prepare_shop_data(array $shop):array
+    {
+     $shop['public_unqiue_id'] = Shops::import_id($shop['unique_id']);
+     return $shop;  
     }
 
    
