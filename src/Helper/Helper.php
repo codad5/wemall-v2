@@ -45,11 +45,15 @@ Class Helper {
                 return $response;
 
     }
-    public static function resolve_asset(string $file) 
+    public static function resolve_public_asset(string $file) 
     {   
         $http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
         //return absolute path to the file from server host
         return "$http://".$_SERVER['HTTP_HOST'] . '/asset/' . $file;
+    }
+    public static function resolve_asset($file)
+    {
+        return $_SERVER['DOCUMENT_ROOT']."/asset"."/$file";
     }
     public static function resolve_view(string $file) 
     {   
@@ -93,7 +97,7 @@ Class Helper {
         ob_start();
         $data = array_merge($data, [
             'asset' => function($file){
-                return self::resolve_asset($file);
+                return self::resolve_public_asset($file);
             },
             'error' => 200,
             "header" => function(array $data = [], $title = "Wemall"){
