@@ -13,6 +13,7 @@ session_start();
  use \Trulyao\PhpRouter\HTTP\Request as Request;
  use \Codad5\Wemall\Controller\V1\{Lists, Users, Shops};
  use \Codad5\Wemall\Helper\Validator as Validator;
+ use \Codad5\Wemall\View\V1 as View;
 
  
 
@@ -116,6 +117,7 @@ $router->route('/shop/:id/product')
             ['id' => $id] = $req->params();
             //get the shop details
             $shop = shops::get_details_by_id($id);
+            $shop['form'] = View\Shop::load_html_form($shop['shop_type']);
             //load add product page
             return $res->send(Helper::load_view('html/products.php', ["request" => $req, "shop" => $shop]));
         }catch(Exception $e){
