@@ -8,7 +8,7 @@ use Codad5\Wemall\Helper\Validators;
 class Shops
 {
     private Shop $shop;
-    protected string $id;
+    protected string $unique_id;
     protected string|null $name;
     protected string|null $email;
     protected string|null $description;
@@ -24,7 +24,7 @@ class Shops
     $this->email = $email;
     $this->description = $description;
     $this->created_by = $created_by ? $created_by : new Users('________________');
-    $this->id = $this->generate_id();
+    $this->unique_id = $this->generate_id();
     $this->shop_type = $shop_type;
     $this->api_key = $this->generate_api_key();
    }
@@ -37,7 +37,7 @@ class Shops
     if(empty($this->description)){
         return new CustomException("shop description required", 303);
     }
-    if(empty($this->id)){
+    if(empty($this->unique_id)){
         return new CustomException("Server Error", 303);
     }
     if(empty($this->shop_type)){
@@ -70,7 +70,7 @@ class Shops
    public static function get_details_by_email($email)
    {
     $shop = (new shop)->get_shop_by('email', $email);
-    return $shop ? $shop[0] : false;
+    return $shop ? self::prepare_shop_data($shop[0]) : false;
    }
    public static function export_id($id)
    {
@@ -98,7 +98,7 @@ class Shops
     }
     public function get_id()
     {
-     return $this->id;
+     return $this->unique_id;
     }
    public function create_shop()
    {
@@ -126,7 +126,7 @@ class Shops
                 "description" => $this->description,
                 "created_by" => $user_id,
                 "email" => $this->email,
-                "unique_id" => $this->id,
+                "unique_id" => $this->unique_id,
                 "api_key" => $this->api_key,
                 "shop_type" => $this->shop_type, 
                 "admins" => $admins
@@ -161,13 +161,13 @@ class Shops
 
    public function get_admins($id = null)
    {
-    $id = $id ? $id : $this->id;
+    $id = $id ? $id : $this->unique_id;
     $admins = $this->get_details_by_id($id)['admins'];
     return json_decode($admins, true);
    }
    public static function get_admins_by_level($level, $shop_id = null)
    {
-    $shop_id = $shop_id ? $shop_id : self::$id;
+    $shop_id = $shop_id ? $shop_id : self::$unique_id;
     $admins = (new Shops)->get_admins($shop_id);
     return $admins[$level];
    }
@@ -178,6 +178,7 @@ class Shops
     $all_admins = $admins['all'];
     return in_array($user_id, $all_admins);
    }
+   
     public static function is_shop_first_admin($shop_id, $user_id)
     {
      $admins = (new Shops)->get_admins($shop_id);
@@ -221,6 +222,18 @@ class Shops
     {
      $shop['public_unqiue_id'] = Shops::import_id($shop['unique_id']);
      return $shop;  
+    }
+
+    public function fill_props_using_id(string $id){
+        $data = $this->get_details_by_id($this->resolve_id($id));
+        $this->name = $data['name'];
+        $this->description = $data['description'];
+        $this->email = $data['email'];
+        $this->api_key = $data['api_key'];
+        $this->shop_type = $data['shop_type'];
+        $this->unique_id = $data['unique_id'];
+        return $this;
+
     }
 
    

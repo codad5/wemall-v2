@@ -1,7 +1,7 @@
 <?php
 namespace Codad5\Wemall\Controller\V1\ProductType;
 
-Class Clothing
+Class Clothing implements ProductInterface
 {
     private string $name;
     private string $id;
@@ -12,5 +12,9 @@ Class Clothing
     private string $discount;
     private string $discount_type;
     private string $gender;
+
+    public function __construct($shop_data){
+
+    }
 
 }

@@ -1,4 +1,5 @@
 <?php
+use Codad5\Wemall\Controller\V1\Products;
 use Codad5\Wemall\Helper\Helper;
 session_start();
  require(__DIR__ . '/vendor/autoload.php');
@@ -129,6 +130,26 @@ $router->route('/shop/:id/product')
     [Helper::class, "redirect_if_shop_does_not_exist"],
     function($req, $res){
     // ['product_name' => $product_name, ]
+});
+
+// product create route
+$router->post('/shop/:id/product/create', [Helper::class, "redirect_if_logged_out"],
+    [Helper::class, "redirect_if_shop_does_not_exist"],
+    [Helper::class, "redirect_if_user_is_not_shop_owner"], function($req, $res){
+    try{
+        ['id' => $id] = $req->params();
+        $shop = Shops::get_details_by_id($id);
+        $admin = (new Users($_SESSION['user_unique']))->get_user_by_id($shop['user_id']);
+        if(!$shop){
+            throw new CustomException('Shop Dont Exist', 404);
+        }
+        $product = new Products($shop, $admin, $req->body());
+        $product->validate_product_data();
+        $product->create_product();
+        return $res->redirect('/shop/'.$id.'/product?success=product created');
+    }catch(Exception $e){
+        return $res->redirect('/shop/'.$id.'/product?error=product not created&info=' . $e->getMessage());
+    }
 });
 
 
