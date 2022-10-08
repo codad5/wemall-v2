@@ -157,6 +157,15 @@ class Users
             throw new CustomException($th->getMessage(), 500);
         }
     }
+    public function get_user_by_unique_id($unique_id)
+    {
+        try {
+            $this->user->unique_id = $unique_id;
+            return $this->user->get_user_by("unique_id", $unique_id);
+        } catch (\Throwable $th) {
+            throw new CustomException($th->getMessage(), 500);
+        }
+    }
 
     #get user by email
     public function get_user_by_email($email)

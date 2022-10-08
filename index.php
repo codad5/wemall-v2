@@ -45,6 +45,31 @@ $router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request
     
 });
 
+// product create route
+$router->post('/shop/:id/product/create', [Helper::class, "redirect_if_logged_out"],
+    [Helper::class, "redirect_if_shop_does_not_exist"],
+    [Helper::class, "redirect_if_user_is_not_shop_owner"], function($req, $res){
+    try{
+        ['id' => $id] = $req->params();
+        $shop = Shops::get_details_by_id($id);
+        $admin = (new Users($_SESSION['user_unique']))->get_user_by_unique_id($_SESSION['user_unique']);
+        if(!$shop){
+            throw new CustomException('Shop Dont Exist', 404);
+        }
+        // check if the user is the owner of the shop
+        if(!Shops::is_shop_admin($id, $_SESSION['user_unique'])){
+            throw new CustomException('You are not the owner of this shop', 403);
+        }
+        $product = new Products($shop, $admin, $req->body());
+        $product->validate_product_data();
+        $product->create_product();
+        return $res->redirect('/shop/'.$id.'/product?success=product created');
+    }catch(Exception $e){
+        return $res->redirect('/shop/'.$id.'/product?error=product not created&info=' . $e->getMessage());
+    }
+});
+
+
 //shop delete route
 $router->get('/shop/:id/delete',
         [Helper::class, "redirect_if_shop_does_not_exist"],
@@ -132,25 +157,6 @@ $router->route('/shop/:id/product')
     // ['product_name' => $product_name, ]
 });
 
-// product create route
-$router->post('/shop/:id/product/create', [Helper::class, "redirect_if_logged_out"],
-    [Helper::class, "redirect_if_shop_does_not_exist"],
-    [Helper::class, "redirect_if_user_is_not_shop_owner"], function($req, $res){
-    try{
-        ['id' => $id] = $req->params();
-        $shop = Shops::get_details_by_id($id);
-        $admin = (new Users($_SESSION['user_unique']))->get_user_by_id($shop['user_id']);
-        if(!$shop){
-            throw new CustomException('Shop Dont Exist', 404);
-        }
-        $product = new Products($shop, $admin, $req->body());
-        $product->validate_product_data();
-        $product->create_product();
-        return $res->redirect('/shop/'.$id.'/product?success=product created');
-    }catch(Exception $e){
-        return $res->redirect('/shop/'.$id.'/product?error=product not created&info=' . $e->getMessage());
-    }
-});
 
 
 // signup post and get route

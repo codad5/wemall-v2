@@ -62,9 +62,14 @@ CREATE TABLE `products` (
   `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
   `name` varchar(255) NOT NULL,
   `description` TEXT NOT NULL,
+  `category` varchar(255) NOT NULL,
   `price` varchar(255) NOT NULL,
+  `discount` varchar(255) NOT NULL,
+  `discount_type` varchar(255) NOT NULL,
   `created_by` varchar(255) NOT NULL,
-  `unique_id` varchar(300) NOT NULL, 
+  `quantity` int(11) NOT NULL,
+  `images` varchar(255) NOT NULL,
+  `product_id` varchar(300) NOT NULL, 
   `product_type` varchar(300) NOT NULL,
   `shop_id` varchar(300) NOT NULL, 
   `created_at` datetime NOT NULL DEFAULT current_timestamp() 
@@ -76,7 +81,7 @@ CREATE TABLE `clothing_products` (
   `product_id` varchar(255) NOT NULL,
   `size` varchar(255) NOT NULL,
   `color` varchar(255) NOT NULL,
-  `quantity` varchar(255) NOT NULL,
+  `gender` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

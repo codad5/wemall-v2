@@ -1,19 +1,64 @@
 <?php
 namespace Codad5\Wemall\Controller\V1\ProductType;
+use Codad5\Wemall\Helper\CustomException;
+use Codad5\Wemall\Model\Product;
 
 Class Clothing implements ProductInterface
 {
-    private string $name;
     private string $id;
     private string $size;
     private string $color;
-    private string $price;
-    private string $quantity;
-    private string $discount;
-    private string $discount_type;
     private string $gender;
+    private array $gender_array =  ['male', 'female', 'unisex'];
+    private array $shop_data;
+    private array $user_data;
+    protected string $table = "clothing_products";
+    private array $data;
 
-    public function __construct($shop_data){
+    public function __construct($shop_data, $user_data, $data){
+        $this->data = $data;
+        $this->shop_data = $shop_data;
+        $this->user_data = $user_data;
+    }
+    public function validate_product_data()
+    {
+        if(!isset($this->data['unique_id']) && empty($this->data['unique_id'])){
+            throw new CustomException("Product name required", 303);
+        }
+        if(!isset($this->data['color']) && empty($this->data['color'])){
+            throw new CustomException("Product color required", 303);
+        }
+        if(!isset($this->data['size']) && empty($this->data['size'])){
+            throw new CustomException("Product size required", 303);
+        }
+        // check gender
+        if(!isset($this->data['gender']) && empty($this->data['gender'])){
+            throw new CustomException("No Gender Selected", 500);
+        }
+        if(!in_array($this->data['gender'], $this->gender_array)){
+            throw new CustomException("Gender Not Found", 500);
+        }
+
+
+    }
+    public function assign_product_data($unique_id)
+    {
+        $this->id = $unique_id;
+        $this->size = $this->data['size'];
+        $this->color = $this->data['color'];
+        $this->gender = $this->data['gender'];
+    }
+    public function create_product($data, ...$any)
+    {
+        $product = new Product;
+        $sql = "INSERT INTO $this->table (product_id , size, color, gender) VALUES (?,?, ?,?)";
+        $sql_bind_array = [
+            $this->id,
+            $this->size,
+            $this->color,
+            $this->gender
+        ];
+        return $product->create_product($sql, $data, $sql_bind_array);
 
     }
 

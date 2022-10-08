@@ -1,7 +1,5 @@
-<?php
-    echo $header(["shop" => $shop]);
-    
-?>
+
+    <?=$header(["shop" => $shop])?>
         
 <!-- //add new product form with bootstrap styling -->
 
@@ -30,7 +28,82 @@
 
       <div>
         <div class="bd-example">
-    <?=$shop['form']?></div>
+          <form class="row g-3" id="add_product" action="/shop/<?=$shop['public_unqiue_id']?>/product/create" method="post" enctype="multipart/form-data">
+          <div class="col-md-4" id="product_name_cnt">
+            <label for="product_name" class="form-label">Product name</label>
+            <input type="text" class="form-control  " name="name" id="product_name">
+            <div class="invalid-feedback">
+              This field is required
+            </div>
+          </div>
+          <!-- product description -->
+          <div class="col-md-4" id="product_description_cnt">
+            <label for="product_description" class="form-label">Product Description</label>
+            <textarea class="form-control" name="description" id="product_description" rows="3"></textarea>
+            <div class="invalid-feedback">
+              This field is required
+            </div>
+          <div class="col-md-4" id="product_price_cnt">
+            <label for="product_price" class="form-label">Price</label>
+            <input type="Number" class="form-control" name="price" id="product_price" required="">
+            <div class="invalid-feedback">
+              Invalid Price
+            </div>
+          </div>
+           <fieldset class="col-mb-3">
+            <legend>Discount Methods</legend>
+            <div class="col-mb-3 form-check">
+              <input type="radio" name="discount_method" value="percentage" class="form-check-input" id="exampleRadio1">
+              <label class="form-check-label" for="exampleRadio1">Percentage</label>
+            </div>
+            <div class="col-mb-3 form-check">
+              <input type="radio" name="discount_method" value="flat" class="form-check-input" id="exampleRadio2">
+              <label class="form-check-label" for="exampleRadio2">Price Cut</label>
+            </div>
+            <div class="col-md-3" id="product_discount_cnt">
+            <label for="product_discount" class="form-label">Discount</label>
+            <input type="text" class="form-control" id="product_discount" name="product_discount" value="0">
+            <div class="invalid-feedback">
+              Please provide a valid zip.
+            </div>
+            
+          </div></fieldset>
+          
+          <!-- <div class="col-md-5" id="product_category_cnt">
+            <label for="product_category" class="form-label">Category : use comma to separate</label>
+            <input type="text" class="form-control" id="product_category" name="product_category">
+            <div class="invalid-feedback">
+              Please provide a valid city.
+            </div>
+          </div> -->
+          <?=$shop['form']?>
+        <div class="col-md-3" id="product_quantity_cnt">
+            <label for="product_quantity" class="form-label">Quantity Added</label>
+            <input type="number" class="form-control " id="product_quantity" required="" min="0" name="quantity">
+            <div class="invalid-feedback">
+              Please provide a valid zip.
+            </div>
+          </div>
+          <div class="col-mb-3">
+              <input type="file" class="form-control" id="product_image" name="product_image[]" multiple="" maxlength="5" aria-label="Large file input example">
+                <div class="invalid-feedback">
+                Max of 5 images
+                </div>
+        </div>
+          <div class="col-md-4">
+            <label for="validationServerUsername" class="form-label">Added By</label>
+            <div class="input-group">
+              <span class="input-group-text" id="inputGroupPrepend3">@</span>
+              <input type="text" class="form-control" id="validationServerUsername" name="created_by" value="<?=$_SESSION['username']?>" aria-describedby="inputGroupPrepend3" required="" readonly="">
+              <div class="invalid-feedback">
+                Please choose a username.
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" name="product_add" type="submit">Submit form</button>
+          </div>
+        </form>
       </div>
     </article>
               </div>
