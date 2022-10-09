@@ -63,7 +63,7 @@ class Shops
    }
    public static function get_details_by_id($id)
    {
-    $id = "shid_".$id;
+    $id = self::resolve_id_for_db_2($id);
     $shop = (new shop)->get_shop_by('unique_id', $id);
     return $shop ? self::prepare_shop_data($shop[0]) : false;
    }
@@ -92,6 +92,14 @@ class Shops
     {
      if (strpos($id, 'shid_') !== false) {
         return self::import_id($id);
+        }else{
+        return $id;
+        }
+    }
+    public static function resolve_id_for_db_2($id)
+    {
+     if (strpos($id, 'shid_') == false) {
+        return self::export_id($id);
         }else{
         return $id;
         }

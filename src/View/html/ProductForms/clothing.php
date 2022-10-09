@@ -9,6 +9,7 @@
               Please select a valid state.
             </div>
           </div> -->
+          <!-- product size -->
           <div class="col-md-4" id="product_size_cnt">
             <label for="product_size" class="form-label">Product Size</label>
             <input type="text" class="form-control" name="size" id="product_size">
@@ -16,10 +17,7 @@
               This field is required
             </div>
           </div>
-          
-         
-
-          
+          <!-- product gender type -->
         <fieldset class="col-mb-3">
             <legend>Gender</legend>
             <div class="form-check">
@@ -35,12 +33,14 @@
               <label class="form-check-label" for="exampleRadio2" selected="">unisex</label>
             </div>
           </fieldset>
+          <!-- product color -->
           <!-- color  -->
           <div class="col-md-4" id="product_color_cnt">
             <label for="product_color" class="form-label">Product Color</label>
             <input type="color" class="form-control" name="color" id="product_color">
             <div class="invalid-feedback">
               This field is required
+            </div>
             </div>
           
           <!-- <div class="col-12">

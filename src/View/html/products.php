@@ -21,10 +21,10 @@
             <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
               <div class="accordion-body">
                 <article class="my-3" id="validation">
-      <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
-        <h3>Add New Product</h3>
-        <!-- <a class="d-flex align-items-center" href="../forms/validation/">Documentation</a> -->
-      </div>
+                <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2">
+                  <h3>Add New Product</h3>
+                  <!-- <a class="d-flex align-items-center" href="../forms/validation/">Documentation</a> -->
+                </div>
 
       <div>
         <div class="bd-example">
@@ -43,6 +43,16 @@
             <div class="invalid-feedback">
               This field is required
             </div>
+          </div>
+          <!-- product category -->
+          <div class="col-md-4" id="product_category_cnt">
+            <label for="product_category" class="form-label">Product Category</label>
+            <input type="text" class="form-control  " name="category" id="product_category">
+            <div class="invalid-feedback">
+              This field is required
+            </div>
+          </div>
+          <!-- product price -->
           <div class="col-md-4" id="product_price_cnt">
             <label for="product_price" class="form-label">Price</label>
             <input type="Number" class="form-control" name="price" id="product_price" required="">
@@ -50,24 +60,25 @@
               Invalid Price
             </div>
           </div>
+          <!-- discount method -->
            <fieldset class="col-mb-3">
             <legend>Discount Methods</legend>
             <div class="col-mb-3 form-check">
-              <input type="radio" name="discount_method" value="percentage" class="form-check-input" id="exampleRadio1">
+              <input type="radio" name="discount_type" value="percentage" class="form-check-input" id="exampleRadio1">
               <label class="form-check-label" for="exampleRadio1">Percentage</label>
             </div>
             <div class="col-mb-3 form-check">
-              <input type="radio" name="discount_method" value="flat" class="form-check-input" id="exampleRadio2">
+              <input type="radio" name="discount_type" value="flat" class="form-check-input" id="exampleRadio2">
               <label class="form-check-label" for="exampleRadio2">Price Cut</label>
             </div>
             <div class="col-md-3" id="product_discount_cnt">
             <label for="product_discount" class="form-label">Discount</label>
-            <input type="text" class="form-control" id="product_discount" name="product_discount" value="0">
+            <input type="text" class="form-control" id="product_discount" name="discount" value="0">
             <div class="invalid-feedback">
               Please provide a valid zip.
             </div>
-            
-          </div></fieldset>
+            </div>
+          </fieldset>
           
           <!-- <div class="col-md-5" id="product_category_cnt">
             <label for="product_category" class="form-label">Category : use comma to separate</label>
@@ -77,6 +88,7 @@
             </div>
           </div> -->
           <?=$shop['form']?>
+          
         <div class="col-md-3" id="product_quantity_cnt">
             <label for="product_quantity" class="form-label">Quantity Added</label>
             <input type="number" class="form-control " id="product_quantity" required="" min="0" name="quantity">
@@ -85,7 +97,7 @@
             </div>
           </div>
           <div class="col-mb-3">
-              <input type="file" class="form-control" id="product_image" name="product_image[]" multiple="" maxlength="5" aria-label="Large file input example">
+              <input type="file" class="form-control" id="product_image" name="images[]" multiple="" maxlength="5" aria-label="Large file input example">
                 <div class="invalid-feedback">
                 Max of 5 images
                 </div>

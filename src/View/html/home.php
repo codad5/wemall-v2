@@ -77,7 +77,7 @@ echo $header([] , "home");
                                     <tr>
                                         <td><?= $shop['name'] ?></td>
                                         <td><?= $shop['unique_id'] ?></td>
-                                        <td>  <a href="/shop/<?= $shop['public_unqiue_id'] ?>/add/product" class="btn btn-primary">Add Product</a></td>
+                                        <td>  <a href="/shop/<?= $shop['public_unqiue_id'] ?>/product" class="btn btn-primary">Add Product</a></td>
                                         <td>  <a href="/shop/<?= $shop['public_unqiue_id'] ?>/products" class="btn btn-primary">View Products</a></td>
                                         <td>  <a href="/shop/<?= $shop['public_unqiue_id'] ?>/delete" class="btn btn-danger">Delete Shop</a></td>
                                     </tr>

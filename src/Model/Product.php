@@ -79,7 +79,9 @@ Class Product{
     public function create_product(string $sql, array $data, array $product_type_data)
     {
         try {
-            $sql = "INSERT INTO products (name, description, price, created_by, quantity, images, product_id, product_type, shop_id, discount, discount_type, active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?); $sql;";
+            $sql = "INSERT INTO products (name, description, price, created_by, quantity, images, product_id, product_type, shop_id, discount, discount_type, active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?); $sql;";
+            // var_dump($sql);
+            // exit;
             return $this->db->query_data($sql,[
             $data['name'],
             $data['description'],
@@ -96,7 +98,11 @@ Class Product{
             ...$product_type_data
         ]);
         } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
+            // echo $th->getMessage();
+            // echo "on line: {$th->getLine()}";
+            // echo "in File: {$th->getFile()}";
+            // exit;
+            throw new CustomException($th->getMessage()." on line: {$th->getLine()}"." in File: {$th->getFile()}", 500);
         }
     }
 }

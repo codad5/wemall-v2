@@ -23,45 +23,51 @@ Class  Products
     protected array $discount_array = ["percentage", "flat"];
     protected array $images;
     protected string $image_key = "images";
-    protected string $image_path = "../../../asset/images/products/";
+    protected string $image_path = "asset/images/products/";
     protected Product $product_model;
 
     protected ProductInterface $shop_type;
     protected array $shop_types;
+    public static array $shop_type_array = ["clothing"];
 
     public function __construct(Shops|array $shop, Users|array $user, array $data)
     {
         $this->shop = (array) $shop;
-        $this->user = (array) $user;
+        $this->user = (array) $user[0];
         $this->data = $data;
         $this->product_model = new Product;
         $this->product_id = $this->generate_product_id();
         $shop_type = $this->assign_shop_type_object($shop['shop_type']);
+        var_dump($shop['shop_type']);
         if($shop_type instanceof ProductInterface){
             $this->shop_type = $shop_type;
         }
         else{
             throw new CustomException("Invalid Shop Type", 500);
         }
+        // exit;
     }
 
-    protected function assign_shop_type_object(string $type)
+    protected function assign_shop_type_object(string $type) : ProductInterface
     {
-        $shop_types = [
-            "clothing" => function($shop, $user, $data){
-                new Clothing($shop, $user, $data);
-            },
-            // "food" => new Food($this->shop, $this->user, $this->data),
-            // "automobile" => new Automobile($this->shop, $this->user, $this->data),
-            // "phones" => new Phones($this->shop, $this->user, $this->data),
-            // "furnitures" => new Furnitures($this->shop, $this->user, $this->data),
-        ];
-        $shop_type = $this->shop_types;
-        $this->shop_types = $shop_types;
-        if(!array_key_exists($type, $this->shop_types)){
-            throw new CustomException('Invalid Shop Type', 303);
+        // $shop_types = [
+        //     "clothing" => function($shop, $user, $data){
+        //         return new Clothing($shop, $user, $data);
+        //     },
+        //     // "food" => new Food($this->shop, $this->user, $this->data),
+        //     // "automobile" => new Automobile($this->shop, $this->user, $this->data),
+        //     // "phones" => new Phones($this->shop, $this->user, $this->data),
+        //     // "furnitures" => new Furnitures($this->shop, $this->user, $this->data),
+        // ];
+        // $this->shop_types = $shop_types;
+        // if(!array_key_exists($type, $this->shop_types)){
+        //     throw new CustomException('Invalid Shop Type', 303);
+        // }
+        if(!in_array($type, self::$shop_type_array)){
+            throw new CustomException("Invalid shop type", 404);
         }
-        return $shop_types[$type]($this->shop, $this->user, $this->data) ?? null;
+        $shop_type_class = "Codad5\\Wemall\\Controller\V1\ProductType\\".ucfirst($type);
+        return new $shop_type_class($this->shop, $this->user, $this->data) ?? null;
     }
 
     public function validate_product_data()
@@ -93,10 +99,10 @@ Class  Products
         if($this->data['discount'] > $this->data['price'] && $this->data['discount_type'] == "flat"){
             throw new CustomException("Invalid discount value", 303);
         }
-        if(!isset($this->data[$this->image_key])){
+        if(!isset($_FILES[$this->image_key])){
             throw new CustomException("Product images required", 303);
         }
-        if(count($this->data[$this->image_key]["name"]) < 1){
+        if(count($_FILES[$this->image_key]["name"]) < 1){
             throw new CustomException("You need to submit at least one Image", 303);
         }
         return $this->shop_type->validate_product_data();
@@ -107,10 +113,11 @@ Class  Products
         $this->name = $this->data['name'];
         $this->description = $this->data['description'] ?? "";
         $this->price = $this->data['price'];
+        $this->category = $this->data['category'];
         $this->quantity = $this->data['quantity'];
         $this->discount = $this->data['discount'];
         $this->discount_type = $this->data['discount_type'];
-        $this->images = $this->data[$this->image_key];
+        $this->images = $_FILES[$this->image_key];
         return $this->shop_type->assign_product_data($this->product_id);
     }
     //generate product id with suffix prd
@@ -150,13 +157,13 @@ Class  Products
             $shop_product_data = $this->shop_type->create_product($product_data);
             return $shop_product_data;
         }catch(CustomException $e){
-            return $e->getMessage();
+            throw new CustomException($e->getMessage(), 500);
         }
     }
 
     protected function upload_images()
     {
-        $images = $this->images;
+        $images = $_FILES[$this->image_key];
         $image_uploader = new FileUploader($this->image_key, $this->image_path);
         $uploaded_files = $image_uploader->set_reporting(false, false, false)
         ->add_ext('jpg', 'jpeg', 'png', 'gif')
@@ -174,5 +181,20 @@ Class  Products
 
     }
     
+    public static function get_all_shop_product($shop_id)
+    {
+        $shop = Shops::get_details_by_id($shop_id);
+        if(!$shop){
+            throw new CustomException("Shop not found", 404);
+        }
+        $shop_type = $shop['shop_type'];
+        if(!in_array($shop_type, self::$shop_type_array)){
+            throw new CustomException("Invalid shop type", 404);
+        }
+        $shop_type_class = "Codad5\\Wemall\\Controller\V1\ProductType\\".ucfirst($shop_type);
+        $products = $shop_type_class::get_all_shop_product($shop_id);
+        return $products;
+
+    }
     
 }

@@ -22,9 +22,7 @@ Class Clothing implements ProductInterface
     }
     public function validate_product_data()
     {
-        if(!isset($this->data['unique_id']) && empty($this->data['unique_id'])){
-            throw new CustomException("Product name required", 303);
-        }
+        
         if(!isset($this->data['color']) && empty($this->data['color'])){
             throw new CustomException("Product color required", 303);
         }

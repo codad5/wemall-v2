@@ -49,14 +49,13 @@
             </ul>
         </div>
     </nav>
+    <?=$notification()?>
 <?php
     if(isset($shop)){
         echo $include('templates/shop_panel.php', [
             'shop' => $shop
         ]);
     }
+    
 ?>
-    <?php
-   $notification();
-   ?>
    <main>

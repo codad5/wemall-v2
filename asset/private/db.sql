@@ -72,6 +72,7 @@ CREATE TABLE `products` (
   `product_id` varchar(300) NOT NULL, 
   `product_type` varchar(300) NOT NULL,
   `shop_id` varchar(300) NOT NULL, 
+  `active_status` tinyInt NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
