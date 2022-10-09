@@ -12,7 +12,8 @@ Class Clothing implements ProductInterface
     private array $gender_array =  ['male', 'female', 'unisex'];
     private array $shop_data;
     private array $user_data;
-    protected string $table = "clothing_products";
+    const TABLE = "clothing_products";
+    protected static string $table = "clothing_products";
     private array $data;
 
     public function __construct($shop_data, $user_data, $data){
@@ -58,6 +59,14 @@ Class Clothing implements ProductInterface
         ];
         return $product->create_product($sql, $data, $sql_bind_array);
 
+    }
+    public static function get_all_shop_product($shop_id)
+    {
+        return (new Product)->get_all_shop_product($shop_id, self::$table);
+    }
+    public static function get_product($product_id)
+    {
+        return (new Product)->get_product($product_id, self::$table);
     }
 
 }

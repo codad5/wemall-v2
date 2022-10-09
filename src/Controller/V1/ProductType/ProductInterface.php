@@ -6,5 +6,6 @@ interface ProductInterface
     public function validate_product_data();
     public function assign_product_data($unique_id);
     public function create_product($data);
+    public static function get_all_shop_product($shop_id);
 
 }

@@ -231,6 +231,17 @@ class Shops
      $shop['public_unqiue_id'] = Shops::import_id($shop['unique_id']);
      return $shop;  
     }
+    
+    // get  shop_type by shop_id
+    public static function get_shop_type($shop_id)
+    {
+     $shop = self::get_details_by_id($shop_id);
+     if(!$shop){
+            return new CustomException("Shop not found", 303);
+        }
+     return $shop['shop_type'];
+    }
+    
 
     public function fill_props_using_id(string $id){
         $data = $this->get_details_by_id($this->resolve_id($id));

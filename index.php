@@ -45,6 +45,28 @@ $router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request
     
 });
 
+//route to get app product of a particular shop
+$router->get('/shop/:id/products/all', [Helper::class, "redirect_if_logged_out"], [Helper::class, "redirect_if_shop_does_not_exist"], function(Request $req, $res){
+    try{
+        $products = Products::get_all_products_from_shop($req->params('id'));
+        var_dump($products);
+        // return $res->send(Helper::load_view('html/products.php',
+        // [
+        // "errors" => [$req->query('error')],
+        // "success" => [$req->query('success')],
+        // "products" => $products
+        // ]));
+    }
+    catch(CustomException $e){
+         return $res->send(Helper::load_view('html/products.php',
+      [
+       "errors" => [$req->query('error'), $e->getMessage()],
+       "success" => [$req->query('success')],
+       "products" => []
+    ]));
+    }
+    
+});
 // product create route
 $router->post('/shop/:id/product/create', [Helper::class, "redirect_if_logged_out"],
     [Helper::class, "redirect_if_shop_does_not_exist"],

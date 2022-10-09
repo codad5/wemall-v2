@@ -105,4 +105,37 @@ Class Product{
             throw new CustomException($th->getMessage()." on line: {$th->getLine()}"." in File: {$th->getFile()}", 500);
         }
     }
+    public function get_all_shop_product(string $shop_id, $product_type_table, $product_type_id = "product_id")
+    {
+        try {
+            // a sql query to inner join the product table and the product type table on product_id
+            // $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.shop_id = ? AND products.active_status != ?;";
+            $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.shop_id = ?;";
+            var_dump($sql);
+            $data = $this->db->select_data($sql, [$shop_id]);
+            // $data = $this->db->select_data($sql, [$shop_id, "deleted"]);
+            return $data;
+        } catch (\Throwable $th) {
+            throw new CustomException($th->getMessage(), 500);
+        }
+    }
+    public function get_all_product()
+    {
+        try {
+            $sql = "SELECT * FROM products WHERE active_status != ?;";
+            $data = $this->db->select_data($sql, ["deleted"]);
+            return $data;
+        } catch (\Throwable $th) {
+            throw new CustomException($th->getMessage(), 500);
+        }
+    }
+    public function get_product($product_id)
+    {
+        try {
+            // select product to inner join with product type table on product_id
+            $sql = "SELECT * FROM products INNER JOIN product_type ON products.product_id = product_type.product_id WHERE products.product_id = ? AND products.active_status != ?;";
+        } catch (\Throwable $th) {
+            throw new CustomException($th->getMessage(), 500);
+        }
+    }
 }

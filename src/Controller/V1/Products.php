@@ -38,6 +38,7 @@ Class  Products
         $this->product_model = new Product;
         $this->product_id = $this->generate_product_id();
         $shop_type = $this->assign_shop_type_object($shop['shop_type']);
+        $shop_type = new $shop_type($this->shop, $this->user, $this->data);
         var_dump($shop['shop_type']);
         if($shop_type instanceof ProductInterface){
             $this->shop_type = $shop_type;
@@ -48,26 +49,14 @@ Class  Products
         // exit;
     }
 
-    protected function assign_shop_type_object(string $type) : ProductInterface
+    protected static function assign_shop_type_object(string $type) : string
     {
-        // $shop_types = [
-        //     "clothing" => function($shop, $user, $data){
-        //         return new Clothing($shop, $user, $data);
-        //     },
-        //     // "food" => new Food($this->shop, $this->user, $this->data),
-        //     // "automobile" => new Automobile($this->shop, $this->user, $this->data),
-        //     // "phones" => new Phones($this->shop, $this->user, $this->data),
-        //     // "furnitures" => new Furnitures($this->shop, $this->user, $this->data),
-        // ];
-        // $this->shop_types = $shop_types;
-        // if(!array_key_exists($type, $this->shop_types)){
-        //     throw new CustomException('Invalid Shop Type', 303);
-        // }
+       
         if(!in_array($type, self::$shop_type_array)){
             throw new CustomException("Invalid shop type", 404);
         }
-        $shop_type_class = "Codad5\\Wemall\\Controller\V1\ProductType\\".ucfirst($type);
-        return new $shop_type_class($this->shop, $this->user, $this->data) ?? null;
+        return $shop_type_class = "Codad5\\Wemall\\Controller\V1\ProductType\\".ucfirst($type);
+        // return new $shop_type_class($this->shop, $this->user, $this->data) ?? null;
     }
 
     public function validate_product_data()
@@ -188,13 +177,18 @@ Class  Products
             throw new CustomException("Shop not found", 404);
         }
         $shop_type = $shop['shop_type'];
-        if(!in_array($shop_type, self::$shop_type_array)){
-            throw new CustomException("Invalid shop type", 404);
-        }
-        $shop_type_class = "Codad5\\Wemall\\Controller\V1\ProductType\\".ucfirst($shop_type);
+        $shop_type_class = self::assign_shop_type_object($shop_type);
         $products = $shop_type_class::get_all_shop_product($shop_id);
         return $products;
 
     }
     
+    public static function get_all_products_from_shop($shop_id)
+    {   
+        $shop_type = Shops::get_shop_type($shop_id);
+        $shop_id = Shops::resolve_id_for_db_2($shop_id);
+        $shop_type_class = self::assign_shop_type_object($shop_type);
+        $products = $shop_type_class::get_all_shop_product($shop_id);
+        return $products;
+    }
 }
