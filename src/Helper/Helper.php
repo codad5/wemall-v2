@@ -115,7 +115,8 @@ Class Helper {
                     'type' => $type,
                     'success' => $_SESSION['messages']['success'] ?? null,
                     'errors' => $_SESSION['messages']['errors'] ?? null,
-                    "info" => $_SESSION['messages']['info'] ?? null
+                    "info" => $_SESSION['messages']['info'] ?? null,
+                    "warning" => $_SESSION['messages']['warning'] ?? null
                 ]);
             },
             "include" => function($file, $data = []){
@@ -186,6 +187,7 @@ Class Helper {
         $_SESSION['messages']['success'] = array_merge($data['success'] ?? [], $_SESSION['messages']['success']);
         $_SESSION['messages']['info'][] = $_GET['info'] ?? null;
         $_SESSION['messages']['info'] = array_merge($data['info'] ?? [], $_SESSION['messages']['info']);
+        $_SESSION['messages']['warning'][] = $_GET['warning'] ?? $_GET['warn'] ?? null;
         // $infos =  array_unique($_SESSION['messages']['info'] ?? []);
         // $_SESSION['messages']['info'] = count($infos) > 0 ? $infos : null;
         // $errors =  array_unique($_SESSION['messages']['errors'] ?? []);

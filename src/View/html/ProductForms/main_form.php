@@ -112,8 +112,37 @@
                         }
                       });
                       //script to validate discount price based on discount type
-                      var discount_type = document.getElementsByName('discount_type');
-                      var discount = document.getElementById('product_discount');
-                      var price = document.getElementById('product_price');
+                      var discount_method = document.getElementById('discount_method');
+                      var product_discount = document.getElementById('product_discount');
+                      var product_price = document.getElementById('product_price');
+                      product_discount.addEventListener('input', function(e) {
+                        let invalid_cnt = document.getElementById('product_discount_cnt').querySelector('.invalid-feedback');
+                        if (discount_method.value == 'flat') {
+                          if (product_discount.value > product_price.value) {
+                            product_discount.setCustomValidity("Discount cannot be greater than price");
+                            // add is invalid class to input
+                            invalid_cnt.innerHTML = "Discount cannot be greater than price";
+                            product_discount.classList.add('is-invalid');
+                          } else {
+                            product_discount.setCustomValidity("");
+                            // remove is invalid class to input
+                            invalid_cnt.innerHTML = "Invalid Discount";
+                            product_discount.classList.remove('is-invalid');
+
+                          }
+                        } else {
+                          if (product_discount.value > 100) {
+                            product_discount.setCustomValidity("Discount cannot be greater than 100%");
+                            // add is invalid class to input
+                            invalid_cnt.innerHTML = "Discount cannot be greater than 100%";
+                            product_discount.classList.add('is-invalid');
+                          } else {
+                            product_discount.setCustomValidity("");
+                            // remove is invalid class to input
+                            invalid_cnt.innerHTML = "Invalid Discount";
+                            product_discount.classList.remove('is-invalid');
+                          }
+                        }
+                      });
                       
                     </script>

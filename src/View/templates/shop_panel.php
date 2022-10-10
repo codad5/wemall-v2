@@ -4,24 +4,31 @@
 
     }
     aside{
-        position: fixed;
+        position: absolute;
         top: 60px;
         left: 0;
         height: calc(100vh - 60px);
+        display:inline-block;
         width:20vw;
-        float: left;
+        /* float: left; */
         background-color: #fff;
     }
     main{
-        position: fixed;
-        top: 60px;
+        position: relative;
+        top: 0;
         left: 20vw;
-        height: calc(100vh - 60px);
+        min-height: calc(100vh - 60px);
+        height: max-content;
         width:80vw;
         background-color: #fff;
         padding: 20px;
         overflow-y: scroll;
     }
+    /* customize main scroll and reduce width of scroll bar */
+    main::-webkit-scrollbar {
+        width: 10px;
+    }
+    
    
 </style>
 <!-- bootstrap side panel to manage shop with icon -->

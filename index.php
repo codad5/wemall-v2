@@ -241,7 +241,7 @@ $router->route('/login')
     if($user_data){
         $user->set_login_session($user_data);
         // return $res->redirect('/home?success=login successful');
-        return isset($_COOKIE['redirect_to_login']) ? $res->redirect($_COOKIE['redirect_to_login']."?info=welcome back") : $res->redirect('/home?success=login successful');
+        return isset($_COOKIE['redirect_to_login']) ? $res->redirect($_COOKIE['redirect_to_login']."?success=welcome back") : $res->redirect('/home?success=login successful');
     }
     return $res->redirect('/login?error=an error occured');
     }

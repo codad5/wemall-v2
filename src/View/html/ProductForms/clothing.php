@@ -26,8 +26,10 @@
                       <!-- product color -->
                       <div class="col-md-4" id="product_color_cnt">
                         <label for="product_color" class="form-label">Product Color</label>
-                          <input type="color" class="form-control" name="color" id="product_color" multiple>
+                          <input type="color" class="form-control" name="color" id="product_color">
                           <div class="invalid-feedback">
                             This field is required
                           </div>
                       </div>
+
+
