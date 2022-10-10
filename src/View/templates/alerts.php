@@ -86,9 +86,3 @@
             </div>
         </div>
 </div>
-<!-- bootstrap auto remove alert -->
-<script>
-    $(document).ready(function(){
-        $('.alert').delay(5000).fadeOut();
-    });
-</script>
