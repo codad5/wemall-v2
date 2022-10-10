@@ -161,7 +161,7 @@ class Users
     {
         try {
             $this->user->unique_id = $unique_id;
-            return $this->user->get_user_by("unique_id", $unique_id);
+            return $this->user->get_user_by("unique_id", $unique_id)[0];
         } catch (\Throwable $th) {
             throw new CustomException($th->getMessage(), 500);
         }

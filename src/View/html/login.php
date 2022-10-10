@@ -1,20 +1,6 @@
-<!Doctype html>
-<html>
-<head>
-    <title>Login</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- tailwind cssc cdn -->
-    <link href="https://unpkg.com/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
-    <!-- tailwind js -->
-
-</head>
-<body>
-    <main>
-               <?php
-   $notification();
-   ?>
+<?=$header([] , "Login")?>
+<?=$notification()?>
+<br>
         <div class="container">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
@@ -40,6 +26,7 @@
                                 
                                    
                             </form>
+                            Don`t have an account <a href="/signup">Signup</a> now!
                         </div>
                     </div>
                 </div>

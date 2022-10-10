@@ -44,6 +44,11 @@
         <div class="card-body">
             <ul class="list-group">
                 <li class="list-group-item">
+                    <a href="/shop/<?=$shop['public_unqiue_id']?>">
+                        <i class="fa fa-home"></i> Shop Home
+                    </a>
+                </li>
+                <li class="list-group-item">
                     <a href="/shop/<?=$shop['public_unqiue_id']?>/product">
                         <i class="fa fa-shopping-cart"></i> Products
                     </a>

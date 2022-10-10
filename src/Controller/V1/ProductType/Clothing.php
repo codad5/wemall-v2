@@ -50,7 +50,7 @@ Class Clothing implements ProductInterface
     public function create_product($data, ...$any)
     {
         $product = new Product;
-        $sql = "INSERT INTO $this->table (product_id , size, color, gender) VALUES (?,?, ?,?)";
+        $sql = "INSERT INTO ".self::TABLE." (product_id , size, color, gender) VALUES (?,?, ?,?)";
         $sql_bind_array = [
             $this->id,
             $this->size,

@@ -94,7 +94,7 @@ Class Product{
             $data['shop_id'],
             $data['discount'],
             $data['discount_type'],
-            "true",
+            true,
             ...$product_type_data
         ]);
         } catch (\Throwable $th) {
@@ -111,9 +111,8 @@ Class Product{
             // a sql query to inner join the product table and the product type table on product_id
             // $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.shop_id = ? AND products.active_status != ?;";
             $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.shop_id = ?;";
-            var_dump($sql);
             $data = $this->db->select_data($sql, [$shop_id]);
-            // $data = $this->db->select_data($sql, [$shop_id, "deleted"]);
+            // $data = $this->db->select_data($sql, [$shop_id, false]);
             return $data;
         } catch (\Throwable $th) {
             throw new CustomException($th->getMessage(), 500);

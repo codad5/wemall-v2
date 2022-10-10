@@ -49,6 +49,7 @@ $router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request
 $router->get('/shop/:id/products/all', [Helper::class, "redirect_if_logged_out"], [Helper::class, "redirect_if_shop_does_not_exist"], function(Request $req, $res){
     try{
         $products = Products::get_all_products_from_shop($req->params('id'));
+        echo "<pre>";
         var_dump($products);
         // return $res->send(Helper::load_view('html/products.php',
         // [
@@ -122,14 +123,11 @@ $router->get('/logout', function (Request $req, Response $res) {
 $router->get('/shop/:id', function(Request $req, Response $res){
     try{
         ['id' => $id] = $req->params();
-        $shop = shops::get_details_by_id($id);
-        if(!$shop){
-            throw new CustomException('Shop Dont Exist', 404);
-        }
-        foreach ($shop as $key => $value) {
-            $req->append($key, $value);
-        }
-        return $res->use_engine()->render('html/show_shop.php', $req);
+            //get the shop details
+            $shop = shops::get_details_by_id($id);
+            $shop['form'] = View\Shop::load_html_form($shop['shop_type']);
+            //load add product page
+            return $res->send(Helper::load_view('html/shop_home.php', ["request" => $req, "shop" => $shop]));
     }catch(Exception $e){
         return $res->status(400)->send($e->getMessage());
     }
@@ -149,7 +147,7 @@ $router->post('/shop/create', [Helper::class, "redirect_if_logged_out"], functio
     $shop->create_shop();
     return $res->redirect('/home?success=shop created');
     }catch(Exception $e){
-        return $res->redirect('/home?success='.$e->getMessage());
+        return $res->redirect('/home?error='.$e->getMessage());
 
     }
 });
@@ -165,11 +163,12 @@ $router->route('/shop/:id/product')
             ['id' => $id] = $req->params();
             //get the shop details
             $shop = shops::get_details_by_id($id);
+            $products = Products::get_all_products_from_shop($id);
             $shop['form'] = View\Shop::load_html_form($shop['shop_type']);
             //load add product page
-            return $res->send(Helper::load_view('html/products.php', ["request" => $req, "shop" => $shop]));
+            return $res->send(Helper::load_view('html/products.php', ["request" => $req, "shop" => $shop, "products" => $products]));
         }catch(Exception $e){
-            return $res->redirect('/home?success=shop created');
+            return $res->redirect('/home?error='.$e->getMessage());
 
         }
 })
