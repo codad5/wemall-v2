@@ -64,9 +64,9 @@ Class Clothing implements ProductInterface
     {
         return (new Product)->get_all_shop_product($shop_id, self::$table);
     }
-    public static function get_product($product_id)
+    public static function get_product_by_id($product_id)
     {
-        return (new Product)->get_product($product_id, self::$table);
+        return (new Product)->get_product_by_product_id($product_id, self::$table);
     }
 
 }

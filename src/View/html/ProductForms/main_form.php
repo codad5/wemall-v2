@@ -1,7 +1,12 @@
-<form class="row g-3" id="add_product" action="/shop/<?=$shop['public_unqiue_id']?>/product/create" method="post" enctype="multipart/form-data">
+<?php
+  $values = $values ?? [];
+  $values = json_encode($values);
+  $values = json_decode($values);
+?>
+<form class="row g-3" id="add_product" action="/shop/<?=$shop['public_unqiue_id']?>/product/<?=$values->form_action ?? "create"?>" method="post" enctype="multipart/form-data">
                       <div class="col-md-4" id="product_name_cnt">
                         <label for="product_name" class="form-label">Product name</label>
-                          <input type="text" class="form-control  " name="name" id="product_name">
+                          <input type="text" class="form-control  " name="name" id="product_name" value="<?=$values?->name ?? '' ?>">
                           <div class="invalid-feedback">
                             This field is required
                           </div>
@@ -9,7 +14,8 @@
                       <!-- product description -->
                       <div class="col-md-4" id="product_description_cnt">
                         <label for="product_description" class="form-label">Product Description</label>
-                        <textarea class="form-control" name="description" id="product_description" rows="3"></textarea>
+                        <textarea class="form-control" name="description" id="product_description" rows="3" value=""><?=$values->description ?? '' ?>
+                        </textarea>
                         <div class="invalid-feedback">
                           This field is required
                         </div>
@@ -17,7 +23,7 @@
                       <!-- product category -->
                       <div class="col-md-4" id="product_category_cnt">
                         <label for="product_category" class="form-label">Product Category</label>
-                        <input type="text" class="form-control  " name="category" id="product_category">
+                        <input type="text" class="form-control  " value="<?=$values?->category ?? '' ?> " name="category" id="product_category">
                         <div class="invalid-feedback">
                           This field is required
                         </div>
@@ -25,7 +31,7 @@
                       <!-- product price -->
                       <div class="col-md-4" id="product_price_cnt">
                         <label for="product_price" class="form-label">Price</label>
-                        <input type="Number" class="form-control" name="price" id="product_price" required="">
+                        <input type="Number" class="form-control" name="price" id="product_price" value="<?=$values?->price ?? '' ?>" required="">
                         <div class="invalid-feedback">
                           Invalid Price
                         </div>
@@ -33,7 +39,7 @@
                       <!-- discount method -->
                       <div class="col-md-4" id="discount_method_cnt">
                         <label for="discount_method" class="form-label">Discount Method</label>
-                        <select class="form-select" name="discount_type" id="discount_method">
+                        <select class="form-select" name="discount_type" id="discount_method" value="<?=$values?->discount_type ?? '' ?>">
                           <option value="flat">Flat</option>
                           <option value="percentage">Percentage</option>
                         </select>
@@ -44,7 +50,7 @@
                       <!-- product discount -->
                       <div class="col-md-4" id="product_discount_cnt">
                         <label for="product_discount" class="form-label">Discount</label>
-                        <input type="Number" class="form-control" name="discount" id="product_discount" required="">
+                        <input type="Number" class="form-control" name="discount" id="product_discount" required="" value="<?=$values?->discount ?? '' ?>">
                         <div class="invalid-feedback">
                           Invalid Discount
                         </div>
@@ -69,21 +75,27 @@
                       </fieldset> -->
 
                       <!-- SHOP FROM -->
-                      <?=$shop['form']?>
+                      <?=$shop['form']($shop['shop_type'], $values)?>
                       <!-- END OF SHOP FORM -->
                       <div class="col-md-3" id="product_quantity_cnt">
                         <label for="product_quantity" class="form-label">Quantity Added</label>
                         <input type="number" class="form-control " id="product_quantity" required="" min="0" name="quantity">
                         <div class="invalid-feedback">
-                          Please provide a valid zip.
+                          Error Here
                         </div>
                       </div>
+                      <?php
+                        if(!isset($values?->form_action)){
+                      ?>
                       <div class="col-mb-3">
                         <input type="file" class="form-control" id="product_image" name="images[]" multiple="" maxlength="5" aria-label="Large file input example">
                         <div class="invalid-feedback">
                         Max of 5 images
                         </div>
                       </div>
+                      <?php
+                        }
+                      ?>
                       <div class="col-md-4">
                         <label for="validationServerUsername" class="form-label">Added By</label>
                         <div class="input-group">

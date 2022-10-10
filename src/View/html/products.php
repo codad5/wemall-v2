@@ -1,5 +1,5 @@
 
-    <?=$header(["shop" => $shop])?>
+<?=$header(["shop" => $shop])?>
         
 <!-- //add new product form with bootstrap styling -->
 
@@ -87,15 +87,11 @@
                 <script>
                   $(document).ready(function(){
                     $('.edit_product_btn').click(function(){
-                      //click on element with classname edit_product_cnt after 3sec
-                      setTimeout(function(){
-                        $('.edit_product_cnt').click();
-                      }, 3000);
                       var product_id = $(this).attr('data-product-id');
                       var product_action = $(this).attr('data-product-action');
-                      $('.product_table_body').load('<?=$product['name']?>products/edit_product_form/'+product_id+'/'+product_action, 
+                      $('#edit_product_cnt').load(`/shop/<?=$shop['public_unqiue_id']?>/product/${product_id}/edit`, 
                       function(){
-                        // alert('load was performed');
+                        $('#product_edit').click();
                       });
                     });
                   });
@@ -122,6 +118,7 @@
             </h4>
             <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
               <div class="accordion-body" id="edit_product_cnt">
+                <h3> Select a product to edit</h3>
               </div>
             </div>
           </div>

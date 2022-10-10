@@ -81,6 +81,7 @@ Class Product{
         try {
             $sql = "INSERT INTO products (name, description, price, created_by, quantity, images, product_id, product_type, shop_id, discount, discount_type, active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?); $sql;";
             // var_dump($sql);
+            // var_dump($data);
             // exit;
             return $this->db->query_data($sql,[
             $data['name'],
@@ -128,13 +129,25 @@ Class Product{
             throw new CustomException($th->getMessage(), 500);
         }
     }
-    public function get_product($product_id)
+    public function get_general_product(string $product_id)
     {
         try {
-            // select product to inner join with product type table on product_id
-            $sql = "SELECT * FROM products INNER JOIN product_type ON products.product_id = product_type.product_id WHERE products.product_id = ? AND products.active_status != ?;";
+            $sql = "SELECT * FROM products WHERE product_id = ?;";
+            $data = $this->db->select_data($sql, [$product_id]);
+            return count($data) > 0 ? $data[0] : null; 
         } catch (\Throwable $th) {
             throw new CustomException($th->getMessage(), 500);
         }
     }
+    public function get_product_by_product_id($product_id, $product_type_table, $product_type_id = "product_id")
+    {
+        try {
+            $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.product_id = ?;";
+            $data = $this->db->select_data($sql, [$product_id]);
+            return count($data) > 0 ? $data[0] : null;
+        } catch (\Throwable $th) {
+            throw new CustomException($th->getMessage(), 500);
+        }
+    }
+   
 }

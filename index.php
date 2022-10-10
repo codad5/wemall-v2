@@ -68,6 +68,27 @@ $router->get('/shop/:id/products/all', [Helper::class, "redirect_if_logged_out"]
     }
     
 });
+// to edit product
+$router->get('/shop/:id/product/:product_id/edit', [Helper::class, "redirect_if_logged_out"],
+    [Helper::class, "redirect_if_shop_does_not_exist"],
+    [Helper::class, "redirect_if_user_is_not_shop_owner"],
+    function($req, $res){
+    try{
+        ['id' => $id, 'product_id' => $product_id] = $req->params();
+        $shop = shops::get_details_by_id($id);
+        $product = Products::get_product_by_id_from_db($product_id);
+        $product['form_action'] = 'edit';
+        $shop['form'] = function($product_type, $values = []){
+            return View\Shop::load_html_form($product_type, ['values' => $values]);
+        };
+        // return $res->send(Helper::load_view('html/edit_product.php', ["request" => $req, "shop" => $shop, "product" => $product]));
+        return $res->send(Helper::load_view('html/ProductForms/main_form.php', ["shop" => $shop, "values" => $product]));
+    }catch(Exception $e){
+        return $res->send(Helper::load_error_page($e->getCode(), $e->getMessage()));
+        // return $res->redirect('/home?error='.$e->getMessage());
+
+    }
+});
 // product create route
 $router->post('/shop/:id/product/create', [Helper::class, "redirect_if_logged_out"],
     [Helper::class, "redirect_if_shop_does_not_exist"],
@@ -79,8 +100,9 @@ $router->post('/shop/:id/product/create', [Helper::class, "redirect_if_logged_ou
         if(!$shop){
             throw new CustomException('Shop Dont Exist', 404);
         }
+        // var_dump($_SESSION['user_unique'], $admin);
         // check if the user is the owner of the shop
-        if(!Shops::is_shop_admin($id, $_SESSION['user_unique'])){
+        if(!Shops::is_shop_admin($id, $admin['unique_id'])){
             throw new CustomException('You are not the owner of this shop', 403);
         }
         $product = new Products($shop, $admin, $req->body());
@@ -164,7 +186,9 @@ $router->route('/shop/:id/product')
             //get the shop details
             $shop = shops::get_details_by_id($id);
             $products = Products::get_all_products_from_shop($id);
-            $shop['form'] = View\Shop::load_html_form($shop['shop_type']);
+            $shop['form'] = function($product_type, $values = []){
+                return View\Shop::load_html_form($product_type, ['values' => $values]);
+            };
             //load add product page
             return $res->send(Helper::load_view('html/products.php', ["request" => $req, "shop" => $shop, "products" => $products]));
         }catch(Exception $e){
@@ -177,6 +201,7 @@ $router->route('/shop/:id/product')
     function($req, $res){
     // ['product_name' => $product_name, ]
 });
+
 
 
 

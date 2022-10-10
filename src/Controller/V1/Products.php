@@ -35,7 +35,7 @@ Class  Products
     public function __construct(Shops|array $shop, Users|array $user, array $data)
     {
         $this->shop = (array) $shop;
-        $this->user = (array) $user[0];
+        $this->user = (array) $user;
         $this->data = $data;
         $this->product_model = new Product;
         $this->product_id = $this->generate_product_id();
@@ -186,6 +186,34 @@ Class  Products
         $products = self::ready_data_export($products);
         return $products;
     }
+    public static function get_product_by_id($product_id)
+    {
+        $product = self::get_product_by_id_from_db($product_id);
+        $product = self::ready_data_export($product);
+        return $product;
+    }
+    public static function get_general_product($product_id)
+    {
+        // $product_id = (new Product)->get_general_product($product_id)['product_type'];
+        $data = (new Product)->get_general_product($product_id);
+        return count($data) > 0 ? $data : false;
+    }
+    public static function get_product_by_id_from_db($product_id)
+    {
+        
+        $product_type = (new Product)->get_general_product($product_id);
+        if(!$product_type){
+            throw new CustomException("Product not found", 404);
+        }
+        $product_type = $product_type['product_type'];
+        $product_type_class = self::assign_shop_type_object($product_type);
+        $product = $product_type_class::get_product_by_id($product_id);
+        if(!$product){
+            throw new CustomException("Product not found", 404);
+        }
+        $product = self::ready_data_export($product);
+        return $product;
+    }
     public static function ready_data_export($data): array
     {
         foreach ($data as $key => $value) {
@@ -194,16 +222,22 @@ Class  Products
                 $data[$key]['images'] = json_decode($value['images'], true);
                 $data[$key]['created_by'] = (new Users($data[$key]['created_by']))->get_user_by_unique_id($data[$key]['created_by'])['username'];
                 $data[$key]['sell_price'] = self::get_sell_price($data[$key]['price'], $data[$key]['discount'], $data[$key]['discount_type']);
-                foreach($data[$key]['images'] as $key_2 => $value){
-                    $data[$key]['images'][$key_2] = Helper::resolve_public_asset(Products::IMAGE_PATH.$value);
+                // var_dump($data[$key]['images']);
+                if($data[$key]['images']){
+
+                    foreach($data[$key]['images'] as $key_2 => $value){
+                        $data[$key]['images'][$key_2] = Helper::resolve_public_asset(Products::IMAGE_PATH.$value);
+                    }
                 }
             }
             if(isset($data['images']) && !isset($data[0])){
                 $data['images'] = json_decode($data['images'], true);
                 $data['created_by'] = (new Users($data['created_by']))->get_user_by_unique_id($data['created_by'])['username'];
                 $data['sell_price'] = self::get_sell_price($data['price'], $data['discount'], $data['discount_type']);
-                foreach($data['images'] as $key_2 => $value){
-                    $data['images'][$key_2] = Helper::resolve_public_asset(Products::IMAGE_PATH.$value);
+                if($data['images']){
+                    foreach($data['images'] as $key_2 => $value){
+                        $data['images'][$key_2] = Helper::resolve_public_asset(Products::IMAGE_PATH.$value);
+                    }
                 }
                 break;
             }
