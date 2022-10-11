@@ -77,7 +77,7 @@ class Users
         if (empty($this->password) && $require_password) {
             throw new CustomException("Password is required", 400);
         }
-        if (strlen($this->password) < 8) {
+        if (strlen($this->password) < 8 && $require_password) {
             throw new CustomException("Password must be at least 8 characters", 400);
         }
         //add validation to check if email already exists

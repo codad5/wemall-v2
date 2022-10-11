@@ -125,7 +125,7 @@ $router->get('/shop/:id/delete',
         ['id' => $id] = $req->params();
         Shops::delete_shop($id, $_SESSION['user_unique']);
 
-        return $res->redirect('/home?success=shop deleted');
+        return $res->redirect('/home?warn=shop deleted');
     }catch(Exception $e){
         return $res->redirect('/home?error=shop not deleted&info=' . $e->getMessage());
     }

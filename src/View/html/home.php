@@ -1,4 +1,4 @@
-<?=$header([] , "home")?>
+<?=$header([] , "Home")?>
     <main>
         <div class="container">
             <div class="row">
@@ -93,6 +93,4 @@
                     </div>
                 </div>
             </div>
-    </main>
-</body>
-</html>
+<?=$footer()?>

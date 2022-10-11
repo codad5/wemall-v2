@@ -32,13 +32,13 @@ class Shops
    public function validate_shop_data()
    {
     if(empty($this->name)){
-        return new CustomException("shop name required", 303);
+        throw new CustomException("shop name required", 303);
     }
     if(empty($this->description)){
-        return new CustomException("shop description required", 303);
+        throw new CustomException("shop description required", 303);
     }
     if(empty($this->unique_id)){
-        return new CustomException("Server Error", 303);
+        throw new CustomException("Server Error", 303);
     }
     if(empty($this->shop_type)){
         throw new CustomException('Please Select a shop type', 303);
@@ -48,15 +48,15 @@ class Shops
     }
     //validate email
     if(!Validators::validate_email($this->email)){
-        return new CustomException("Invalid email", 303);
+        throw new CustomException("Invalid email", 303);
     }
     //check if shop email already exists
-    if(!$this->shop->get_shop_by("email", $this->email)){
-        return new CustomException("Email already exists", 303);
+    if($this->shop->get_shop_by("email", $this->email)){
+        throw new CustomException("Email already exists", 303);
     }
     //validate user
     if(!$this->created_by->validate_login_user_data(false)){
-        return new CustomException("Error Validating User", 303);
+        throw new CustomException("Error Validating User", 303);
     }
     //  added validation for character free name and description to prevent cross site scripting
 

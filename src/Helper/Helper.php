@@ -86,6 +86,12 @@ Class Helper {
     }
 
     // to load / render php files to html
+    /**
+     * @param string $file path to FIle relative to the view folder
+     * @param array $data - data to be passed into the file 
+     * @template load_view('your/file/path', ["greeting" => "hello world"])
+     * @return string
+     */
     public static function load_view(string $file, array $data = []) : string
     {
         $file = self::resolve_view($file);
@@ -100,17 +106,17 @@ Class Helper {
                 return self::resolve_public_asset($file);
             },
             'error' => 200,
-            "header" => function(array $data = [], $title = "Wemall"){
+            "header" => function(array $data = [], $title = ""){
                 return self::load_view('templates/header.php', array_merge([
                     'app_name' => $_ENV['APP_NAME'] ?? "Wemall",
-                    'title' => $title
+                    'title' => $title 
                 ], $data));
             },
             "footer" => function(){
                 return self::load_view('templates/footer.php');
             },
             "notification" => function($message = null, $type = "success"){
-                echo self::load_view('templates/alerts.php', [
+                $error = self::load_view('templates/alerts.php', [
                     'message' => $message,
                     'type' => $type,
                     'success' => $_SESSION['messages']['success'] ?? null,
@@ -118,6 +124,9 @@ Class Helper {
                     "info" => $_SESSION['messages']['info'] ?? null,
                     "warning" => $_SESSION['messages']['warning'] ?? null
                 ]);
+                unset($_SESSION['messages']);
+                return $error;
+
             },
             "include" => function($file, $data = []){
                 return self::load_view($file, $data);
@@ -127,7 +136,6 @@ Class Helper {
         require $file;
         $content = ob_get_contents();
         ob_end_clean();
-        unset($_SESSION['messages']);
         return $content;
     }
 
@@ -188,12 +196,6 @@ Class Helper {
         $_SESSION['messages']['info'][] = $_GET['info'] ?? null;
         $_SESSION['messages']['info'] = array_merge($data['info'] ?? [], $_SESSION['messages']['info']);
         $_SESSION['messages']['warning'][] = $_GET['warning'] ?? $_GET['warn'] ?? null;
-        // $infos =  array_unique($_SESSION['messages']['info'] ?? []);
-        // $_SESSION['messages']['info'] = count($infos) > 0 ? $infos : null;
-        // $errors =  array_unique($_SESSION['messages']['errors'] ?? []);
-        // $_SESSION['messages']['errors'] = count($errors) > 0 ? $errors : null;
-        // $success =  array_unique($_SESSION['messages']['success'] ?? []);
-        // $_SESSION['messages']['success'] = count($success) > 0 ? $success : null;
         foreach($_SESSION['messages'] as $key => $value){
             $_SESSION['messages'][$key] = array_unique($value ?? []);
             // filter all null values

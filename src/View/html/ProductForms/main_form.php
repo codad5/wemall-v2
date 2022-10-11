@@ -130,7 +130,7 @@
                       product_discount.addEventListener('input', function(e) {
                         let invalid_cnt = document.getElementById('product_discount_cnt').querySelector('.invalid-feedback');
                         if (discount_method.value == 'flat') {
-                          if (product_discount.value > product_price.value) {
+                          if (parseInt(product_discount.value) > parseInt(product_price.value)) {
                             product_discount.setCustomValidity("Discount cannot be greater than price");
                             // add is invalid class to input
                             invalid_cnt.innerHTML = "Discount cannot be greater than price";
