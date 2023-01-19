@@ -2,6 +2,7 @@
 namespace Codad5\Wemall\Helper;
 
 use Codad5\Wemall\Helper\CustomException as CustomException;
+use Trulyao\PhpRouter\HTTP\Request;
 
 class Validators{
     public static function validate_email($email)
@@ -47,5 +48,24 @@ class Validators{
         }
         return true;
     }
+
+    public static function validate_signup_data(Request $req)
+    {
+        return true;
+    }
+    public static function validate_login_data(Request $req)
+    {
+        return true;
+    }
+
+    public static function validate_shop_creation_data(Request $req)
+    {
+        return true;
+    }
+    public static function validate_product_data(Request $req, array $product_base_field)
+    {
+        return true;
+    }
     
+
 }

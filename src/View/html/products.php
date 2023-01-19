@@ -76,7 +76,7 @@
                     <td><?=$product['price']?></td>
                     <td><?=$product['sell_price']?></td>
                     <td><?=$product['quantity']?></td>
-                    <td><?=$product['created_by']?></td>
+                    <td><?=$product['creator']['username']?></td>
                     <td><button type="button" class="alter_product_btn edit_product_btn btn btn-primary" data-product-action="edit" data-product-id="<?=$product['product_id']?>">EDIT</button></td>
                     <td><button type="button" class="alter_product_btn delete_product_btn btn btn-danger" data-product-action="delete" data-product-id="<?=$product['product_id']?>">DELETE</button></td>
                 </tr>
@@ -89,7 +89,7 @@
                     $('.edit_product_btn').click(function(){
                       var product_id = $(this).attr('data-product-id');
                       var product_action = $(this).attr('data-product-action');
-                      $('#edit_product_cnt').load(`/shop/<?=$shop['public_unqiue_id']?>/product/${product_id}/edit`, 
+                      $('#edit_product_cnt').load(`/shop/<?=$shop['unique_id']?>/product/${product_id}/edit`, 
                       function(){
                         $('#product_edit').click();
                       });
@@ -126,4 +126,7 @@
         </div>
       </div>
 </section>
+<script>
+  
+</script>
 <?=$footer()?>

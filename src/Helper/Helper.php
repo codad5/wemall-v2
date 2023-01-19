@@ -1,5 +1,6 @@
 <?php
 namespace Codad5\Wemall\Helper;
+use Codad5\Wemall\Controller\V1\Shops;
 use Codad5\Wemall\Controller\V1\Users;
 use Trulyao\PhpRouter\HTTP\Request;
 use Trulyao\PhpRouter\HTTP\Response;
@@ -44,6 +45,11 @@ Class Helper {
             
                 return $response;
 
+    }
+
+    public static function hash_password($password)
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
     }
     public static function resolve_public_asset(string $file) 
     {   
@@ -159,11 +165,7 @@ Class Helper {
     }
     //check if shop exists
     public static function shop_exists($id) {
-        $shop = \Codad5\Wemall\Controller\V1\Shops::shop_exists($id);
-        if($shop){
-            return true;
-        }
-        return false;
+        return Shops::exist($id);
     }
     //redirect if shop does not exist
     public static function redirect_if_shop_does_not_exist(Request $req, Response $res){
@@ -181,9 +183,9 @@ Class Helper {
     }
     public static function is_user_shop_owner($shop_id, $user_id){
         if(!self::shop_exists($shop_id)){
-            return true;
+            return false;
         }
-        if(\Codad5\Wemall\Controller\V1\Shops::is_shop_first_admin($shop_id, $user_id)){
+        if(Shops::is_shop_admin($shop_id, $user_id)){
             return true;
         }
         return false;

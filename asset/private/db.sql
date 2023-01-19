@@ -34,8 +34,7 @@ CREATE TABLE `users` (
   `email` varchar(300) NOT NULL,
   `password` varchar(300) NOT NULL,
   `unique_id` varchar(300) NOT NULL, 
-  `api_key` varchar(300) NOT NULL, 
-  `main_role` varchar(300) NOT NULL,
+  `api_key` varchar(300) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -53,10 +52,21 @@ CREATE TABLE `shops` (
   `email` varchar(300) NOT NULL,
   `unique_id` varchar(300) NOT NULL, 
   `api_key` varchar(300) NOT NULL,
-  `shop_type` varchar(300) NOT NULL, 
-  `admins` TEXT NOT NULL,
+  `shop_type` varchar(300) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp() 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--  Shop admin relationship
+
+CREATE TABLE `SHOP_ADMINS` (
+  `id` INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  `user_id` VARCHAR(255) NOT NULL,
+  `shop_id` VARCHAR(255) NOT NULL,
+  `shop_name` VARCHAR(255) NOT NULL,
+  `user_name` VARCHAR(255) NOT NULL,
+  `level` INT(3) NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
+) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4;
 
 CREATE TABLE `products` (
   `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,

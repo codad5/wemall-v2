@@ -16,7 +16,7 @@ Class Shop{
         if(!in_array($type, self::$shop_type_array)){
             throw new CustomException('Invalid Shop Type', 303);
         }
-        return Helper::load_view("html/ProductForms/{$type}.php", $data);
+        return html_entity_decode(Helper::load_view("html/ProductForms/{$type}.php", $data));
     }
     
     

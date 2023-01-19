@@ -1,153 +1,307 @@
 <?php
 namespace Codad5\Wemall\Model;
-use \Codad5\Wemall\Helper\Db as Db;
-use \Codad5\Wemall\Helper\CustomException as CustomException;
-use \Codad5\Wemall\Helper\ResponseHandler as CustomResponse;
+use Codad5\Wemall\DS\lists;
+use \Codad5\Wemall\Configs\Db as Db;
+use \Codad5\Wemall\Handlers\CustomException as CustomException;
+use \Codad5\Wemall\Handlers\ResponseHandler as CustomResponse;
+use Codad5\Wemall\Model\ProductType\ProductType;
+use Exception;
 
 Class Product{
-    private Db $db;
-    public function __construct()
+    private Db $conn;
+    public $id;
+    public $name;
+    public $description;
+    public $category;
+    public $price;
+    public $discount;
+    public $discount_type;
+    public User $created_by;
+    public $quantity;
+    public $quantity_left;
+    public $images;
+    public $product_id;
+    public $product_type;
+    public $active_status;
+    public Shop $shop;
+    public int|float $sell_price;
+    public $shop_id;
+    public $created_at;
+    public ProductType $externals;
+    protected $table = 'products';
+    const TABLE = 'products';
+    const  SHOP_TYPE_ARRAY = ["Clothing"];
+    public $data_array = [];
+    protected $last_id;
+    public function __construct($id = null, Shop $shop = null)
     {
-        $this->db = new Db();
+        $shop ? $this->shop = $shop : null;
+        $shop_id = $shop ? $shop->unique_id : null;
+        $this->conn = new Db();
+        if ($id)
+            $this->ready($id, $shop_id);
     }
-    
-    public function get_product_by_id(int $id)
+      /**
+       * This is to ready an abject based on the id
+       * @param mixed $id
+       * @param mixed $shop_id
+       * @throws CustomException 
+       * @return Product
+       */
+
+    protected function ready($id, $shop_id = null)
     {
-        try {
-            $data = $this->db->select_data("SELECT * FROM products WHERE id = ?", [$id]);
-            return $data[0];
-        } catch (\Exception $th) {
-            throw new CustomException($th->getMessage(), 500, null, $th);
-        }
+        $data = $this->get_by('id', $id) ?? $this->get_by('product_id', $id);
+        if(!$data) return $this;
+        $data = $data[0];
+        if ($shop_id && $data['shop_id'] != $shop_id)
+            throw new CustomException('Shop does not match product',400);
+        $this->data_array = $data;
+        $this->id = $data['id'];
+        $this->name = $data['name'];
+        $this->description = $data['description'];
+        $this->category = $data['category'];
+        $this->price = $data['price'];
+        $this->discount = $data['discount'];
+        $this->discount_type = $data['discount_type'];
+        $this->quantity = $data['quantity'];
+        $this->quantity_left = $this->quantity - 0;
+        $this->images = $data['images'];
+        $this->product_id = $data['product_id'];
+        $this->product_type = $data['product_type'];
+        $this->shop_id = $data['shop_id'];
+        $this->active_status = $data['active_status'];
+        $this->created_at = $data['created_at'];
+        $this->externals = $this->loadExternal($this->product_type);
+        $this->sell_price = $this->data_array['sell_price'] = $this->gen_sell_price();
+        return $this;
+        
     }
-    
-    public function get_product_by_name(string $name)
+    /**
+     * Summary of loadExternal --in use
+     * @param mixed $product_type
+     * @return ProductType
+     */
+    protected function loadExternal($product_type = null) : ProductType
     {
-        try {
-            $this->db->query("SELECT * FROM products WHERE name = :name");
-            $this->db->bind(':name', $name);
-            $this->db->execute();
-            return $this->db->single();
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
+        $class_as_string = $this->getProductTypeClass($product_type ?? $this->product_type);
+        if(!isset($this->externals) && (new $class_as_string) instanceof ProductType){
+            $this->externals = new $class_as_string($this->product_id);
         }
+        return $this->externals;
     }
-    
-    public function get_product_by_category(string $category)
+    #NOTE: Not in use 
+    public function getFullProduct($product_table)
     {
-        try {
-            $data = $this->db->select_data("SELECT * FROM products where product_category LIKE ? AND active_status != ?;", ["%$category%", "deleted"]);
-            return $data;
-        } catch (\Exception $th) {
-            throw new CustomException($th->getMessage(), 500);
-        }
+        $sql = "SELECT * FROM $this->table INNER JOIN $product_table ON {$this->table}.product_id = {$product_table}.product_id";
+        $data = $this->conn->select_data($sql, []);
+        return count($data) > 0 ? $data[0] : null;
     }
-    
-    public function get_product_by_subcategory(string $subcategory){
-        try {
-            $this->db->query("SELECT * FROM products WHERE subcategory = :subcategory");
-            $this->db->bind(':subcategory', $subcategory);
-            $this->db->execute();
-            return $this->db->single();
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
-        }
-    }
-    
-    public function get_product_by_brand(string $brand){
-        try {
-            $this->db->query("SELECT * FROM products WHERE brand = :brand");
-            $this->db->bind(':brand', $brand);
-            $this->db->execute();
-            return $this->db->single();
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
-        }
-    }
-    
-    public function get_product_by_price(int $price){
-        try {
-            $this->db->query("SELECT * FROM products WHERE price = :price");
-            $this->db->bind(':price', $price);
-            $this->db->execute();
-            return $this->db->single();
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
-        }
-    }
-    //create product
-    public function create_product(string $sql, array $data, array $product_type_data)
+    /**
+     * Attached the Shop to the product object
+     * @return Product
+     */
+    public function withShop() : self
     {
-        try {
-            $sql = "INSERT INTO products (name, description, price, created_by, quantity, images, product_id, product_type, shop_id, discount, discount_type, active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?); $sql;";
-            // var_dump($sql);
-            // var_dump($data);
-            // exit;
-            return $this->db->query_data($sql,[
+        $this->shop = $this->shop ?? new Shop($this->data_array['shop_id']);
+        return $this;
+    }
+    /**
+     * Get the Shop Object Tied to the Product
+     * @return Shop
+     */
+    public function getShop() : Shop
+    {
+        return $this->withShop()->shop;
+    }
+    /**
+     * Get Product Class of the shop
+     * @param string $product_type
+     * @throws CustomException 
+     * @return ProductType::class
+     */
+    public static function getProductTypeClass($product_type) : string
+    {
+        if(!in_array(ucfirst($product_type), self::SHOP_TYPE_ARRAY)){
+            throw new CustomException("Invalid Product type $product_type", 404);
+        }
+        return  "Codad5\\Wemall\\Model\\ProductType\\".ucfirst($product_type);
+    }
+    /**
+     * Generate a new product_id
+     * @return string
+     */
+    protected function generateId()
+    {
+        return 'prod_'.$this->last_id().substr(md5(uniqid(rand(), true)), 0, 8);
+    }
+    /**
+     * Get the last PRIMARY KEY digit 
+     * @return int
+     */
+    protected function last_id() : int
+    {
+        if (isset($this->last_id))
+        return $this->last_id;
+        $sql = "SELECT * FROM $this->table";
+        $data = $this->conn->select_data($sql, [
+            
+        ]);
+        return $this->last_id = count($data) > 0 ? $data[0]['id'] : 0;
+    }
+    /**
+     * To create a new Product
+     * @param Shop $shop the shop that owns the product 
+     * @param array $data the `POST` requet data
+     * @param array $images array of name of uploaded images
+     * @throws CustomException 
+     * @return Product
+     */
+    public function  create(Shop $shop, array $data, array $images)
+    {
+        $created_by = User::get_currenct_loggedin();
+        if (!$created_by)
+        throw new CustomException('You need to be logged in to peform this action', 400);
+        if (!Shop::has_access($shop->unique_id, $created_by->unique_id))
+        throw new CustomException('Can`t perfom this action', 400);
+        $unique_id = $this->generateId();
+        $sql = "INSERT INTO $this->table (name, description, category, price, created_by, quantity, images, product_id, product_type, shop_id, discount, discount_type, active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);";
+        // var_dump($sql);
+        // var_dump($data);
+        // exit;
+        $this->conn->query_data($sql,[
             $data['name'],
             $data['description'],
+            $data['category'],
             $data['price'],
-            $data['created_by'],
+            $created_by->unique_id,
             $data['quantity'],
-            json_encode($data['images']),
-            $data['product_id'],
-            $data['shop_type'],
-            $data['shop_id'],
+            $images[0]['name'],
+            $unique_id,
+            $shop->shop_type,
+            $shop->unique_id,
             $data['discount'],
             $data['discount_type'],
-            true,
-            ...$product_type_data
+            true
         ]);
-        } catch (\Throwable $th) {
-            // echo $th->getMessage();
-            // echo "on line: {$th->getLine()}";
-            // echo "in File: {$th->getFile()}";
-            // exit;
-            throw new CustomException($th->getMessage()." on line: {$th->getLine()}"." in File: {$th->getFile()}", 500);
+        try{
+            (new ($this->getProductTypeClass($shop->shop_type)))->new($unique_id, $data);
+            return $this->ready($unique_id);
+        }
+        catch(Exception $e){
+            $this->delete();
+            throw $e;
         }
     }
-    public function get_all_shop_product(string $shop_id, $product_type_table, $product_type_id = "product_id")
+    /**
+     * Delete a product
+     * @param mixed $product_id the product id 
+     * @return bool
+     */
+    public function delete($product_id = null)
     {
-        try {
-            // a sql query to inner join the product table and the product type table on product_id
-            // $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.shop_id = ? AND products.active_status != ?;";
-            $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.shop_id = ?;";
-            $data = $this->db->select_data($sql, [$shop_id]);
-            // $data = $this->db->select_data($sql, [$shop_id, false]);
-            return $data;
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
+        $sql = "DELETE FROM $this->table WHERE product_id = ?";
+        $this->conn->query_data($sql, [
+            $product_id ?? $this->product_id
+        ]);
+
+        return $this->loadExternal()->delete($product_id);
+    }
+    /**
+     * Get a product by
+     * @param string $by
+     * @param mixed $value
+     * @return array|null
+     */
+    public function get_by(string $by, $value) : array|null
+    {
+        $sql = "SELECT * FROM $this->table WHERE $by = ?";
+        $data = $this->conn->select_data($sql, [
+            $value
+        ]);
+        
+        return count($data) > 0 ? $data : null;
+    }
+     /**
+      * Find a product based on the PIMARY KEY or unique id
+      * @param mixed $id
+      * @return Product|null
+      */
+     public static function find($id)
+    {   
+        $data = (new Product)->get_by('id', $id);
+        if($data) return new Product($id);
+        $data = (new Product)->get_by('product_id', $id);
+        if($data) return new Product($id);
+        return null;
+    }
+    /**
+     * Find a product based on a specific field 
+     * @param mixed $column
+     * @param mixed $value
+     * @return lists
+     */
+    public static function where($column, $value)
+    {
+        return (new lists((new Product)->get_by($column, $value)))->map(function ($data) {
+            return new Product($data['id']);
+        });
+    
+    }
+    /**
+     * Geneate selling price of the product
+     * @return int
+     */
+    public function gen_sell_price()
+    {
+        switch($this->discount_type){
+            case 'flat':
+                return ($this->price - $this->discount);
+            case 'percentage':
+                $discount = ($this->discount / 100) * $this->price;
+                return $this->price - $discount;
+            default:
+                return 0;
         }
     }
-    public function get_all_product()
+    /**
+     * Get Category List
+     * @return array<string>|bool
+     */
+    public function getCategoryList() 
     {
-        try {
-            $sql = "SELECT * FROM products WHERE active_status != ?;";
-            $data = $this->db->select_data($sql, ["deleted"]);
-            return $data;
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
-        }
+        return explode(',', $this->category);
     }
-    public function get_general_product(string $product_id)
+    /**
+     * Get Products from a particular shop
+     * @param mixed $shop_id
+     * @return lists
+     */
+    public static function from($shop_id)
     {
-        try {
-            $sql = "SELECT * FROM products WHERE product_id = ?;";
-            $data = $this->db->select_data($sql, [$product_id]);
-            return count($data) > 0 ? $data[0] : null; 
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
-        }
+        return self::where('shop_id', $shop_id);
     }
-    public function get_product_by_product_id($product_id, $product_type_table, $product_type_id = "product_id")
+    /**
+     * Attach the product creator to the object
+     * @return Product
+     */
+    public function withCreator()
     {
-        try {
-            $sql = "SELECT * FROM products INNER JOIN $product_type_table ON products.product_id = $product_type_table.$product_type_id WHERE products.product_id = ?;";
-            $data = $this->db->select_data($sql, [$product_id]);
-            return count($data) > 0 ? $data[0] : null;
-        } catch (\Throwable $th) {
-            throw new CustomException($th->getMessage(), 500);
-        }
+        $this->created_by = $this->created_by ?? User::find($this->data_array['created_by']);
+        $this->data_array['creator'] = $this->created_by->toArray();
+        return $this;
+    }
+    /**
+     * To Make the data array have the product entire field both of the product type and general product field
+     * @return Product
+     */
+    public function merge()
+    {
+        $this->data_array = array_merge($this->data_array, $this->externals->toArray());
+        return $this;
+    }
+    public function toArray(){
+        return $this->merge()->data_array;
     }
    
 }

@@ -73,11 +73,11 @@
                             <tbody>
                                         <?php foreach($shops as $shop): ?>
                                     <tr>
-                                        <td><?= $shop['name'] ?></td>
-                                        <td><?= $shop['unique_id'] ?></td>
-                                        <td>  <a href="/shop/<?= $shop['public_unqiue_id'] ?>" class="btn btn-primary">Go to Shop</a></td>
-                                        <td>  <a href="/shop/<?= $shop['public_unqiue_id'] ?>/product" class="btn btn-primary">View Products</a></td>
-                                        <td>  <a href="/shop/<?= $shop['public_unqiue_id'] ?>/delete" class="btn btn-danger">Delete Shop</a></td>
+                                        <td><?= $shop->name; ?></td>
+                                        <td><?= $shop->unique_id ?></td>
+                                        <td>  <a href="/shop/<?= $shop->unique_id ?>" class="btn btn-primary">Go to Shop</a></td>
+                                        <td>  <a href="/shop/<?= $shop->unique_id ?>/product" class="btn btn-primary">View Products</a></td>
+                                        <td>  <a href="/shop/<?= $shop->unique_id ?>/delete" class="btn btn-danger">Delete Shop</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

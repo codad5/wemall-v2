@@ -1,5 +1,6 @@
 <?php
-namespace Codad5\Wemall\Helper;
+namespace Codad5\Wemall\Handlers;
+use Codad5\Wemall\Handlers\CustomException;
 use Exception;
 use \Trulyao\PhpRouter\HTTP\Response as Response;
 

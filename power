@@ -1,0 +1,36 @@
+
+<?php
+  
+// Starting clock time in seconds
+$json_array = json_decode(file_get_contents('index.json'), true);
+$file = fopen('index.json', 'w') or die('crash record');
+
+// Start loop
+function start_now($rate, $echo = false)
+{
+    $file = "";
+    $start_time = microtime(true);
+    for ($i = 1; $i <= $rate; $i++) {
+        $file = file_get_contents("http://localhost:2000/shop_20d94aa2b98221/product");
+    }
+    $end_time = microtime(true);
+    if($echo) echo $file;
+    return  ($end_time - $start_time);
+}
+// End clock time in seconds
+  
+// Calculate script execution time
+$rate = $argv[1] ?? 20;
+for ($i = 0; $i < 2; $i++){
+    $execution_time = start_now($rate);
+    $speed = $rate / $execution_time;
+    $json_array['data'][] = [
+        'no_of_users' => (int) $rate,
+        'time' => $execution_time,
+        'speed' => (int) $speed,
+    ];
+    echo "\n\n\n Execution time of script = ".$execution_time." secs \n";
+    echo "Speed : $speed req/sec for";
+}
+fwrite($file, json_encode($json_array, JSON_PRETTY_PRINT));
+fclose($file);

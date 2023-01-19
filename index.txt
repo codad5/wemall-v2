@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Index of /</title>
+ </head>
+ <body>
+<h1>Index of /</h1>
+  <table>
+   <tr><th valign="top"><img src="/icons/blank.gif" alt="[ICO]"></th><th><a href="?C=N;O=D">Name</a></th><th><a href="?C=M;O=A">Last modified</a></th><th><a href="?C=S;O=A">Size</a></th><th><a href="?C=D;O=A">Description</a></th></tr>
+   <tr><th colspan="5"><hr></th></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Ex_Files_Resizing_Watermarking_PHP/">Ex_Files_Resizing_Wa..&gt;</a></td><td align="right">2016-07-01 17:45  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Ex_Files_dpPHP/">Ex_Files_dpPHP/</a>        </td><td align="right">2015-09-15 18:02  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="Exercise%20Files/">Exercise Files/</a>        </td><td align="right">2014-04-07 18:38  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="HotelMs/">HotelMs/</a>               </td><td align="right">2022-09-02 17:10  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="MyPhoneFileTranfer/">MyPhoneFileTranfer/</a>    </td><td align="right">2022-05-03 22:40  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="PHP_SPL/">PHP_SPL/</a>               </td><td align="right">2022-05-13 22:27  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="calc/">calc/</a>                  </td><td align="right">2022-08-07 17:35  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="chat-app/">chat-app/</a>              </td><td align="right">2022-03-01 13:39  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="clog/">clog/</a>                  </td><td align="right">2022-11-19 19:18  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="currencynet/">currencynet/</a>           </td><td align="right">2022-09-03 22:44  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="file-Uploader/">file-Uploader/</a>         </td><td align="right">2022-08-08 02:05  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="image-resizing-and-watermark/">image-resizing-and-w..&gt;</a></td><td align="right">2022-05-17 22:30  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="laravel/">laravel/</a>               </td><td align="right">2022-03-11 01:54  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="laravel@2/">laravel@2/</a>             </td><td align="right">2022-11-15 03:36  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="learning_mongodb_php/">learning_mongodb_php/</a>  </td><td align="right">2022-05-23 03:37  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="mustard-php-project/">mustard-php-project/</a>   </td><td align="right">2022-10-18 06:59  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="myPortfolio/">myPortfolio/</a>           </td><td align="right">2022-03-15 01:46  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="password-generator/">password-generator/</a>    </td><td align="right">2022-03-10 18:09  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="php-api-starter/">php-api-starter/</a>       </td><td align="right">2022-07-31 02:21  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="php-inex/">php-inex/</a>              </td><td align="right">2022-12-05 02:26  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="php-router%20-%20Copy/">php-router - Copy/</a>     </td><td align="right">2022-08-19 12:34  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="php-router/">php-router/</a>            </td><td align="right">2022-12-05 02:56  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="phprouteTest/">phprouteTest/</a>          </td><td align="right">2022-08-20 13:54  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="ridox-wordpress/">ridox-wordpress/</a>       </td><td align="right">2020-02-06 07:33  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="shrink_link/">shrink_link/</a>           </td><td align="right">2022-06-29 23:43  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="test/">test/</a>                  </td><td align="right">2022-08-10 03:03  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="test2/">test2/</a>                 </td><td align="right">2022-09-07 22:55  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="tuts/">tuts/</a>                  </td><td align="right">2022-05-07 21:01  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="web3-learning/">web3-learning/</a>         </td><td align="right">2022-05-16 04:22  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="webscraper/">webscraper/</a>            </td><td align="right">2022-11-15 04:04  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="website-verification-tutorial/">website-verification..&gt;</a></td><td align="right">2022-09-29 17:49  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="wemall-backup/">wemall-backup/</a>         </td><td align="right">2022-11-10 22:18  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/compressed.gif" alt="[   ]"></td><td><a href="wemall-laravel.zip">wemall-laravel.zip</a>     </td><td align="right">2022-11-19 13:46  </td><td align="right"> 27M</td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="wemall-laravel/">wemall-laravel/</a>        </td><td align="right">2022-09-16 04:35  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="wemall-new/">wemall-new/</a>            </td><td align="right">2022-12-07 03:43  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/text.gif" alt="[TXT]"></td><td><a href="wemall-newerror.log">wemall-newerror.log</a>    </td><td align="right">2022-12-06 06:41  </td><td align="right">660 </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="wemall/">wemall/</a>                </td><td align="right">2022-03-09 10:25  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="xcrypt/">xcrypt/</a>                </td><td align="right">2022-11-25 20:41  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+<tr><td valign="top"><img src="/icons/folder.gif" alt="[DIR]"></td><td><a href="youtube-downloader/">youtube-downloader/</a>    </td><td align="right">2022-05-01 18:14  </td><td align="right">  - </td><td>&nbsp;</td></tr>
+   <tr><th colspan="5"><hr></th></tr>
+</table>
+<address>Apache/2.4.51 (Win64) OpenSSL/1.1.1l PHP/8.0.11 Server at localhost Port 80</address>
+</body></html>

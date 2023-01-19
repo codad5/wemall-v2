@@ -4,8 +4,13 @@ use Codad5\Wemall\Controller\V1\ProductType\Clothing;
 use Codad5\Wemall\Controller\V1\ProductType\ProductInterface;
 use Codad5\Wemall\Helper\CustomException;
 use Codad5\Wemall\Helper\Helper;
+use Codad5\Wemall\Helper\Validators;
 use Codad5\Wemall\Model\Product;
 use Codad5\FileHelper\FileUploader;
+use Codad5\Wemall\Model\ProductType\ProductType;
+use Codad5\Wemall\Model\Shop;
+use Codad5\Wemall\Model\User;
+use Trulyao\PhpRouter\HTTP\Request;
 
 Class  Products
 {
@@ -19,48 +24,41 @@ Class  Products
     protected string  $price;
     protected string  $quantity;
     protected string  $discount;
+    CONST HTTP_IMAGE_NAME = 'images';
     protected string $category;
     protected string  $discount_type;
     protected array $discount_array = ["percentage", "flat"];
     protected array $images;
     protected string $image_key = "images";
-    const IMAGE_PATH = "images/products/";
-    protected string $image_path = "asset/images/products/";
-    protected Product $product_model;
-
-    protected ProductInterface $shop_type;
-    protected array $shop_types;
-    public static array $shop_type_array = ["clothing"];
-
-    public function __construct(Shops|array $shop, Users|array $user, array $data)
+    const IMAGE_PATH = "asset/images/products/";
+    protected string $image_path = "images/products/";
+    /**
+     * Summary of create
+     * @param Request $req
+     * @return Product
+     */
+    public static function create(Request $req)
     {
-        $this->shop = (array) $shop;
-        $this->user = (array) $user;
-        $this->data = $data;
-        $this->product_model = new Product;
-        $this->product_id = $this->generate_product_id();
-        $shop_type = $this->assign_shop_type_object($shop['shop_type']);
-        $shop_type = new $shop_type($this->shop, $this->user, $this->data);
-        var_dump($shop['shop_type']);
-        if($shop_type instanceof ProductInterface){
-            $this->shop_type = $shop_type;
-        }
-        else{
-            throw new CustomException("Invalid Shop Type", 500);
-        }
-        // exit;
+        $shop = Shops::load($req->params('id'));
+        Validators::validate_product_data($req, self::getProductClass($shop->shop_type)->getFieldSet());
+        $newProduct = new Product();
+        return $newProduct->create($shop, $req->body(), self::upload_images($shop->shop_type));
     }
-
-    protected static function assign_shop_type_object(string $type) : string
+    public static function edit(Request $req)
     {
-       
-        if(!in_array($type, self::$shop_type_array)){
-            throw new CustomException("Invalid shop type", 404);
-        }
-        return $shop_type_class = "Codad5\\Wemall\\Controller\V1\ProductType\\".ucfirst($type);
-        // return new $shop_type_class($this->shop, $this->user, $this->data) ?? null;
+        ['id' => $id, 'product_id' => $product_id] = $req->params();
+        $product = Product::find($id);
+        if(!$product) throw new CustomException('Product Dont exist', 400);
+        Validators::validate_product_data($req, $product->externals::FIELD_SET);
+        $shop = $product->withShop()->shop;
+        if(!Shop::has_access($shop->unique_id, User::get_currenct_loggedin()->unique_id)) throw new CustomException('Access Denied', 304);
+        return true;
     }
-
+    public static function getProductClass($product_type) : ProductType
+    {
+        $type_as_string = Product::getProductTypeClass($product_type);
+        return new $type_as_string;
+    }
     public function validate_product_data()
     {
         if(!isset($this->data['name']) || empty($this->data['name'])){
@@ -99,23 +97,6 @@ Class  Products
         return $this->shop_type->validate_product_data();
     }
 
-    public function assign_product_data()
-    {
-        $this->name = $this->data['name'];
-        $this->description = $this->data['description'] ?? "";
-        $this->price = $this->data['price'];
-        $this->category = $this->data['category'];
-        $this->quantity = $this->data['quantity'];
-        $this->discount = $this->data['discount'];
-        $this->discount_type = $this->data['discount_type'];
-        $this->images = $_FILES[$this->image_key];
-        return $this->shop_type->assign_product_data($this->product_id);
-    }
-    //generate product id with suffix prd
-    public function generate_product_id()
-    {
-        return $this->id = "prd_".$this->shorten_shop_type_name()."_".substr(md5(uniqid(rand(), true)), 0, 6);
-    }
     // function to shorten shop type name
     public function shorten_shop_type_name()
     {
@@ -139,119 +120,20 @@ Class  Products
             "shop_type" => $this->shop['shop_type']
         ];
     }
-    public function create_product()
-    {
-        try{
-            $this->validate_product_data();
-            $this->assign_product_data();
-            $product_data = $this->upload_images()->get_product_data();
-            $shop_product_data = $this->shop_type->create_product($product_data);
-            return $shop_product_data;
-        }catch(CustomException $e){
-            throw new CustomException($e->getMessage(), 500);
-        }
-    }
 
-    protected function upload_images()
+    protected static function upload_images($prefix) : array
     {
-        $uploaded_files = (new FileUploader($this->image_key, $this->image_path))
+         return (new FileUploader(self::HTTP_IMAGE_NAME, self::IMAGE_PATH))
         ->set_reporting(false, false, false)
         ->add_ext('jpg', 'jpeg', 'png', 'gif')
         ->set_sizes(1000000, 20)
-        ->set_prefix($this->product_id)
+        ->set_prefix($prefix)
         ->move_files()
         ->get_uploads();
-        $this->images = [];
-        $count = 0;
-        for($i = 1; $i <= 5; $i++){
-            $this->images["image$i"] = $uploaded_files[$count]['name'];
-            if(isset($uploaded_files[$count + 1]['name'])){
-                $count++;
-            }
-        }
-        return $this;
         
-
-
     }
     
     
+   
     
-    public static function get_all_products_from_shop($shop_id)
-    {   
-        $shop_type = Shops::get_shop_type($shop_id);
-        $shop_id = Shops::resolve_id_for_db_2($shop_id);
-        $shop_type_class = self::assign_shop_type_object($shop_type);
-        $products = $shop_type_class::get_all_shop_product($shop_id);
-        $products = self::ready_data_export($products);
-        return $products;
-    }
-    public static function get_product_by_id($product_id)
-    {
-        $product = self::get_product_by_id_from_db($product_id);
-        $product = self::ready_data_export($product);
-        return $product;
-    }
-    public static function get_general_product($product_id)
-    {
-        // $product_id = (new Product)->get_general_product($product_id)['product_type'];
-        $data = (new Product)->get_general_product($product_id);
-        return count($data) > 0 ? $data : false;
-    }
-    public static function get_product_by_id_from_db($product_id)
-    {
-        
-        $product_type = (new Product)->get_general_product($product_id);
-        if(!$product_type){
-            throw new CustomException("Product not found", 404);
-        }
-        $product_type = $product_type['product_type'];
-        $product_type_class = self::assign_shop_type_object($product_type);
-        $product = $product_type_class::get_product_by_id($product_id);
-        if(!$product){
-            throw new CustomException("Product not found", 404);
-        }
-        $product = self::ready_data_export($product);
-        return $product;
-    }
-    public static function ready_data_export($data): array
-    {
-        foreach ($data as $key => $value) {
-            # code...
-            if(isset($data[$key]['images'])){
-                $data[$key]['images'] = json_decode($value['images'], true);
-                $data[$key]['created_by'] = (new Users($data[$key]['created_by']))->get_user_by_unique_id($data[$key]['created_by'])['username'];
-                $data[$key]['sell_price'] = self::get_sell_price($data[$key]['price'], $data[$key]['discount'], $data[$key]['discount_type']);
-                // var_dump($data[$key]['images']);
-                if($data[$key]['images']){
-
-                    foreach($data[$key]['images'] as $key_2 => $value){
-                        $data[$key]['images'][$key_2] = Helper::resolve_public_asset(Products::IMAGE_PATH.$value);
-                    }
-                }
-            }
-            if(isset($data['images']) && !isset($data[0])){
-                $data['images'] = json_decode($data['images'], true);
-                $data['created_by'] = (new Users($data['created_by']))->get_user_by_unique_id($data['created_by'])['username'];
-                $data['sell_price'] = self::get_sell_price($data['price'], $data['discount'], $data['discount_type']);
-                if($data['images']){
-                    foreach($data['images'] as $key_2 => $value){
-                        $data['images'][$key_2] = Helper::resolve_public_asset(Products::IMAGE_PATH.$value);
-                    }
-                }
-                break;
-            }
-        }
-        return $data;
-    }
-    public static function get_sell_price($price, $discount, $discount_type)
-    {
-        $price = (float)$price;
-        $discount = (float)$discount;
-        if($discount_type == "flat"){
-            return $price - $discount;
-        }else{
-            return $price - ($price * ($discount / 100));
-        }
-    }
 }

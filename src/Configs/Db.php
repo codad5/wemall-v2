@@ -1,5 +1,5 @@
 <?php
-namespace Codad5\Wemall\Helper;
+namespace Codad5\Wemall\Configs;
 $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
 $dontenv->load();
 

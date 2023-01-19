@@ -22,6 +22,11 @@
   integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
   crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+  <!-- local script and style -->
+  <script src="http://localhost/wemall/javascripts/jquery-3.6.0.min.js"></script>
+  <script src="http://localhost/wemall/javascripts/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="http://localhost/wemall/css/bootstrap.min.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -57,6 +62,5 @@
             'shop' => $shop
         ]);
     }
-    
 ?>
 <main>
