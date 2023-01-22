@@ -1,8 +1,8 @@
 <?php
 namespace Codad5\Wemall\Model;
 use Codad5\Wemall\DS\lists;
-use Codad5\Wemall\Handlers\CustomException;
-use Codad5\Wemall\Configs\Db;
+use Codad5\Wemall\Libs\CustomException;
+use Codad5\Wemall\Libs\Database;
 use Codad5\Wemall\Model\Admins;
 
 class Shop{
@@ -22,16 +22,16 @@ class Shop{
     public $form;
     protected Lists $products;
     protected User $created_by;
-    public $table = 'shops';
+    protected const TABLE = 'shops';
     
-    protected Db $conn;
+    protected Database $conn;
     protected Admins $admins;
     protected int $last_id;
     protected array $data_array = [];
 
     public function __construct($id = null)
     {
-        $this->conn = new Db();
+        $this->conn = new Database(self::TABLE);
         if ($id)
             $this->ready($id);
     }
@@ -95,10 +95,7 @@ class Shop{
     {
         if (isset($this->last_id))
             return $this->last_id;
-        $sql = "SELECT * FROM $this->table";
-        $data = $this->conn->select_data($sql, [
-            
-        ]);
+        $data = $this->conn->all();
         return $this->last_id = count($data) > 0 ? $data[0]['id'] : 0;
     }
     protected function generate_id()
@@ -116,8 +113,9 @@ class Shop{
             throw new CustomException("email : ($this->email) already in use", 300);
         $this->unique_id = $this->generate_id();
         $this->api_key = $this->generate_api_key();
-        $sql = "INSERT INTO $this->table (name, description,  created_by, email, unique_id, api_key, shop_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $this->conn->query_data($sql, [
+        $sql = "INSERT INTO ".self::TABLE." (name, description,  created_by, email, unique_id, api_key, shop_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        var_dump($sql);
+        $this->conn->query($sql, [
             $this->name,
             $this->description,
             $user->unique_id,
@@ -145,11 +143,7 @@ class Shop{
     }
     public function get_by(string $by, $value) : array|null
     {
-        $sql = "SELECT * FROM $this->table WHERE $by = ?";
-        $data = $this->conn->select_data($sql, [
-            $value
-        ]);
-        
+        $data = $this->conn->where($by, $value);
         return count($data) > 0 ? $data : null;
     }
     

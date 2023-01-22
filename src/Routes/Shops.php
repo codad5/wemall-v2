@@ -2,6 +2,8 @@
 
  use Codad5\Wemall\Controller\V1\Products;
  use Codad5\Wemall\Helper\Helper;
+ use Codad5\Wemall\Libs\Middleware;
+ use Codad5\Wemall\Libs\ViewLoader;
  use \Trulyao\PhpRouter\Router as ShopRouter;
  use \Trulyao\PhpRouter\HTTP\Response as Response;
  use \Trulyao\PhpRouter\HTTP\Request as Request;
@@ -15,7 +17,7 @@ $router->get('/', function () {
 });
 
 //shop delete route
-$router->get('/:id/delete',[Helper::class, "redirect_if_shop_does_not_exist"],[Helper::class, "redirect_if_logged_out"],[Helper::class, "redirect_if_user_is_not_shop_owner"],function($req, $res){
+$router->get('/:id/delete',[Middleware::class, "redirect_if_shop_does_not_exist"],[Middleware::class, "redirect_if_logged_out"],[Middleware::class, "redirect_if_user_is_not_shop_owner"],function($req, $res){
     try{
         Shops::delete($req);
 
@@ -26,7 +28,7 @@ $router->get('/:id/delete',[Helper::class, "redirect_if_shop_does_not_exist"],[H
 });
 
 //to create a shop
-$router->post('/create', [Helper::class, "redirect_if_logged_out"], function($req, $res){
+$router->post('/create', [Middleware::class, "redirect_if_logged_out"], function($req, $res){
     try{
     $shop = new Shops;
     $shop->create($req);
@@ -37,18 +39,18 @@ $router->post('/create', [Helper::class, "redirect_if_logged_out"], function($re
     }
 });
 # Display a shop
-$router->get('/:id', [Helper::class, "redirect_if_shop_does_not_exist"], [Helper::class, "redirect_if_logged_out"], [Helper::class, "redirect_if_user_is_not_shop_owner"], function(Request $req, Response $res){
+$router->get('/:id', [Middleware::class, "redirect_if_shop_does_not_exist"], [Middleware::class, "redirect_if_logged_out"], [Middleware::class, "redirect_if_user_is_not_shop_owner"], function(Request $req, Response $res){
     try{
         $shop = Shops::load($req->params('id'));
         $shop->form = View\Shop::load_html_form($shop->shop_type);
         //load add product page
-        return $res->send(Helper::load_view('html/shop_home.php', ["request" => $req, "shop" => $shop->toArray()]));
+        return $res->send(ViewLoader::load('html/shop_home.php', ["request" => $req, "shop" => $shop->toArray()]));
     }catch(Exception $e){
         return $res->status(400)->send($e->getMessage());
     }
 });
 #Delete a shop product
-$router->post('/:id/product/create', [Helper::class, "redirect_if_logged_out"],[Helper::class, "redirect_if_shop_does_not_exist"],[Helper::class, "redirect_if_user_is_not_shop_owner"], function($req, $res){
+$router->post('/:id/product/create', [Middleware::class, "redirect_if_logged_out"],[Middleware::class, "redirect_if_shop_does_not_exist"],[Middleware::class, "redirect_if_user_is_not_shop_owner"], function($req, $res){
     try{
         ['id' => $id] = $req->params();
         $product = Products::create($req);
@@ -59,7 +61,7 @@ $router->post('/:id/product/create', [Helper::class, "redirect_if_logged_out"],[
 });
 // shop all shop products
 $router->route('/:id/product')
-->get([Helper::class, "redirect_if_logged_out"],[Helper::class, "redirect_if_shop_does_not_exist"],[Helper::class, "redirect_if_user_is_not_shop_owner"],function($req, $res){
+->get([Middleware::class, "redirect_if_logged_out"],[Middleware::class, "redirect_if_shop_does_not_exist"],[Middleware::class, "redirect_if_user_is_not_shop_owner"],function($req, $res){
         try{
             //get the shop id
             ['id' => $id] = $req->params();
@@ -68,22 +70,22 @@ $router->route('/:id/product')
                 return View\Shop::load_html_form($product_type, ['values' => $values]);
             };
             //load add product page
-            return $res->send(Helper::load_view('html/products.php', ["request" => $req, "shop" => $shop, "products" => $shop['products']]));
+            return $res->send(ViewLoader::load('html/products.php', ["request" => $req, "shop" => $shop, "products" => $shop['products']]));
         }catch(Exception $e){
             return $res->redirect('/home?error='.$e->getMessage());
 
         }
 })
 // nothing yet
-->post([Helper::class, "redirect_if_logged_out"],[Helper::class, "redirect_if_shop_does_not_exist"],function($req, $res){
+->post([Middleware::class, "redirect_if_logged_out"],[Middleware::class, "redirect_if_shop_does_not_exist"],function($req, $res){
     // ['product_name' => $product_name, ]
 });
 
 // to edit product
 $router->route('/:id/product/:product_id/edit')
-->get([Helper::class, "redirect_if_logged_out"],
-    [Helper::class, "redirect_if_shop_does_not_exist"],
-    [Helper::class, "redirect_if_user_is_not_shop_owner"],
+->get([Middleware::class, "redirect_if_logged_out"],
+    [Middleware::class, "redirect_if_shop_does_not_exist"],
+    [Middleware::class, "redirect_if_user_is_not_shop_owner"],
     function($req, $res){
     try{
         ['id' => $id, 'product_id' => $product_id] = $req->params();
@@ -95,24 +97,24 @@ $router->route('/:id/product/:product_id/edit')
         $shop = $shop->toArray();
         $product['form_action'] = 'edit';
         
-        // return $res->send(Helper::load_view('html/edit_product.php', ["request" => $req, "shop" => $shop, "product" => $product]));
-        return $res->send(Helper::load_view('html/ProductForms/main_form.php', ["shop" => $shop, "values" => $product]));
+        // return $res->send(ViewLoader::load('html/edit_product.php', ["request" => $req, "shop" => $shop, "product" => $product]));
+        return $res->send(ViewLoader::load('html/ProductForms/main_form.php', ["shop" => $shop, "values" => $product]));
     }catch(Exception $e){
         return $res->send(Helper::load_error_page($e->getCode(), $e->getMessage()));
         // return $res->redirect('/home?error='.$e->getMessage());
 
     }
 })
-->post([Helper::class, "redirect_if_logged_out"],
-    [Helper::class, "redirect_if_shop_does_not_exist"],
-    [Helper::class, "redirect_if_user_is_not_shop_owner"],
+->post([Middleware::class, "redirect_if_logged_out"],
+    [Middleware::class, "redirect_if_shop_does_not_exist"],
+    [Middleware::class, "redirect_if_user_is_not_shop_owner"],
     function(Request $req, $res){
     try{
         ['id' => $id, 'product_id' => $product_id] = $req->params();
         $product = Products::edit($req);
         exit;
-        // return $res->send(Helper::load_view('html/edit_product.php', ["request" => $req, "shop" => $shop, "product" => $product]));
-        // return $res->send(Helper::load_view('html/ProductForms/main_form.php', ["shop" => $shop, "values" => $product]));
+        // return $res->send(ViewLoader::load('html/edit_product.php', ["request" => $req, "shop" => $shop, "product" => $product]));
+        // return $res->send(ViewLoader::load('html/ProductForms/main_form.php', ["shop" => $shop, "values" => $product]));
     }catch(Exception $e){
         echo "<pre>";
         var_dump($e);

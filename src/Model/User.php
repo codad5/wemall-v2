@@ -3,12 +3,12 @@ namespace Codad5\Wemall\Model;
 
 use Codad5\Wemall\Controller\V1\Users;
 use Codad5\Wemall\DS\lists;
-use Codad5\Wemall\Handlers\CustomException as CustomException;
-use Codad5\Wemall\Configs\Db as Db;
+use Codad5\Wemall\Libs\CustomException;
+use Codad5\Wemall\Libs\Database as Db;
 Class User
 {
+    private  CONST TABLE = "users";
     public $username;
-
     public $name;
     public $api_key;
     public $email;
@@ -20,14 +20,13 @@ Class User
     public $updated_at;
     public $deleted_at;
     public $level;
-    public $table = 'users';
     public Lists $shops;
     protected $conn;
     protected int $last_id;
 
     public function __construct($id = null)
     {
-        $this->conn = new Db();
+        $this->conn = new Db(self::TABLE);
         if ($id)
             $this->ready($id);
     }
@@ -54,10 +53,7 @@ Class User
     protected function last_id() : int{
         if (isset($this->last_id))
             return $this->last_id;
-        $sql = "SELECT * FROM $this->table";
-        $data = $this->conn->select_data($sql, [
-            
-        ]);
+        $data = $this->all();
         return $this->last_id = count($data) > 0 ? $data[0]['id'] : 0;
     }
 
@@ -72,14 +68,14 @@ Class User
     }
 
     public function create(){
-        if (self::where('username', $this->username))
+        if ($this->conn->where('username', $this->username))
             throw new CustomException("Username : ($this->username) already in use", 300);
-        if(self::where('email', $this->email))
+        if($this->conn->where('email', $this->email))
             throw new CustomException("email : ($this->email) already in use", 300);
         $this->unique_id = $this->generate_id();
         $this->api_key = $this->generate_api_key();
-        $sql = "INSERT INTO $this->table (name, username,  email, password, unique_id, api_key) VALUES (?, ?, ?, ?, ?, ?)";
-        $this->conn->query_data($sql, [
+        $sql = "INSERT INTO ".self::TABLE." (name, username,  email, password, unique_id, api_key) VALUES (?, ?, ?, ?, ?, ?)";
+        $this->conn->query($sql, [
             $this->name,
             $this->username,
             $this->email,
@@ -92,8 +88,8 @@ Class User
     }
     public function save($data)
     {
-        $sql = "INSERT INTO $this->table (name, username,  email, password, unique_id, api_key) VALUES (?, ?, ?, ?, ?, ?)";
-        return $this->conn->query_data($sql, [
+        $sql = "INSERT INTO ".self::TABLE." (name, username,  email, password, unique_id, api_key) VALUES (?, ?, ?, ?, ?, ?)";
+        return $this->conn->query($sql, [
             $data['name'],
             $data['username'],
             $data['email'],
@@ -105,19 +101,14 @@ Class User
     }
     public function get_user_by(string $by, $value) : array|null
     {
-        $sql = "SELECT * FROM $this->table WHERE $by = ?";
-        $data = $this->conn->select_data($sql, [
+        $data = $this->conn->where($by, [
             $value
         ]);
         return count($data) > 0 ? $data : null;
     }
     public function get_all_users() : array|null
     {
-        $sql = "SELECT * FROM $this->table;";
-        return $this->conn->select_data($sql, [
-            
-        ]);
-       
+        return $this->conn->all();
     }
 
     public static function find($id)
@@ -135,9 +126,13 @@ Class User
         });
     
     }
+    public static function all()
+    {
+        return Db::table(self::TABLE)->all();
+    }
     public function set_login_session()
     {
-        session_start();
+        if(session_status() == PHP_SESSION_NONE) session_start();
             // check user exists
             if(!$this->find($this->id)){
                 throw new CustomException("User Not Found", 200);
@@ -155,7 +150,8 @@ Class User
             return false;
         return self::find($_SESSION['user_id']);
     }
-    public function toArray(){
+    public function toArray()
+    {
         return [
             'name' => $this->name,
             'username' => $this->username,

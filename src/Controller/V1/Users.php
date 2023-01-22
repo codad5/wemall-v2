@@ -1,10 +1,11 @@
 <?php
 namespace Codad5\Wemall\Controller\V1;
 
-use Codad5\Wemall\Helper\Helper;
-use Codad5\Wemall\Model\User as User;   
-use Codad5\Wemall\Helper\CustomException as CustomException;
- use \Codad5\Wemall\Helper\Validators as Validator;
+
+use Codad5\Wemall\Libs\CustomException;
+ use Codad5\Wemall\Libs\Helper\Helper;
+ use Codad5\Wemall\Libs\Validator;
+ use Codad5\Wemall\Model\User as User;   
  use Codad5\Wemall\Model\Shop;
  use Trulyao\PhpRouter\HTTP\Request;
 
@@ -27,11 +28,11 @@ class Users
             throw new CustomException('Error in Login Data', 300);
         $login = $req->body('login');
         $user = User::where('username', $login) ?? User::where('email', $login);
+        $user = $user->first();
         if (!$user)
             throw new CustomException("User $login not found", 400);
-        $user = $user->first();
         if(!password_verify($req->body('password'), $user->password)){
-            throw new CustomException("Incorrect Credentials", 200);
+            throw new CustomException("Incorrect Credentials ", 200);
         }
         return User::find($user->id)->set_login_session();
     }
@@ -47,6 +48,7 @@ class Users
 
     public static function current_user()
     {
+        $men = $th;
         return User::get_currenct_loggedin();
     }
     

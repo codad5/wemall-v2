@@ -1,20 +1,20 @@
 <?php
 namespace Codad5\Wemall\Model;
 
-use Codad5\Wemall\Configs\Db;
+use Codad5\Wemall\Libs\Database;
 use Codad5\Wemall\DS\lists;
 use Codad5\Wemall\Handlers\CustomException;
 
 class Admins{
 
-    protected Db $conn;
+    private const TABLE = 'SHOP_ADMINS';
+    protected Database $conn;
     protected Shop|null $shop;
-    protected String $table = 'SHOP_ADMINS';
     protected Lists $admins;
 
     public function __construct(Shop $shop = null)
     {
-        $this->conn = new Db();
+        $this->conn = new Database(self::TABLE);
         $this->shop = $shop;
         if ($shop)
             $this->ready();
@@ -58,7 +58,7 @@ class Admins{
     public function save($data)
     {
         $sql = "INSERT INTO $this->table (user_id, shop_id,  shop_name, user_name, level) VALUES (?, ?, ?, ?, ?)";
-        $this->conn->query_data($sql, [
+        $this->conn->query($sql, [
             $data['user_id'],
             $this->shop->unique_id,
             $this->shop->name,
@@ -77,10 +77,7 @@ class Admins{
     }
     public function get_by($by, $value)
     {
-        $sql = "SELECT * FROM $this->table WHERE $by = ?";
-        return $this->conn->select_data($sql, [
-            $value
-        ]);
+        return $this->conn->where($by,$value);
     }
     
     public static function where($column, $value)

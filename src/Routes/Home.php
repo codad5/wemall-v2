@@ -2,10 +2,12 @@
 
  use Codad5\Wemall\Controller\V1\Products;
  use Codad5\Wemall\Helper\Helper;
+ use Codad5\Wemall\Libs\CustomException;
+ use Codad5\Wemall\Libs\Middleware;
+ use Codad5\Wemall\Libs\ViewLoader;
  use \Trulyao\PhpRouter\Router as Router;
  use \Trulyao\PhpRouter\HTTP\Response as Response;
  use \Codad5\Wemall\Handlers\ResponseHandler as CustomResponse;
- use \Codad5\Wemall\Handlers\CustomException as CustomException;
  use \Trulyao\PhpRouter\HTTP\Request as Request;
  use \Codad5\Wemall\Controller\V1\{Lists, Users, Shops};
  use \Codad5\Wemall\Helper\Validator as Validator;
@@ -17,7 +19,7 @@ $router->get('/', function ($req, $res) {
     echo 'hello';
 });
 
-$router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request $req, $res){
+$router->get('/home',[Middleware::class, "redirect_if_logged_out"], function(Request $req, $res){
     try{
         $shops = [];
         $user = Users::current_user();
@@ -25,7 +27,7 @@ $router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request
         // echo "<pre>";
         // var_dump($shops);
         // exit;
-         return $res->send(Helper::load_view('html/home.php',
+         return $res->send(ViewLoader::load('html/home.php',
         [
         "errors" => [$req->query('error')],
         "success" => [$req->query('success')],
@@ -33,7 +35,7 @@ $router->get('/home',[Helper::class, "redirect_if_logged_out"], function(Request
         ]));
     }
     catch(CustomException $e){
-         return $res->send(Helper::load_view('html/home.php',
+         return $res->send(ViewLoader::load('html/home.php',
       [
        "errors" => [$req->query('error'), $e->getMessage()],
        "success" => [$req->query('success')],
@@ -58,12 +60,12 @@ $router->get('/logout', function (Request $req, Response $res) {
 
 $router->route('/signup')
 ->get(
-    [Helper::class, "redirect_if_logged_in"],
+    [Middleware::class, "redirect_if_logged_in"],
     function(Request $req, Response $res){
     foreach ($req->query() as $key => $value) {
         $req->append($key, $value);
     }},function (Request $req, Response $res) {
-       return $res->send(Helper::load_view('html/signup.php',
+       return $res->send(ViewLoader::load('html/signup.php',
         [
         "errors" => [$req->query('error')],
         "success" => [$req->query('success')]
@@ -86,13 +88,13 @@ $router->route('/signup')
 #login post and get route
 $router->route('/login')
 ->get(
-    [Helper::class, "redirect_if_logged_in"],
+    [Middleware::class, "redirect_if_logged_in"],
     function(Request $req, Response $res){
     foreach ($req->query() as $key => $value) {
         $req->append($key, $value);
     }},
     function (Request $req, Response $res) {
-    return $res->send(Helper::load_view('html/login.php',
+    return $res->send(ViewLoader::load('html/login.php',
         [
         "errors" => [$req->query('error')],
         "success" => [$req->query('success')]
@@ -109,7 +111,7 @@ $router->route('/login')
     }
     catch (Exception $e) {
         //throw $th;
-        return $res->redirect('/login?error='.$e->getMessage()."on line".$e->getLine()." ".$e->getFile());
+        return $res->redirect('/login?error='.$e->getMessage());
     }
 
 });

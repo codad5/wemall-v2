@@ -85,4 +85,23 @@
                 </div>
             </div>
         </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <?php
+                        if (isset($dev_warning)) {
+                            foreach ($dev_warning as $warning) {
+                                // echo "<div class='alert alert-warning' role='alert'>$warning</div>";
+                                ?>
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <strong>Development Warning ⚠</strong> <?=$warning?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <?php
+                            }
+                        }
+                    ?>
+                </div>
+            </div>
+        </div>
 </div>

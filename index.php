@@ -1,34 +1,31 @@
 <?php
-require(__DIR__ . '/vendor/autoload.php');
 session_start();
-$dontenv = \Dotenv\Dotenv::createImmutable(__DIR__);
-$dontenv->load();
+require(__DIR__ . '/vendor/autoload.php');
 
-
-//  use Exception;
-
-use \Trulyao\PhpRouter\Router as Router;
-use Codad5\Wemall\Handlers\ErrorHandler;
+use Codad5\Wemall\Libs\ErrorHandler;
 use \Trulyao\PhpRouter\HTTP\Response as Response;
-use \Codad5\Wemall\Handlers\ResponseHandler as CustomResponse;
-use \Codad5\Wemall\Helper\Helper;
- use \Codad5\Wemall\View\V1 as View;
+use \Trulyao\PhpRouter\Router as Router;
+use \Codad5\Wemall\Libs\ResponseHandler as CustomResponse;
+use \Codad5\Wemall\Libs\Helper\Helper;
+use \Codad5\Wemall\View\V1 as View;
 use \Trulyao\PhpRouter\HTTP\Request as Request;
 use \Codad5\Wemall\Controller\V1\{Lists, Users, Shops};
 use \Codad5\PhpInex\Import as Import;
 
-$errorHander = new ErrorHandler(__DIR__.'/error.log');
 
-
-set_error_handler(function ($no, $message, $file, $line) use ($errorHander) {
-    $errorHander->handle($no, $message, $file, $line);
-});
-
-
+$errorHander = new ErrorHandler('index.php', true);
+$dontenv = \Dotenv\Dotenv::createImmutable(__DIR__);
+$dontenv->load();
 
 $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
+
+$router->run(function ($req, $res) {
+    foreach($_GET as $query => $value){
+        Helper::add_notification($query, $value);
+    }
+});
 
 $shop_routes = Import::this('src/Routes/Shops');
 $home_routes = Import::this('src/Routes/Home');

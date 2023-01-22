@@ -1,10 +1,10 @@
 <?php
-namespace Codad5\Wemall\Helper;
-
-use Codad5\Wemall\Helper\CustomException as CustomException;
+namespace Codad5\Wemall\Libs;
+;
+use Codad5\Wemall\Libs\CustomException;
 use Trulyao\PhpRouter\HTTP\Request;
 
-class Validators{
+class Validator{
     public static function validate_email($email)
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL);

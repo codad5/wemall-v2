@@ -1,9 +1,9 @@
 <?php
 namespace Codad5\Wemall\Controller\V1;
 
+use Codad5\Wemall\Libs\CustomException;
+use Codad5\Wemall\Libs\Validator;
 use Codad5\Wemall\Model\Shop as Shop;
-use Codad5\Wemall\Helper\CustomException as CustomException;
-use Codad5\Wemall\Helper\Validators as Validator;
 use Codad5\Wemall\Model\User;
 use Trulyao\PhpRouter\HTTP\Request;
 
