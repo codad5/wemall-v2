@@ -7,11 +7,15 @@ use Codad5\Wemall\Libs\CustomException;
  use Codad5\Wemall\Libs\Validator;
  use Codad5\Wemall\Model\User as User;   
  use Codad5\Wemall\Model\Shop;
- use Trulyao\PhpRouter\HTTP\Request;
+use phpDocumentor\Reflection\Types\Boolean;
+use Trulyao\PhpRouter\HTTP\Request;
 
-class Users
+class UserController
 {
-    public function signup(Request $req)
+    /**
+     * @throws CustomException
+     */
+    public function signup(Request $req) : User
     {
         if (!Validator::validate_signup_data($req))
             throw new CustomException('Error Vslidating signup input', 300);
@@ -20,9 +24,13 @@ class Users
         $user->email = $req->body('email');
         $user->username = $req->body('username');
         $user->password = Helper::hash_password($req->body('password'));
-        $user->create();
+        return $user->create();
     }
-    public function login(Request $req)
+
+    /**
+     * @throws CustomException
+     */
+    public function login(Request $req) : array|User|null
     {
         if (!Validator::validate_login_data($req))
             throw new CustomException('Error in Login Data', 300);
@@ -36,7 +44,7 @@ class Users
         }
         return User::find($user->id)->set_login_session();
     }
-    public static function any_is_logged_in()
+    public static function any_is_logged_in() : bool
     {
         return isset($_SESSION['username']) && 
         isset($_SESSION['email']) &&
@@ -46,11 +54,11 @@ class Users
         User::find($_SESSION['user_id']);
     }
 
-    public static function current_user()
+    public static function current_user() : array|User|null
     {
-        $men = $th;
-        return User::get_currenct_loggedin();
+        return User::get_currenct_loggedin() ?? null;
     }
+
     
 
     

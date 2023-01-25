@@ -14,8 +14,8 @@ use Trulyao\PhpRouter\HTTP\Request;
 
 Class  Products
 {
-    private Shops|array $shop;
-    private Shops|array $user;
+    private ShopController|array $shop;
+    private ShopController|array $user;
     private array $data;
     protected string  $name;
     protected string $description = "";
@@ -39,7 +39,7 @@ Class  Products
      */
     public static function create(Request $req)
     {
-        $shop = Shops::load($req->params('id'));
+        $shop = ShopController::load($req->params('id'));
         Validators::validate_product_data($req, self::getProductClass($shop->shop_type)->getFieldSet());
         $newProduct = new Product();
         return $newProduct->create($shop, $req->body(), self::upload_images($shop->shop_type));

@@ -1,9 +1,9 @@
 <?php
 namespace Codad5\Wemall\Model;
 use Codad5\Wemall\DS\lists;
-use \Codad5\Wemall\Configs\Db as Db;
-use \Codad5\Wemall\Handlers\CustomException as CustomException;
-use \Codad5\Wemall\Handlers\ResponseHandler as CustomResponse;
+use \Codad5\Wemall\Libs\Database as Db;
+use \Codad5\Wemall\Libs\CustomException as CustomException;
+use \Codad5\Wemall\Libs\ResponseHandler as CustomResponse;
 use Codad5\Wemall\Model\ProductType\ProductType;
 use Exception;
 
@@ -29,15 +29,15 @@ Class Product{
     public $created_at;
     public ProductType $externals;
     protected $table = 'products';
-    const TABLE = 'products';
+    private const TABLE = 'products';
     const  SHOP_TYPE_ARRAY = ["Clothing"];
     public $data_array = [];
     protected $last_id;
     public function __construct($id = null, Shop $shop = null)
     {
         $shop ? $this->shop = $shop : null;
-        $shop_id = $shop ? $shop->unique_id : null;
-        $this->conn = new Db();
+        $shop_id = $shop?->unique_id;
+        $this->conn = new Db(self::TABLE);
         if ($id)
             $this->ready($id, $shop_id);
     }
@@ -49,7 +49,7 @@ Class Product{
        * @return Product
        */
 
-    protected function ready($id, $shop_id = null)
+    protected function ready($id, $shop_id = null): static
     {
         $data = $this->get_by('id', $id) ?? $this->get_by('product_id', $id);
         if(!$data) return $this;
@@ -94,7 +94,7 @@ Class Product{
     public function getFullProduct($product_table)
     {
         $sql = "SELECT * FROM $this->table INNER JOIN $product_table ON {$this->table}.product_id = {$product_table}.product_id";
-        $data = $this->conn->select_data($sql, []);
+        $data = $this->conn->query($sql, []);
         return count($data) > 0 ? $data[0] : null;
     }
     /**
@@ -133,7 +133,7 @@ Class Product{
      */
     protected function generateId()
     {
-        return 'prod_'.$this->last_id().substr(md5(uniqid(rand(), true)), 0, 8);
+        return 'pr'.$this->last_id().substr(md5(uniqid(rand(), true)), 0, 8);
     }
     /**
      * Get the last PRIMARY KEY digit 
@@ -144,7 +144,7 @@ Class Product{
         if (isset($this->last_id))
         return $this->last_id;
         $sql = "SELECT * FROM $this->table";
-        $data = $this->conn->select_data($sql, [
+        $data = $this->conn->query($sql, [
             
         ]);
         return $this->last_id = count($data) > 0 ? $data[0]['id'] : 0;
@@ -161,15 +161,15 @@ Class Product{
     {
         $created_by = User::get_currenct_loggedin();
         if (!$created_by)
-        throw new CustomException('You need to be logged in to peform this action', 400);
+        throw new CustomException('You need to be logged in to perform this action', 400);
         if (!Shop::has_access($shop->unique_id, $created_by->unique_id))
-        throw new CustomException('Can`t perfom this action', 400);
+        throw new CustomException('Can`t perform this action', 400);
         $unique_id = $this->generateId();
         $sql = "INSERT INTO $this->table (name, description, category, price, created_by, quantity, images, product_id, product_type, shop_id, discount, discount_type, active_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);";
         // var_dump($sql);
         // var_dump($data);
         // exit;
-        $this->conn->query_data($sql,[
+        $this->conn->query($sql,[
             $data['name'],
             $data['description'],
             $data['category'],
@@ -201,7 +201,7 @@ Class Product{
     public function delete($product_id = null)
     {
         $sql = "DELETE FROM $this->table WHERE product_id = ?";
-        $this->conn->query_data($sql, [
+        $this->conn->query($sql, [
             $product_id ?? $this->product_id
         ]);
 
@@ -216,7 +216,7 @@ Class Product{
     public function get_by(string $by, $value) : array|null
     {
         $sql = "SELECT * FROM $this->table WHERE $by = ?";
-        $data = $this->conn->select_data($sql, [
+        $data = $this->conn->select($sql, [
             $value
         ]);
         

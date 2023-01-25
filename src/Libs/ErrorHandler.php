@@ -20,17 +20,18 @@ class ErrorHandler
         }
     }
 
-    public function handleException($e)
+    public function handleException($e) : self
     {
         // Log the exception
         $this->logger->error($e->getMessage(), $this->getContext($e));
         // Return a custom response to the user
-        if($_ENV['env'] == 'development' && $e->getCode() !== 500){
+        if($_ENV['env'] == 'development' && $e->getCode() < 500){
             Helper::add_notification('dev_warning', json_encode(['error' => $e->getMessage()]));
             ViewLoader::load_error_page(500, json_encode(['error' => $e->getMessage()]));
         }
+        return $this;
     }
-    public function getContext($e)
+    public function getContext($e) : array
     {
         return [
             'file' => $e->getFile(),
@@ -48,7 +49,7 @@ class ErrorHandler
 
     }
 
-    public function handleShutdown()
+    public function handleShutdown(): void
     {
         $error = error_get_last();
         if ($error) {

@@ -3,32 +3,34 @@ namespace Codad5\Wemall\Model;
 use Codad5\Wemall\DS\lists;
 use Codad5\Wemall\Libs\CustomException;
 use Codad5\Wemall\Libs\Database;
-use Codad5\Wemall\Model\Admins;
 
 class Shop{
     const SHOP_TYPE_ARRAY = ['Clothing'];
-    public $name;
-    public $email;
-    public $password;
-    public $confirm_password;
-    public $id;
-    public $description;
-    public $unique_id;
-    public $api_key;
-    public $shop_type;
-    public $created_at;
-    public $updated_at;
-    public $deleted_at;
+    public string $name;
+    public string $email;
+    public string $password;
+    public string $confirm_password;
+    public int|string $id;
+    public string $description;
+    public string $unique_id;
+    public string $api_key;
+    public string $shop_type;
+    public string $created_at;
+    public string $updated_at;
+    public string $deleted_at;
     public $form;
     protected Lists $products;
     protected User $created_by;
-    protected const TABLE = 'shops';
+    protected const TABLE = 'SHOPS';
     
     protected Database $conn;
     protected Admins $admins;
     protected int $last_id;
     protected array $data_array = [];
 
+    /**
+     * @throws CustomException
+     */
     public function __construct($id = null)
     {
         $this->conn = new Database(self::TABLE);
@@ -36,10 +38,14 @@ class Shop{
             $this->ready($id);
     }
 
-    protected function ready($id)
+    /**
+     * @throws CustomException
+     */
+    protected function ready($id): static
     {
+        if(!$id) return $this;
         $data = $this->get_by('id', $id) ?? $this->get_by('unique_id', $id);
-        if(!$data) return $this;
+        if(!$data) throw new CustomException('Shop Not available');
 
         $data = $data[0];
         $this->data_array = $data;
@@ -55,7 +61,7 @@ class Shop{
     }
     public function withAdmins() : self
     {
-        $this->admins = $this->admins ??  new Admins($this);
+        $this->admins = $this->admins ?? Admins::list($this);
         return $this;
     }
     public function withOwner() : self
@@ -67,7 +73,7 @@ class Shop{
      * To get al shop product --in use
      * @return Shop
      */
-    public function withProducts()
+    public function withProducts(): self
     {
         $this->products = $this->products ?? Product::where('shop_id', $this->unique_id);
         $this->products->map(fn(Product $product) => $product->withCreator());
@@ -77,7 +83,7 @@ class Shop{
     {
         return $this->withProducts()->products;
     }
-    public function findProduct($id) 
+    public function findProduct($id): ?Product
     {
         $product = Product::find($id);
         if($product->shop_id !== $this->unique_id) return null;
@@ -98,96 +104,109 @@ class Shop{
         $data = $this->conn->all();
         return $this->last_id = count($data) > 0 ? $data[0]['id'] : 0;
     }
-    protected function generate_id()
+    protected function generate_id(): string
     {
-        return 'shop_'.$this->last_id().substr(md5(uniqid(rand(), true)), 0, 12);
+        return $this->last_id().substr(md5(uniqid(rand(), true)), 0, 12);
     }
 
-    protected function generate_api_key()
+    protected function generate_api_key(): string
     {
         return 'shK_'.$this->last_id().substr(md5(uniqid(rand(), true)), 0, 12);
     }
-    public function create(User $user)
+
+    /**
+     * @throws CustomException
+     */
+    public function create(User $user): Shop
     {
-        if (self::where('email', $this->email)->first())
-            throw new CustomException("email : ($this->email) already in use", 300);
-        $this->unique_id = $this->generate_id();
-        $this->api_key = $this->generate_api_key();
-        $sql = "INSERT INTO ".self::TABLE." (name, description,  created_by, email, unique_id, api_key, shop_type) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        var_dump($sql);
-        $this->conn->query($sql, [
-            $this->name,
-            $this->description,
-            $user->unique_id,
-            $this->email,
-            $this->unique_id,
-            $this->api_key,
-            $this->shop_type
-        ]);
-        
-        return $this->ready(self::find($this->unique_id)->id)->withAdmins()->add_admin($user);
+        try{
+            if (self::where('email', $this->email)->first())
+                throw new CustomException("email : ($this->email) already in use", 300);
+            $this->unique_id = $this->generate_id();
+            $this->api_key = $this->generate_api_key();
+//        $sql = "INSERT INTO ".self::TABLE."(name, description, created_by, email, unique_id, api_key, shop_type) VALUES (?, ?, ?, ?, ?, ?, ?);";
+            $sql = "INSERT INTO " . self::TABLE . " (`name`, `description`, `created_by`, `email`, `unique_id`, `api_key`, `shop_type`) VALUES (?,?,?,?,?,?,?)";
+            $main = $this->conn->query($sql, [
+                $this->name,
+                $this->description,
+                $user->unique_id,
+                $this->email,
+                $this->unique_id,
+                $this->api_key,
+                $this->shop_type
+            ]);
+            $shop = self::find($this->unique_id);
+            if (!$shop) throw new CustomException('User not Created, try again later');
+            return $shop->withAdmins()->add_admin($user);
+        }catch (\Exception $e)
+        {
+            $this->ready($this->unique_id)->delete();
+            echo "james";
+            throw $e;
+        }
 
     }
-    public function add_admin(User $user)
+    public function add_admin(User $user): static
     {
-        $this->withAdmins()->admins->add($user, 3) ;
+        $this->withAdmins()->admins->add($this, $user, 3) ;
         return $this;
     }
 
-    public function getShopTypeModel()
+    /**
+     * @throws CustomException
+     */
+    public function getShopTypeModel(): string
     {
         if(!in_array($this->shop_type, self::SHOP_TYPE_ARRAY)){
             throw new CustomException("Invalid shop type", 404);
         }
         return "Codad5\\Wemall\\Model\\ProductType\\".ucfirst($this->shop_type);
     }
+
+    /**
+     * @throws CustomException
+     */
     public function get_by(string $by, $value) : array|null
     {
         $data = $this->conn->where($by, $value);
         return count($data) > 0 ? $data : null;
     }
-    
-    //get all shops by a specific user
-    public function get_shops_where_admin_is(string $by) : array
-    {
-        $data = $this->get_all_shops();
-        $return_data = [];
-        foreach($data as $shop){
-            $admins = json_decode($shop['admins']);
-            if(in_array($by, $admins->all)){
-                $return_data[] = $shop;
-            }
-        }
-        return $return_data;
-    }
+
     public function get_all_shops() : array|null
     {
         $sql = "SELECT * FROM $this->table;";
-        return $this->conn->select_data($sql, [
-            
+        return $this->conn->select($sql, [
+
         ]);
        
     }
 
-    public function delete()
+    /**
+     * @throws CustomException
+     */
+    public function delete(): ?\PDOStatement
     {
-        $sql = "DELETE FROM $this->table WHERE id = ?";
-        $this->conn->query_data($sql, [
+        $sql = "DELETE FROM ".self::TABLE." WHERE id = ?";
+        $this->conn->query($sql, [
             $this->id
         ]);
 
         return $this->withAdmins()->admins->delete();
 
     }
-    public static function find($id)
-    {   
+    public static function find($id): array|Shop|null
+    {
         $data = (new Shop)->get_by('id', $id);
         if($data) return new Shop($id);
         $data = (new Shop)->get_by('unique_id', $id);
         if($data) return new Shop($id);
         return $data;
     }
-    public static function where($column, $value)
+
+    /**
+     * @throws CustomException
+     */
+    public static function where($column, $value): lists
     {
         return (new lists((new Shop)->get_by($column, $value)))->map(function ($data) {
             return new Shop($data['id']);
@@ -195,15 +214,20 @@ class Shop{
     
     }
     
-    public static function get_admin($shop_id)
+    public static function get_admin($shop_id): lists
     {
         return admins::list($shop_id);
     }
-    public static function has_access($shop_id, $user_id, $level = null)
+    public static function has_access($shop_id, $user_id, $level = null): bool
     {
-        return self::get_admin($shop_id)->map(function ($data) use($user_id, $level) {
-            return $user_id == isset($data['user_id']) && $level ? $level == $data['level'] : true;
-        })->count() > 0;
+//        var_dump(self::get_admin($shop_id));
+        $ou = self::get_admin($shop_id)->filter(function (Admins $admin) use($user_id, $level) {
+            if (isset($level) && $level != $admin->level) return false;
+//            if($user_id == $admin->user_id)
+
+    })->count() > 0;
+        exit();
+        return $ou;
     }
     /**
      * Summary of toArray --in use

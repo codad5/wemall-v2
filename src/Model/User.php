@@ -1,7 +1,7 @@
 <?php
 namespace Codad5\Wemall\Model;
 
-use Codad5\Wemall\Controller\V1\Users;
+use Codad5\Wemall\Controller\V1\UserController;
 use Codad5\Wemall\DS\lists;
 use Codad5\Wemall\Libs\CustomException;
 use Codad5\Wemall\Libs\Database as Db;
@@ -67,7 +67,11 @@ Class User
         return 'uK_'.$this->last_id().substr(md5(uniqid(rand(), true)), 0, 12);
     }
 
-    public function create(){
+    /**
+     * @throws CustomException
+     */
+    public function create() : self
+    {
         if ($this->conn->where('username', $this->username))
             throw new CustomException("Username : ($this->username) already in use", 300);
         if($this->conn->where('email', $this->email))
@@ -99,19 +103,30 @@ Class User
         ]);
         
     }
+
+    /**
+     * @throws CustomException
+     */
     public function get_user_by(string $by, $value) : array|null
     {
         $data = $this->conn->where($by, [
             $value
         ]);
-        return count($data) > 0 ? $data : null;
-    }
-    public function get_all_users() : array|null
-    {
-        return $this->conn->all();
+        return $data && count($data) > 0 ? $data : null;
     }
 
-    public static function find($id)
+    /**
+     * @throws CustomException
+     */
+    public function get_all_users() : array|null
+    {
+        return $this->conn?->all();
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public static function find($id): User|array|null
     {   
         $data = (new User)->get_user_by('id', $id);
         if($data) return new User($id);
@@ -119,6 +134,10 @@ Class User
         if($data) return new User($id);
         return $data;
     }
+
+    /**
+     * @throws CustomException
+     */
     public static function where($column, $value)
     {
         return (new lists((new User)->get_user_by($column, $value)))->map(function ($data) {
@@ -126,7 +145,11 @@ Class User
         });
     
     }
-    public static function all()
+
+    /**
+     * @throws CustomException
+     */
+    public static function all(): false|array
     {
         return Db::table(self::TABLE)->all();
     }
@@ -146,7 +169,7 @@ Class User
     }
     public static function get_currenct_loggedin()
     {
-        if (!Users::any_is_logged_in())
+        if (!UserController::any_is_logged_in())
             return false;
         return self::find($_SESSION['user_id']);
     }

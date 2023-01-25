@@ -3,44 +3,65 @@ namespace Codad5\Wemall\Model;
 
 use Codad5\Wemall\Libs\Database;
 use Codad5\Wemall\DS\lists;
-use Codad5\Wemall\Handlers\CustomException;
+use Codad5\Wemall\Libs\CustomException;
 
 class Admins{
 
     private const TABLE = 'SHOP_ADMINS';
     protected Database $conn;
-    protected Shop|null $shop;
-    protected Lists $admins;
+    readonly public User $user;
+    protected Shop $shop;
+    public string|int $level;
+    public string|int $unique_id;
 
-    public function __construct(Shop $shop = null)
+    public function __construct(User $user = null, Shop $shop = null)
     {
         $this->conn = new Database(self::TABLE);
+        $this->user = $user;
         $this->shop = $shop;
-        if ($shop)
+        if ($user && $shop)
             $this->ready();
     }
+
     /**
      * Ready the Admin Object based on the db_data
      * @return Admins
+     * @throws CustomException
      */
-    protected function ready()
+    protected function ready(): Admins
     {
-        $this->admins = (new Lists($this->get_all()))->map(function ($item) {
-            $user = User::find($item['user_id']);
-            $user->level = $item['level'];
-            return $user;
-        });
-
+        $data = $this->isAdminIn($this->shop->unique_id, $this->user->unique_id);
+        $this->level = $data['level'];
         return $this;
     }
 
-    public function toArray()
+    /**
+     * @throws CustomException
+     */
+    public static function isAdminIn($shop_id, $user_id, $level = null): false|array
     {
-        return $this->admins->map(function (User $item) {
-            return $item->toArray();
-        })->to_array();
+        $sql = "SELECT * FROM ".self::TABLE." WHERE user_id = ? AND shop_id = ?";
+        $binding = [
+            $user_id,
+            $shop_id
+        ];
+        if($level){
+            $sql.= "AND level = ?";
+            $binding[] = $level;
+        }
+        $result = Database::query($sql, $binding)->fetchAll();
+        if(empty($result)) return false;
+        return $result;
     }
-    public function add(User|array $user, $level = 0)
+
+    public function toArray(): array
+    {
+        return [
+            'level' => $this->level,
+            ...$this->user->toArray()
+        ];
+    }
+    public static function add(Shop $shop, User|array $user, $level = 0): Admins
     {
         $user_id = null;
         $user_name = null;
@@ -52,28 +73,29 @@ class Admins{
             $user_id = $user['unique_id'];
             $user_name = $user['username'];
         }
-        return $this->save(['username' => $user_name, 'user_id' => $user_id, 'level' => $level])->ready();
+        return self::save($shop, ['username' => $user_name, 'user_id' => $user_id, 'level' => $level]);
     }
 
-    public function save($data)
+    public static function save(Shop $shop, $data)
     {
-        $sql = "INSERT INTO $this->table (user_id, shop_id,  shop_name, user_name, level) VALUES (?, ?, ?, ?, ?)";
-        $this->conn->query($sql, [
+        $sql = "INSERT INTO ".self::TABLE." (user_id, shop_id,  shop_name, user_name, level) VALUES (?, ?, ?, ?, ?)";
+        $result = Database::query($sql, [
             $data['user_id'],
-            $this->shop->unique_id,
-            $this->shop->name,
+            $shop->unique_id,
+            $shop->name,
             $data['username'],
             $data['level']
         ]);
-        return $this;
+        if($result) return new Admins(User::find($data['user_id']), $shop);
+        return false;
     }
 
-    public function get_all()
+    public function get_all(): false|array
     {
-        $sql = "SELECT * FROM $this->table WHERE shop_id = ?";
-        return $this->conn->select_data($sql, [
+        $sql = "SELECT * FROM ".self::TABLE." WHERE shop_id = ?";
+        return $this->conn->query($sql, [
             $this->shop->id
-        ]);
+        ])->fetchAll();
     }
     public function get_by($by, $value)
     {
@@ -94,25 +116,26 @@ class Admins{
     }
     public static function list($shop_id) : Lists
     {
-        return self::where('shop_id', $shop_id)->map(function ($data) {
-            User::find($data['user_id']);
+        return self::where('shop_id', $shop_id)->map(/**
+         * @throws CustomException
+         */ function ($data) {
+            return User::find($data['user_id']);
         });;
     
     }
     
-    public function delete($user_id = null)
+    public function delete($user_id = null): false|array
     {
         $array = [
             $this->shop->unique_id
         ];
-        $sql = "DELETE FROM $this->table WHERE shop_id = ?";
+        $sql = "DELETE FROM ".self::TABLE." WHERE shop_id = ?";
         if($user_id) {
-            $sql = "DELETE FROM $this->table WHERE shop_id = ? AND user_id = ?";
+            $sql = "DELETE FROM ".self::TABLE." WHERE shop_id = ? AND user_id = ?";
             $array[] = $user_id;
         }
-        return $this->conn->query_data($sql, $array);
+        return $this->conn->query($sql, $array)->fetchAll();
     }
-
 
     
 }

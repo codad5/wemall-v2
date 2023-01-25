@@ -8,12 +8,16 @@ use Codad5\Wemall\Model\User;
 use Trulyao\PhpRouter\HTTP\Request;
 
 
-class Shops
+class ShopController
 {
     public function __construct()
     {
 
     }
+
+    /**
+     * @throws CustomException
+     */
     public function create(Request $req)
     {
         if (!Validator::validate_shop_creation_data($req))
@@ -30,16 +34,22 @@ class Shops
         return $this;
     }
 
-    public static function delete(Request $req)
+    /**
+     * @throws CustomException
+     */
+    public static function delete(Request $req): false|array
     {
-        return Shop::find($req->params('id'))->delete();
+        return Shop::find($req->params('id'))->delete()->fetchAll();
     }
 
-    public static function exist($id)
+    public static function exist($id): array|Shop|null
     {
         return Shop::find($id);
     }
-   
+
+    /**
+     * @throws CustomException
+     */
     public static function load($id)
     {
         return self::exist($id) ?? throw new CustomException('Shop does not exist', 300);
@@ -47,5 +57,18 @@ class Shops
     public static function is_shop_admin($shop_id, $user_id, $level = null)
     {
         return Shop::has_access($shop_id, $user_id, $level);
+    }
+
+    /**
+     * @throws CustomException
+     */
+    public static function add_user_to_shop($shop_id, string $user_email)
+    {
+        $shop = self::exist($shop_id) ?? throw new CustomException('Shop does not exist');
+        if (!$shop->has_access($shop_id, UserController::current_user()?->unique_id)) throw  new CustomException("You dont have such privilege");
+        /** @var User $user */
+        $user = User::where('email' , $user_email)->first() ?? throw new CustomException("User with email $user_email does not exist");
+        if ($shop->has_access($shop_id, $user?->unique_id)) throw  new CustomException("Already an admin ($user_email)");
+        return $shop->add_admin($user);
     }
 }

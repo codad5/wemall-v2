@@ -1,4 +1,12 @@
 <!-- TAB SPACES -->
+<?php
+if(empty($values)) $values = null;
+if(isset($values) && is_array($values))
+{
+    $values = json_encode($values);
+    $values = json_decode($values, false);
+}
+?>
       <!-- CLOTHING product size -->
       <div class="col-md-4" id="product_size_cnt">
         <label for="product_size" class="form-label">Product Size</label>
@@ -22,15 +30,15 @@
       <!-- <fieldset class="col-mb-3">
         <legend>Gender</legend>
           <div class="form-check">
-            <input type="radio" name="gender" value="male" class="form-check-input" id="exampleRadio1" <?=isset($values) || $values?->gender == "female" ? 'checked' : false ?>>
+            <input type="radio" name="gender" value="male" class="form-check-input" id="exampleRadio1" <?=isset($values) && $values?->gender == "female" ? 'checked' : false ?>>
               <label class="form-check-label" for="exampleRadio1">Male</label>
           </div>
           <div class="mb-3 form-check">
-            <input type="radio" name="gender" value="female" class="form-check-input" id="exampleRadio2" <?=isset($values) || $values?->gender == "female" ? 'checked' : false ?>>
+            <input type="radio" name="gender" value="female" class="form-check-input" id="exampleRadio2" <?=isset($values) && $values?->gender == "female" ? 'checked' : false ?>>
             <label class="form-check-label" for="exampleRadio2">Female</label>
           </div>
           <div class="mb-3 form-check">
-            <input type="radio" name="gender" value="unisex" class="form-check-input" id="exampleRadio2" <?=isset($values) || $values?->gender == "female" ? 'checked' : false ?>>
+            <input type="radio" name="gender" value="unisex" class="form-check-input" id="exampleRadio2" <?=isset($values) && $values?->gender == "female" ? 'checked' : false ?>>
             <label class="form-check-label" for="exampleRadio2" selected="">unisex</label>
           </div>
       </fieldset> -->

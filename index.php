@@ -3,23 +3,29 @@ session_start();
 require(__DIR__ . '/vendor/autoload.php');
 
 use Codad5\Wemall\Libs\ErrorHandler;
-use \Trulyao\PhpRouter\HTTP\Response as Response;
-use \Trulyao\PhpRouter\Router as Router;
-use \Codad5\Wemall\Libs\ResponseHandler as CustomResponse;
-use \Codad5\Wemall\Libs\Helper\Helper;
-use \Codad5\Wemall\View\V1 as View;
-use \Trulyao\PhpRouter\HTTP\Request as Request;
-use \Codad5\Wemall\Controller\V1\{Lists, Users, Shops};
-use \Codad5\PhpInex\Import as Import;
+use Trulyao\PhpRouter\HTTP\Response as Response;
+use Trulyao\PhpRouter\Router as Router;
+use Codad5\Wemall\Libs\ResponseHandler as CustomResponse;
+use Codad5\Wemall\Libs\Helper\Helper;
+use Trulyao\PhpRouter\HTTP\Request as Request;
+use Codad5\PhpInex\Import as Import;
 
 
-$errorHander = new ErrorHandler('index.php', true);
-$dontenv = \Dotenv\Dotenv::createImmutable(__DIR__);
-$dontenv->load();
+$errorHandler = new ErrorHandler('index.php', true);
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
+
+$router->run(function () {
+    if(session_status() !== PHP_SESSION_ACTIVE){
+        session_unset();
+        session_destroy();
+        session_start();
+    }
+});
 
 $router->run(function ($req, $res) {
     foreach($_GET as $query => $value){
@@ -27,30 +33,30 @@ $router->run(function ($req, $res) {
     }
 });
 
+/** @var Router $shop_routes */
 $shop_routes = Import::this('src/Routes/Shops');
+/** @var Router $home_routes */
 $home_routes = Import::this('src/Routes/Home');
+/** @var Router $auth_routes */
+$auth_routes = Import::this('src/Routes/Auth');
 
 $router->use_route($home_routes);
 $router->use_route($shop_routes);
+$router->use_route($auth_routes);
 // echo '<pre>';
 // var_dump($router->routes);
 // exit;
-$router->route('/:id/product')
-->get(function ($req, $res) {
-    try {
-        //get the shop id
-        ['id' => $id] = $req->params();
-        $shop = Shops::load($req->params('id'))->withProducts()->toArray();
-        $shop['form'] = function ($product_type, $values = []) {
-            return View\Shop::load_html_form($product_type, ['values' => $values]);
-        };
-        //load add product page
-        return $res->send(Helper::load_view('html/products.php', ["request" => $req, "shop" => $shop, "products" => $shop['products']]));
-    } catch (Exception $e) {
-        return $res->redirect('/home?error=' . $e->getMessage());
 
+// logout route
+$router->get('/logout', function (Request $req, Response $res) {
+    session_destroy();
+    $new_query = "";
+    foreach($_GET as $query => $value){
+        $new_query.="$query=$value&";
     }
+    return $res->redirect('/login?'.$new_query);
 });
+
 
 $router->get('/api/v1/list/:filter/:keyword', function (Request $req, Response $res) {
     try {

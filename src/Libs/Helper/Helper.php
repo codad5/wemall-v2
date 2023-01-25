@@ -1,7 +1,7 @@
 <?php
 namespace Codad5\Wemall\Libs\Helper;
-use Codad5\Wemall\Controller\V1\Shops;
-use Codad5\Wemall\Controller\V1\Users;
+use Codad5\Wemall\Controller\V1\ShopController;
+use Codad5\Wemall\Controller\V1\UserController;
 use Trulyao\PhpRouter\HTTP\Request;
 use Trulyao\PhpRouter\HTTP\Response;
 $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../../');
@@ -81,13 +81,13 @@ Class Helper {
     
     //check if shop exists
     public static function shop_exists($id) {
-        return Shops::exist($id);
+        return ShopController::exist($id);
     }
     public static function is_user_shop_owner($shop_id, $user_id){
         if(!self::shop_exists($shop_id)){
             return false;
         }
-        if(Shops::is_shop_admin($shop_id, $user_id)){
+        if(ShopController::is_shop_admin($shop_id, $user_id)){
             return true;
         }
         return false;

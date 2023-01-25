@@ -3,15 +3,16 @@ namespace Codad5\Wemall\Libs;
 use Exception;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use ReturnTypeWillChange;
 
 
 class CustomException extends Exception
 {
-    private $handler;
+    private ErrorHandler $handler;
     public function __construct($message, $code = 0, Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-        $handler = new ErrorHandler;
+        $this->handler = new ErrorHandler;
     }
     public function handle($message, $code)
     {
@@ -21,7 +22,7 @@ class CustomException extends Exception
         }
     }
 
-    public function __toString()
+    #[ReturnTypeWillChange] public function __toString()
     {
         return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
     }

@@ -39,7 +39,7 @@ class lists{
     {
         return $this->list[rand(0, count($this->list) - 1)];
     }
-    public function map(Closure $callback)
+    public function map(Closure $callback): lists
     {
         $backup = $this->list;
         $i = 0;
@@ -48,5 +48,16 @@ class lists{
             $i++;
         }
         return new Lists($backup);
+    }
+    public function filter(Closure $closure): lists
+    {
+        $backup = $this->list;
+        $new = [];
+        $i = 0;
+        foreach($backup as $key => $value){
+            $value = $closure($value, $i = null);
+            $value ? $new[] = $backup[$key] : null;
+        }
+        return new Lists($new);
     }
 }

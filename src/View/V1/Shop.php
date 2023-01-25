@@ -1,7 +1,7 @@
 <?php
 namespace Codad5\Wemall\View\V1;
-use Codad5\Wemall\Helper\CustomException;
-use Codad5\Wemall\Helper\Helper;
+use Codad5\Wemall\Libs\CustomException;
+use Codad5\Wemall\Libs\ViewLoader;
 
 Class Shop{
     private static array $shop_type_array = ["clothing", "food", "automobile", "phones", "furnitures"];
@@ -16,7 +16,7 @@ Class Shop{
         if(!in_array($type, self::$shop_type_array)){
             throw new CustomException('Invalid Shop Type', 303);
         }
-        return html_entity_decode(Helper::load_view("html/ProductForms/{$type}.php", $data));
+        return html_entity_decode(ViewLoader::load("html/ProductForms/{$type}.php", $data));
     }
     
     
