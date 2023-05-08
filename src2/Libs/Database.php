@@ -1,6 +1,7 @@
 <?php
 namespace Codad5\Wemall\Libs;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
+use Codad5\Wemall\Libs\Exceptions\DatabaseException;
 use Codad5\Wemall\Libs\Helper\Helper;
 
 $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
@@ -131,7 +132,7 @@ class Database
         }
         catch(\PDOException $e){
             (new ErrorHandler('pdo-error'))->handleException($e);
-            throw new CustomException('server error', 500);
+            throw new DatabaseException('server error', 500);
         }finally{
             return $stmt ?? null;
         }

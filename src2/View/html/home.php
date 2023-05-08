@@ -65,21 +65,20 @@
                             <thead>
                                 <tr>
                                     <th>Shop Name</th>
-                                    <th>Shop ID</th>
+                                    <th>Shop Description</th>
                                     <th>Shop Email</th>
                                     <th>Shop ID</th>
                                 </tr>
                             </thead>
                             <tbody>
                                         <?php foreach($shops as $shop): ?>
-                                        <?php $shop = json_decode(json_encode($shop)) ?>
                                     <tr>
                                         <td><?= $shop->name; ?></td>
-                                        <td><?= $shop->shop_id ?></td>
-                                        <td>  <a href="/shop/<?= $shop->shop_id ?>" class="btn btn-primary">Go to Shop</a></td>
-                                        <td>  <a href="/shop/<?= $shop->shop_id ?>/product" class="btn btn-primary">View Products</a></td>
+                                        <td><?= $shop->unique_id ?></td>
+                                        <td>  <a href="/shop/<?= $shop->unique_id ?>" class="btn btn-primary">Go to Shop</a></td>
+                                        <td>  <a href="/shop/<?= $shop->unique_id ?>/product" class="btn btn-primary">View Products</a></td>
 
-                                        <td>  <a href="/shop/<?= $shop->shop_id ?>/delete" class="btn btn-danger">Delete Shop</a></td>
+                                        <td>  <a href="/shop/<?= $shop->unique_id ?>/delete" class="btn btn-danger">Delete Shop</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

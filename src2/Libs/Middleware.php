@@ -1,6 +1,7 @@
 <?php
 namespace Codad5\Wemall\Libs;
-use Codad5\Wemall\Libs\Utils\ShopAuth;
+use Codad5\Wemall\Controller\V1\ShopController;
+use Codad5\Wemall\Controller\V1\UserController;
 use Codad5\Wemall\Libs\Utils\UserAuth;
 use Trulyao\PhpRouter\HTTP\Request;
 use Trulyao\PhpRouter\HTTP\Response;
@@ -13,7 +14,7 @@ Class Middleware {
     // setcookie('redirect_to_login', '', time() - 3600, '/');
         if(!UserAuth::who_is_loggedin()){
             //unset previous cookie
-            //set cookie for url that was for 10mins
+            //set cookie for url that was for 10 mins
             $url = $_SERVER['REQUEST_URI'];
             //remove the query string
             $url = explode('?', $url)[0];
@@ -22,12 +23,12 @@ Class Middleware {
             }
             return $res->redirect('/logout?error=login required for this action ');
         }
-
+        
         return $res;
     }
     public static function redirect_if_logged_in(Request $req, Response $res): Response
     {
-        if(UserAuth::who_is_loggedin()){
+        if(UserController::any_is_logged_in()){
             return $res->redirect('/home');
         }
         return $res;
@@ -36,7 +37,7 @@ Class Middleware {
     //redirect if shop does not exist
     public static function redirect_if_shop_does_not_exist(Request $req, Response $res): Response
     {
-        if(!ShopAuth::shop_is_valid($req->params('id'))){
+        if(!ShopController::exist($req->params('id'))){
             return $res->redirect('/home?error=Shop does not exist');
         }
         return $res;

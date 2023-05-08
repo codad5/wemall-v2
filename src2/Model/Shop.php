@@ -1,8 +1,8 @@
 <?php
 namespace Codad5\Wemall\Model;
 use Codad5\Wemall\DS\lists;
-use Codad5\Wemall\Libs\CustomException;
 use Codad5\Wemall\Libs\Database;
+use Codad5\Wemall\Libs\Exceptions\CustomException;
 
 class Shop{
     const SHOP_TYPE_ARRAY = ['Clothing'];
@@ -216,17 +216,17 @@ class Shop{
     
     public static function get_admin($shop_id): lists
     {
-        return admins::list($shop_id);
+        return Admins::list($shop_id);
     }
     public static function has_access($shop_id, $user_id, $level = null): bool
     {
 //        var_dump(self::get_admin($shop_id));
-        $ou = self::get_admin($shop_id)->filter(function (Admins $admin) use($user_id, $level) {
+        $ou = self::get_admin($shop_id)->filter(function (User $admin) use($user_id, $level) {
             if (isset($level) && $level != $admin->level) return false;
 //            if($user_id == $admin->user_id)
+                return true;
 
     })->count() > 0;
-        exit();
         return $ou;
     }
     /**

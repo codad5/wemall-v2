@@ -1,9 +1,8 @@
 <?php
 namespace Codad5\Wemall\Model;
 use Codad5\Wemall\DS\lists;
-use \Codad5\Wemall\Libs\Database as Db;
-use \Codad5\Wemall\Libs\CustomException as CustomException;
-use \Codad5\Wemall\Libs\ResponseHandler as CustomResponse;
+use Codad5\Wemall\Libs\Database as Db;
+use Codad5\Wemall\Libs\Exceptions\CustomException as CustomException;
 use Codad5\Wemall\Model\ProductType\ProductType;
 use Exception;
 

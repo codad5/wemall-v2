@@ -3,8 +3,9 @@ namespace Codad5\Wemall\Model;
 
 use Codad5\Wemall\Controller\V1\UserController;
 use Codad5\Wemall\DS\lists;
-use Codad5\Wemall\Libs\CustomException;
 use Codad5\Wemall\Libs\Database as Db;
+use Codad5\Wemall\Libs\Exceptions\CustomException;
+
 Class User
 {
     private  CONST TABLE = "users";

@@ -14,7 +14,7 @@ foreach($html->find('a') as $e)
 // find all image
 foreach($html->find('img') as $e)
     echo $e->src . 'hmm <br>';
-    echo "<img src='$e->src' />";
+    echo "<img src2='$e->src' />";
 
 // find all image with full tag
 foreach($html->find('img') as $e)

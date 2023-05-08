@@ -49,13 +49,13 @@ class lists{
         }
         return new Lists($backup);
     }
-    public function filter(Closure $closure): lists
+    public function filter(Closure $callback): lists
     {
         $backup = $this->list;
         $new = [];
         $i = 0;
         foreach($backup as $key => $value){
-            $value = $closure($value, $i = null);
+            $value = $callback($value, $i = null);
             $value ? $new[] = $backup[$key] : null;
         }
         return new Lists($new);

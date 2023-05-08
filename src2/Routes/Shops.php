@@ -8,11 +8,13 @@
  use Trulyao\PhpRouter\HTTP\Request as Request;
  use Codad5\Wemall\Controller\V1\{ShopController};
  use Codad5\Wemall\View\V1 as View;
- $router = new ShopRouter(__DIR__ . "/src/view/", "/", '/shop');
+ $router = new ShopRouter(__DIR__ . "/src2/view/", "/", '/shop');
 
 $router->run([Middleware::class, "redirect_if_logged_out"]);
 $router->run([Middleware::class, "redirect_if_shop_does_not_exist"]);
 $router->run([Middleware::class, "redirect_if_user_is_not_shop_owner"]);
+$router->run(function (){
+});
 
 
 $router->get('/', function () {

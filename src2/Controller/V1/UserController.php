@@ -2,12 +2,10 @@
 namespace Codad5\Wemall\Controller\V1;
 
 
-use Codad5\Wemall\Libs\CustomException;
- use Codad5\Wemall\Libs\Helper\Helper;
- use Codad5\Wemall\Libs\Validator;
- use Codad5\Wemall\Model\User as User;   
- use Codad5\Wemall\Model\Shop;
-use phpDocumentor\Reflection\Types\Boolean;
+use Codad5\Wemall\Libs\Exceptions\CustomException;
+use Codad5\Wemall\Libs\Helper\Helper;
+use Codad5\Wemall\Libs\Validator;
+use Codad5\Wemall\Model\User as User;
 use Trulyao\PhpRouter\HTTP\Request;
 
 class UserController

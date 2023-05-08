@@ -1,16 +1,16 @@
 <?php
 namespace Codad5\Wemall\Model;
 
-use Codad5\Wemall\Libs\Database;
 use Codad5\Wemall\DS\lists;
-use Codad5\Wemall\Libs\CustomException;
+use Codad5\Wemall\Libs\Database;
+use Codad5\Wemall\Libs\Exceptions\CustomException;
 
 class Admins{
 
     private const TABLE = 'SHOP_ADMINS';
     protected Database $conn;
-    readonly public User $user;
-    protected Shop $shop;
+    readonly public User|null $user;
+    protected Shop|null $shop;
     public string|int $level;
     public string|int $unique_id;
 
@@ -99,7 +99,8 @@ class Admins{
     }
     public function get_by($by, $value)
     {
-        return $this->conn->where($by,$value);
+        $data = $this->conn->where($by,$value);
+        return $data;
     }
     
     public static function where($column, $value)

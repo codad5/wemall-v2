@@ -1,7 +1,7 @@
 <?php
 namespace Codad5\Wemall\Controller\V1;
 
-use Codad5\Wemall\Libs\CustomException;
+use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Validator;
 use Codad5\Wemall\Model\Shop as Shop;
 use Codad5\Wemall\Model\User;

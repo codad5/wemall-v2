@@ -18,136 +18,78 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `wemall2`
+-- Database: `wemall3`
 --
 
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
 
 CREATE TABLE `users` (
-  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `email` varchar(300) NOT NULL,
-  `password` varchar(300) NOT NULL,
-  `unique_id` varchar(300) NOT NULL, 
-  `api_key` varchar(300) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shops`
---
+ `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+ `user_id` varchar(11) UNIQUE NOT NULL,
+ `name` varchar(255) NOT NULL,
+ `username` varchar(50) UNIQUE NOT NULL,
+ `email` varchar(300) UNIQUE NOT NULL,
+ `password` varchar(300) NOT NULL,
+ `api_key` varchar(300) UNIQUE NOT NULL,
+ `created_at` datetime NOT NULL DEFAULT current_timestamp()
+);
 
 CREATE TABLE `shops` (
-  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` TEXT NOT NULL,
-  `created_by` varchar(255) NOT NULL,
-  `email` varchar(300) NOT NULL,
-  `unique_id` varchar(300) NOT NULL, 
-  `api_key` varchar(300) NOT NULL,
-  `shop_type` varchar(300) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---  Shop admin relationship
-
-CREATE TABLE `SHOP_ADMINS` (
-  `id` INT(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  `user_id` VARCHAR(255) NOT NULL,
-  `shop_id` VARCHAR(255) NOT NULL,
-  `shop_name` VARCHAR(255) NOT NULL,
-  `user_name` VARCHAR(255) NOT NULL,
-  `level` INT(3) NOT NULL DEFAULT 0,
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP()
-) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4;
+ `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+ `shop_id` varchar(11) UNIQUE NOT NULL ,
+ `name` varchar(50) UNIQUE NOT NULL,
+ `email` varchar(200) UNIQUE NOT NULL,
+ `description` TEXT ,
+ `type` ENUM('clothing')  NOT NULL,
+ `creator_id` varchar(11) NOT NULL ,
+ `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+ FOREIGN KEY (creator_id) REFERENCES users(user_id)
+);
 
 CREATE TABLE `products` (
-  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` TEXT NOT NULL,
-  `category` varchar(255) NOT NULL,
-  `price` varchar(255) NOT NULL,
-  `discount` varchar(255) NOT NULL,
-  `discount_type` varchar(255) NOT NULL,
-  `created_by` varchar(255) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `images` varchar(255) NOT NULL,
-  `product_id` varchar(300) NOT NULL, 
-  `product_type` varchar(300) NOT NULL,
-  `shop_id` varchar(300) NOT NULL, 
-  `active_status` tinyInt NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    `product_id` varchar(11) UNIQUE NOT NULL ,
+    `shop_id` varchar(11) UNIQUE NOT NULL ,
+    `name` varchar(100) UNIQUE NOT NULL,
+    `price` varchar(200) UNIQUE NOT NULL,
+    `description` TEXT ,
+    `type` ENUM('clothing')  NOT NULL,
+    `discount` INT(10) NOT NULL ,
+    `discount_type` ENUM('percentage', 'cut') NOT NULL ,
+    `quantity` INT DEFAULT 0,
+    `sold` INT DEFAULT 0,
+    `status` ENUM('deleted', 'sold_out', 'active') NOT NULL DEFAULT 'active',
+    `creator_id` varchar(11) NOT NULL ,
+    `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+    FOREIGN KEY (creator_id) REFERENCES users(user_id),
+    FOREIGN KEY  (shop_id) REFERENCES  shops(shop_id)
+);
 
--- table for clothing products to inner join with products table
+CREATE TABLE `product_images` (
+  `id` int(55) PRIMARY KEY AUTO_INCREMENT NOT NULL ,
+  `product_id` varchar(11) NOT NULL ,
+  `shop_id` varchar(11) NOT NULL ,
+  `image_path`varchar(265) UNIQUE NOT NULL ,
+  FOREIGN KEY (product_id) REFERENCES products(product_id),
+  FOREIGN KEY  (shop_id) REFERENCES  shops(shop_id)
+);
+
 CREATE TABLE `clothing_products` (
-  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  `product_id` varchar(255) NOT NULL,
-  `size` varchar(255) NOT NULL,
-  `color` varchar(255) NOT NULL,
-  `gender` varchar(255) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- table for food products to inner join with products table
-CREATE TABLE `food_products` (
-  `id` int(11) PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  `product_id` varchar(255) NOT NULL,
-  `quantity` varchar(255) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp() 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- --------------------------------------------------------
-
---
--- Table structure for table `orders`
---
-
--- CREATE TABLE `orders` (
---   `id` int(11) NOT NULL,
---   `email` varchar(300) NOT NULL,
---   `product_name` varchar(255) NOT NULL,
---   `quantity` int(11) NOT NULL,
---   `total_price` int(11) NOT NULL,
---   `order_id` varchar(300) NOT NULL,
---   `payment_id` varchar(300) DEFAULT NULL,
---   `verified` tinyint(1) NOT NULL,
---   `delivered` tinyint(1) NOT NULL,
---   `datejoined` datetime DEFAULT current_timestamp()
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+     `id` int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL ,
+     `product_id` varchar(11) NOT NULL ,
+     `color` varchar(8) NOT NULL ,
+     `gender` ENUM('male', 'female', 'unisex') NOT NULL,
+     FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
 
 
-
---
--- Indexes for dumped tables
---
-
-
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-COMMIT;
-
+CREATE TABLE `shop_admin` (
+    `id` int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    `user_id` varchar(11) NOT NULL,
+    `shop_id` varchar(11) NOT NULL ,
+    `level` ENUM('admin', 'super_admin') NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (shop_id) REFERENCES shops(shop_id)
+);
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
