@@ -34,14 +34,14 @@ $router->run(function ($req, $res) {
 });
 
 /** @var Router $shop_routes */
-//$shop_routes = Import::this('src/Routes/Shops');
+$shop_routes = Import::this('src/Routes/Shop');
 /** @var Router $home_routes */
 $home_routes = Import::this('src/Routes/Home');
 /** @var Router $auth_routes */
 $auth_routes = Import::this('src/Routes/Auth');
 
 $router->use_route($home_routes);
-//$router->use_route($shop_routes);
+$router->use_route($shop_routes);
 $router->use_route($auth_routes);
 // echo '<pre>';
 // var_dump($router->routes);

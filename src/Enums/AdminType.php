@@ -2,8 +2,8 @@
 
 namespace Codad5\Wemall\Enums;
 
-enum AdminType: string
+enum AdminType: int
 {
-    case super_admin = 'super_admin';
-    case admin = "admin";
+    case super_admin = 2;
+    case admin = 1;
 }

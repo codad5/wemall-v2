@@ -19,13 +19,18 @@ class Shop
     readonly string $email;
     readonly string $description;
     readonly SHopType $type;
-    readonly bool $ready;
+    public bool $ready;
     readonly User $creator;
     readonly string $created_at;
     readonly Database $conn;
+    /**
+     * @var Product[] $products
+     */
+    public array $products;
     public function __construct(string $id = null)
     {
         $this->conn = new Database(self::TABLE);
+        $this->products = [];
         $this->ready = false;
         if($id)
             $this->ready($id);
@@ -49,6 +54,7 @@ class Shop
         $this->type = ShopType::tryFrom($shop['type']);
         $this->creator = User::find($shop['creator_id']);
         $this->created_at = $shop['created_at'];
+        $this->ready = true;
 
     }
 
@@ -114,6 +120,27 @@ class Shop
     {
         return strtoupper(substr('S'.$this->last_id()."A".md5(uniqid(rand(), true)), 0, 10));
     }
+
+    public function toArray(): array
+    {
+        return [
+            'shop_id' => $this->shop_id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'description' => $this->description,
+            'type' => $this->type,
+            'creator_id' => $this->creator->user_id,
+            'created_at' => $this->created_at,
+            'products' => $this->products
+        ];
+    }
+
+    public function withProducts()
+    {
+        $this->products = Product::getProductFromShop($this) ?? [];
+        return $this;
+    }
+
     protected function generate_api_key() : string
     {
         return strtolower(substr('api_u_'.$this->last_id()."A".md5(uniqid(rand(), true)), 0, 21));
@@ -134,11 +161,11 @@ class Shop
         ]);
         return $this;
     }
-    function isAdmin(User $user)
+    function isAdmin(User|int $user, $level = 1)
     {
-        $data = Database::query("SELECT * FROM shop_admin INNER JOIN  users ON shop_admin.user_id = users.user_id WHERE shop_id = ? AND user_id = ?", [$this->shop_id, $user->user_id])->fetch();
-        if($data && count($data) > 0) return $data;
-        return false;
+        $user_id = ($user instanceof User) ? $user->user_id : $user;
+        return Database::query("SELECT * FROM shop_admin INNER JOIN  users ON shop_admin.user_id = users.user_id WHERE shop_id = ? AND shop_admin.user_id = ? AND level >= ?", [$this->shop_id, $user_id, $level])->fetch();
+
     }
 
 //    function getAdmins

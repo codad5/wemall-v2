@@ -44,7 +44,7 @@ Class Middleware {
     
     public static function redirect_if_user_is_not_shop_owner(Request $req, Response $res): Response
     {
-        if(!self::is_user_shop_owner($req->params('id'), $_SESSION['user_unique'])){
+        if(!ShopAuth::is_shop_admin_with_access($req->params('id'), UserAuth::who_is_loggedin())){
             return $res->redirect('/home?error=You are not the owner of this shop');
         }
         return $res;

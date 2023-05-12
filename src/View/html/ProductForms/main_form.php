@@ -3,7 +3,7 @@
   $values = json_encode($values);
   $values = json_decode($values);
 ?>
-<form class="row g-3" id="add_product" action="/shop/<?=$shop['unique_id']?>/product/<?=$values->form_action ?? "create"?>" method="post" enctype="multipart/form-data">
+<form class="row g-3" id="add_product" action="/shop/<?=$shop['shop_id']?>/product/<?=$values->form_action ?? "create"?>" method="post" enctype="multipart/form-data">
   <div class="col-md-4" id="product_name_cnt">
     <label for="product_name" class="form-label">Product name</label>
       <input type="text" class="form-control  " name="name" id="product_name" value="<?=$values?->name ?? '' ?>">
@@ -40,7 +40,7 @@
   <div class="col-md-4" id="discount_method_cnt">
     <label for="discount_method" class="form-label">Discount Method</label>
     <select class="form-select" name="discount_type" id="discount_method" value="<?=$values?->discount_type ?? '' ?>">
-      <option value="flat">Flat</option>
+      <option value="cut">Flat</option>
       <option value="percentage">Percentage</option>
     </select>
     <div class="invalid-feedback">
@@ -75,7 +75,7 @@
   </fieldset> -->
 
   <!-- SHOP FROM -->
-  <?=$shop['form']($shop['shop_type'], $values)?>
+  <?=$shop['form']($shop['type'], $values)?>
   <!-- END OF SHOP FORM -->
   <div class="col-md-3" id="product_quantity_cnt">
     <label for="product_quantity" class="form-label">Quantity <?=isset($values?->form_action) ? 'Left' : 'To be added' ?></label>

@@ -68,10 +68,10 @@ class Database
             }
         }
     }
-    public static function getInstance() :self
+    public static function getInstance(string $table = null) :self
     {
         if (!self::$instance) {
-            return new self(self::$table);
+            return new self($table ?? self::$table);
         }
         return self::$instance;
     }
