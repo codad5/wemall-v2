@@ -21,11 +21,12 @@ class Shop
     readonly SHopType $type;
     public bool $ready;
     readonly User $creator;
+    /**
+     * @var User[]
+     */
+    readonly array $admins;
     readonly string $created_at;
     readonly Database $conn;
-    /**
-     * @var Product[] $products
-     */
     public array $products;
     public function __construct(string $id = null)
     {
@@ -131,7 +132,8 @@ class Shop
             'type' => $this->type,
             'creator_id' => $this->creator->user_id,
             'created_at' => $this->created_at,
-            'products' => $this->products
+            'products' => $this->products,
+            'admins' => $this->admins ?? []
         ];
     }
 
@@ -140,6 +142,15 @@ class Shop
         $this->products = Product::getProductFromShop($this) ?? [];
         return $this;
     }
+
+    public function findProduct($product_id)
+    {
+        $product = Product::getProductFromShop($this, $product_id);
+        if(!empty($product)) return Product::find($product[0]['product_id']);
+        return false;
+    }
+
+
 
     protected function generate_api_key() : string
     {
@@ -153,19 +164,36 @@ class Shop
     }
     public function addUserAsAdmin(User $user, AdminType $level)
     {
-        $sql = "INSERT INTO shop_admin (user_id, shop_id,  level) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO shop_admin (user_id, shop_id, level, added_by) VALUES (?, ?, ?, ?)";
         $data = Database::query($sql, [
             $user->user_id,
             $this->shop_id,
-            $level->value
+            $level->value,
+            UserAuth::who_is_loggedin()->user_id
         ]);
         return $this;
     }
-    function isAdmin(User|int $user, $level = 1)
+    function isAdmin(User|int $user, AdminType $level = AdminType::admin)
     {
         $user_id = ($user instanceof User) ? $user->user_id : $user;
-        return Database::query("SELECT * FROM shop_admin INNER JOIN  users ON shop_admin.user_id = users.user_id WHERE shop_id = ? AND shop_admin.user_id = ? AND level >= ?", [$this->shop_id, $user_id, $level])->fetch();
+        return Database::query("SELECT * FROM shop_admin INNER JOIN  users ON shop_admin.user_id = users.user_id WHERE shop_id = ? AND shop_admin.user_id = ? AND level >= ?", [$this->shop_id, $user_id, $level->value])->fetch();
 
+    }
+
+    function withAdmins(): static
+    {
+        $this->admins =  $this->admins ?? $this->getAdmins($this);
+        return $this;
+    }
+
+    public function getAdmins(Shop $shop ,AdminType $level = AdminType::admin, $as_array = true) : array
+    {
+        $admins = Database::query("SELECT shop_admin.*, users.*, addedby.username as added_by_username FROM shop_admin INNER JOIN  users ON shop_admin.user_id = users.user_id INNER JOIN users addedby ON shop_admin.added_by = addedby.user_id WHERE shop_id = ? AND level >= ? ORDER BY shop_admin.level DESC", [$shop->shop_id, $level->value])->fetchAll();
+        if($as_array) return $admins;
+        foreach ($admins as $index => $admin) {
+            $admins[$index] = User::find($admin['user_id']);
+        }
+        return $admins;
     }
 
 //    function getAdmins

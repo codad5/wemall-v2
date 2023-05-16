@@ -76,7 +76,7 @@ CREATE TABLE `product_images` (
 CREATE TABLE `clothing_products` (
      `id` int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL ,
      `product_id` varchar(11) NOT NULL ,
-     'size' varchar(11) NOT NULL ,
+     `size` varchar(11) NOT NULL ,
      `color` varchar(8) NOT NULL ,
      `gender` ENUM('male', 'female', 'unisex') NOT NULL,
      FOREIGN KEY (product_id) REFERENCES products(product_id)
@@ -88,7 +88,9 @@ CREATE TABLE `shop_admin` (
     `user_id` varchar(11) NOT NULL,
     `shop_id` varchar(11) NOT NULL ,
     `level` ENUM('1', '2') NOT NULL,
+    `added_by` varchar(11) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (added_by) REFERENCES users(user_id),
     FOREIGN KEY (shop_id) REFERENCES shops(shop_id)
 );
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

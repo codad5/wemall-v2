@@ -79,7 +79,7 @@
   <!-- END OF SHOP FORM -->
   <div class="col-md-3" id="product_quantity_cnt">
     <label for="product_quantity" class="form-label">Quantity <?=isset($values?->form_action) ? 'Left' : 'To be added' ?></label>
-    <input type="number" class="form-control " value="<?=$values?->quantity_left ?? '' ?>" id="product_quantity" required="" min="0" name="quantity">
+      <input type="number" class="form-control " value="<?=isset($values?->quantity) ? $values?->quantity - $values?->sold : '' ?>" id="product_quantity" required="" min="0" name="quantity">
     <div class="invalid-feedback">
       Error Here
     </div>
@@ -100,7 +100,7 @@
     <label for="validationServerUsername" class="form-label">Added By</label>
     <div class="input-group">
       <span class="input-group-text" id="inputGroupPrepend3">@</span>
-      <input type="text" class="form-control" id="validationServerUsername" name="created_by" value="<?=$_SESSION['username']?>" aria-describedby="inputGroupPrepend3" required="" readonly="">
+      <input type="text" class="form-control" id="validationServerUsername" name="created_by" value="<?=$values?->creator ?? $_SESSION['username']?>" aria-describedby="inputGroupPrepend3" required="" readonly="">
       <div class="invalid-feedback">
         Please choose a username.
       </div>
@@ -129,7 +129,7 @@
   var product_price = document.getElementById('product_price');
   product_discount.addEventListener('input', function(e) {
     let invalid_cnt = document.getElementById('product_discount_cnt').querySelector('.invalid-feedback');
-    if (discount_method.value == 'flat') {
+    if (discount_method.value == 'cut') {
       if (parseInt(product_discount.value) > parseInt(product_price.value)) {
         product_discount.setCustomValidity("Discount cannot be greater than price");
         // add is invalid class to input

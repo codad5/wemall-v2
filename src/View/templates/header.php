@@ -57,6 +57,12 @@
                 </li>
                 <?php endif; ?>
             </ul>
+
+        </div>
+        <div>
+            <?php if(isset($_SESSION['username'])) : ?>
+            Signed in as  <b><?=strtoupper($_SESSION['username'])?></b>
+            <?php endif; ?>
         </div>
     </nav>
 <?php if(isset($notification) && isset($include)): ?>

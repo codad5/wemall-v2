@@ -67,8 +67,8 @@
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <a href="/shop/<?=$shop['shop_id']?>/edit">
-                        <i class="fa fa-edit"></i> Edit Shop
+                    <a href="/shop/<?=$shop['shop_id']?>/settings">
+                        <i class="fa fa-edit"></i> Shop Settings
                     </a>
                 </li>
                 <li class="list-group-item">

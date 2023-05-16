@@ -33,6 +33,7 @@ class Product
     public string $created_at;
     readonly Database $conn;
     protected bool $ready;
+    readonly array $product_data;
     /**
      * @var ProductImage[]
      */
@@ -53,10 +54,10 @@ class Product
         if(!$id) $id = $this->product_id;
         if ($this->ready) return $this;
         $product = $this->get_product_by('product_id', $id);
-        if(!$product) throw new ProductException('Product not found');
+        if(!$product) throw new ProductException('Product not found', ProductException::PRODUCT_NOT_FOUND);
         $product = $product[0];
-        $this->product_id = $product['product_id'];
         $this->shop = Shop::find($product['shop_id']);
+        $this->product_id = $product['product_id'];
         $this->name = $product['name'];
         $this->price = $product['price'];
         $this->description = $product['description'];
@@ -146,11 +147,57 @@ class Product
     {
     }
 
-    static function getProductFromShop(Shop $shop)
+    /**
+     * @throws ProductException
+     * @throws CustomException
+     */
+    static function getProductFromShop(Shop $shop, string $product_id = null): false|array
     {
-        $query = "SELECT * FROM " . self::TABLE ." INNER JOIN {$shop->type->getProductTableName()} ON ".self::TABLE.".product_id = {$shop->type->getProductTableName()}.product_id wHERE ".self::TABLE.".shop_id = ?";
-        return Database::query($query, [$shop->shop_id])->fetchAll();
+        $query = "SELECT main.*, sub.*, users.username AS creator FROM " . self::TABLE ." AS main INNER JOIN {$shop->type->getProductTableName()} AS sub ON main.product_id = sub.product_id INNER JOIN users ON main.creator_id = users.user_id wHERE main.shop_id = ?";
+        $binding = [$shop->shop_id];
+        if($product_id) {
+            $query .= "AND main.product_id = ?";
+            $binding[] = $product_id;
+        }
+        $products = Database::query($query, $binding)->fetchAll();
+        if(!$products) return [];
+        foreach ($products as $index => $product) {
+            $products[$index] = [...$product, "sell_price" => self::calculateSellPrice($product['discount_type'], $product['price'], $product['discount'])];
+        }
+        return $products;
     }
 
+    /**
+     * @throws ProductException
+     */
+    static function calculateSellPrice(string $discount_method, int $price, int $discount): float|int
+    {
+        $discountType = DiscountType::tryFrom($discount_method);
+        return $discountType->getSellPrice($price, $discount);
+    }
+
+    /**
+     * @throws ProductException
+     */
+    public static function find(mixed $product_id): ?Product
+    {
+        try{
+            return new self($product_id);
+        }catch (ProductException $e)
+        {
+            if($e->getCode() == ProductException::PRODUCT_NOT_FOUND) return null;
+            throw $e;
+        }
+    }
+
+    /**
+     * @throws ProductException
+     * @throws CustomException
+     */
+    function toArray(): array
+    {
+
+        return $this->product_data ?? $this->product_data = self::getProductFromShop($this->shop, $this->product_id)[0];
+    }
 
 }

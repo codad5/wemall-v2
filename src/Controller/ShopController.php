@@ -2,6 +2,7 @@
 
 namespace Codad5\Wemall\Controller;
 
+use Codad5\Wemall\Enums\AdminType;
 use Codad5\Wemall\Enums\ShopType;
 use Codad5\Wemall\Libs\Exceptions\AuthException;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
@@ -11,6 +12,7 @@ use Codad5\Wemall\Libs\Validator;
 use Codad5\Wemall\Libs\ViewLoader;
 use Codad5\Wemall\Models\Product;
 use Codad5\Wemall\Models\Shop;
+use Codad5\Wemall\Models\User;
 use Trulyao\PhpRouter\HTTP\Request;
 use Trulyao\PhpRouter\HTTP\Response;
 use Codad5\Wemall\View\V1 as View;
@@ -48,7 +50,7 @@ class ShopController
     {
         try{
             $shop = Shop::find($req->params('id'));
-            $form = View\Shop::load_html_form($shop->type->value);
+            $form = View\Shop::load_html_form($shop->type);
             //load add product page
             return $res->send(ViewLoader::load('html/shop_home.php', ["request" => $req, "shop" => [...$shop->toArray(), 'from' => $form]]));
         }catch(\Exception $e){
@@ -71,19 +73,40 @@ class ShopController
 
         }
     }
-    static function upload_product(Request $req, Response $res)
-    {
-        $shopId = $req->params('id');
-        try{
-            $shop = Shop::find($shopId);
-            if(!$shop) throw new ShopException('Shop not found');
-            if (!Validator::validate_product_creation_data($shop->type, $req))
-            throw new CustomException("Error is shop Data", 300);
-            $product = Product::create($shop, $req->body());
-            return $res->redirect("/shop/$shopId/product?success=Product successfully created");
-        }catch(\Exception $e){
-            return $res->redirect("/shop/$shopId/product?error=".$e->getMessage());
 
+    static function settings_view(Request $req, Response $res): Response
+    {
+        try{
+            //get the shop id
+            ['id' => $id] = $req->params();
+            $shop = Shop::find($id)->withAdmins()->toArray();
+            //load add product page
+            return $res->send(ViewLoader::load('html/shop_setting.php', ["request" => $req, "shop" => $shop, "admins" => $shop['admins']]));
+        }catch(\Exception $e){
+            var_dump($e);
+            return $res->redirect('/home?error='.$e->getMessage());
+
+        }
+    }
+
+    /**
+     * @throws AuthException
+     */
+    static function add_admin_to_shop(Request $request, Response $response)
+    {
+        $shop_id = $request->params('id');
+        try {
+            if(empty($request->body('email'))) throw new \Exception('Please Put in a valid username/email');
+            $shop = Shop::find($shop_id);
+            $user = User::find($request->body('email'));
+            if(!$user) throw new AuthException("User {$request->body('email')} dont Exist");
+            if($shop->isAdmin($user)) throw new \Exception("{$request->body('email')} is already an admin");
+            $shop->addUserAsAdmin($user, AdminType::tryFrom($request->body('level')));
+            return $response->redirect("/shop/$shop_id/settings?success=Admin added");
+
+        }catch (\Exception $e)
+        {
+            return $response->redirect("/shop/$shop_id/settings?error=".$e->getMessage());
         }
     }
 }

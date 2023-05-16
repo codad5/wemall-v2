@@ -1,5 +1,6 @@
 <?php
 namespace Codad5\Wemall\Libs;
+use Codad5\Wemall\Enums\AdminType;
 use Codad5\Wemall\Libs\Utils\ShopAuth;
 use Codad5\Wemall\Libs\Utils\UserAuth;
 use Trulyao\PhpRouter\HTTP\Request;
@@ -44,9 +45,20 @@ Class Middleware {
     
     public static function redirect_if_user_is_not_shop_owner(Request $req, Response $res): Response
     {
-        if(!ShopAuth::is_shop_admin_with_access($req->params('id'), UserAuth::who_is_loggedin())){
-            return $res->redirect('/home?error=You are not the owner of this shop');
+        if(!$has_access = ShopAuth::is_shop_admin_with_access($req->params('id'), UserAuth::who_is_loggedin())){
+            $res->redirect('/home?error=You are not the owner of this shop');
+            exit();
         }
+        $_SESSION["admin_level"] = intval($has_access['level']);
+        return $res;
+    }
+    public static function redirect_if_user_is_not_super_admin(Request $req, Response $res): Response
+    {
+        if(!$has_access = ShopAuth::is_shop_admin_with_access($req->params('id'), UserAuth::who_is_loggedin(), AdminType::super_admin)){
+            $res->redirect("/shop/{$req->params('id')}?error=You dont have the access");
+            exit();
+        }
+        $_SESSION["admin_level"] = intval($has_access['level']);
         return $res;
     }
     public static function is_user_shop_owner($shop_id, $user_id): bool

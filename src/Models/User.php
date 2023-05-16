@@ -75,6 +75,7 @@ class User
     }
     static function userExist($id)
     {
+        $id = trim($id);
         $user = new self;
         $data = $user->get_user_by('user_id', $id) ??
             $user->get_user_by('email', $id) ??

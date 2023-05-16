@@ -28,4 +28,13 @@ enum DiscountType: string
         }
         return true;
     }
+    public function getSellPrice(int $price, int $discount): float|int
+    {
+        if(!$this->validate($discount, $price)) throw new ProductException('Invalid Price');
+        return match ($this) {
+            self::cut => $price - $discount,
+            self::percentage => $price - (($discount / 100) * $price),
+            default => 0,
+        };
+    }
 }
