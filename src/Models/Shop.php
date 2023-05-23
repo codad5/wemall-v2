@@ -162,6 +162,11 @@ class Shop
         $shopExist = self::shopExist($login);
         return $shopExist ?  new self($shopExist['shop_id']) : null;
     }
+
+    function isCreator(User $user)
+    {
+        return $this->creator->user_id == $user->user_id;
+    }
     public function addUserAsAdmin(User $user, AdminType $level)
     {
         $sql = "INSERT INTO shop_admin (user_id, shop_id, level, added_by) VALUES (?, ?, ?, ?)";
@@ -170,6 +175,16 @@ class Shop
             $this->shop_id,
             $level->value,
             UserAuth::who_is_loggedin()->user_id
+        ]);
+        return $this;
+    }
+
+    public function removeUserFromAdmin(User $user)
+    {
+        $sql = "DELETE  FROM shop_admin WHERE user_id = ? AND shop_id = ?";
+        $data = Database::query($sql, [
+            $user->user_id,
+            $this->shop_id
         ]);
         return $this;
     }

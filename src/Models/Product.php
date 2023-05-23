@@ -14,7 +14,7 @@ use Codad5\Wemall\Libs\Exceptions\ImageException;
 use Codad5\Wemall\Libs\Exceptions\ProductException;
 use Codad5\Wemall\Libs\Exceptions\ShopException;
 use Codad5\Wemall\Libs\Utils\UserAuth;
-use  \Codad5\Wemall\Models\{Shop};
+use Codad5\Wemall\Models\{Shop};
 class Product
 {
 
@@ -49,7 +49,7 @@ class Product
             $this->ready($id);
     }
 
-    private function ready(string $id)
+    private function ready(string $id = null)
     {
         if(!$id) $id = $this->product_id;
         if ($this->ready) return $this;
@@ -71,6 +71,7 @@ class Product
         $this->creator = User::find($product['creator_id']);
         $this->ready = true;
         $this->images = ProductImage::getImaagesFromProduct($this->product_id, false);
+        $this->getProductData();
         return $this;
     }
 
@@ -80,7 +81,7 @@ class Product
         return $data && count($data) > 0 ? $data : null;
     }
 
-    static function create(Shop $shop, $field)
+    static function create(Shop $shop, $field): Product
     {
         $self = new self;
         $product_id = $self->generate_id();
@@ -113,6 +114,55 @@ class Product
         }
     }
 
+    function update(Shop $shop, array $fields)
+    {
+        $sub_query = "";
+        $product_fields = $this->type->getFields();
+        foreach ($product_fields as $key => $field)
+        {
+            $sub_query.= "sub.$field = :$field";
+            if (count($product_fields) > $key+1) $sub_query.=", ";
+        }
+        $sql = "UPDATE ".self::TABLE." AS main JOIN {$this->type->getProductTableName()} AS sub ON main.product_id =  sub.product_id 
+        SET main.name = :name,
+            main.price = :price,
+            main.description = :description,
+            main.discount = :discount,
+            main.discount_type = :discount_type,
+            main.quantity = :quantity,
+            $sub_query
+        WHERE main.product_id = :product_id";
+        $editable_fields = ["name", "price", "description", "discount", "discount_type", "quantity", ...$product_fields];
+        $new_binding = [];
+        foreach ($fields as $index => $item) {
+            if(!str_contains($sql, ":$index")) continue;
+            $new_binding[":$index"] = $item;
+        }
+        $bindings = [
+            ...$new_binding,
+            ":product_id" => $this->product_id
+        ];
+//        echo  "<pre>";
+        $data = Database::query($sql, $bindings);
+        $test = $sql;
+        foreach ($bindings as $index => $binding) {
+            $test = str_replace("$index", "'".trim($binding)."'", $test);
+        }
+//        var_dump($test, $bindings);
+//        exit();
+        return $this;
+    }
+
+    function remove()
+    {
+    }
+    function delete(): static
+    {
+        $sql = "UPDATE ".self::TABLE." SET status = :status WHERE product_id = :product_id";
+        $data = Database::query($sql, [":product_id" => $this->product_id, ":status" => ProductStatus::deleted->value]);
+        return $this->ready();
+    }
+
     protected function generate_id() : string
     {
         return strtoupper(substr('P'.$this->last_id()."A".md5(uniqid(rand(), true)), 0, 10));
@@ -143,18 +193,15 @@ class Product
         return $this;
     }
 
-    function delete()
-    {
-    }
 
     /**
      * @throws ProductException
      * @throws CustomException
      */
-    static function getProductFromShop(Shop $shop, string $product_id = null): false|array
+    static function getProductFromShop(Shop $shop, string $product_id = null, ProductStatus $status = ProductStatus::active): false|array
     {
-        $query = "SELECT main.*, sub.*, users.username AS creator FROM " . self::TABLE ." AS main INNER JOIN {$shop->type->getProductTableName()} AS sub ON main.product_id = sub.product_id INNER JOIN users ON main.creator_id = users.user_id wHERE main.shop_id = ?";
-        $binding = [$shop->shop_id];
+        $query = "SELECT main.*, sub.*, users.username AS creator FROM " . self::TABLE ." AS main INNER JOIN {$shop->type->getProductTableName()} AS sub ON main.product_id = sub.product_id INNER JOIN users ON main.creator_id = users.user_id wHERE main.shop_id = ? AND main.status = ?";
+        $binding = [$shop->shop_id, $status->value];
         if($product_id) {
             $query .= "AND main.product_id = ?";
             $binding[] = $product_id;
@@ -189,6 +236,11 @@ class Product
             throw $e;
         }
     }
+    function getProductData()
+    {
+        if(isset($this->product_data)) return $this->product_data;
+        return $this->product_data = Database::query("SELECT * FROM {$this->type->getProductTableName()} WHERE product_id = ?", [$this->product_id])->fetch();
+    }
 
     /**
      * @throws ProductException
@@ -197,7 +249,24 @@ class Product
     function toArray(): array
     {
 
-        return $this->product_data ?? $this->product_data = self::getProductFromShop($this->shop, $this->product_id)[0];
+        return [
+            'product_id' => $this->product_id,
+            'shop_id' => $this->shop->shop_id,
+            'name' => $this->name,
+            'price' => $this->price,
+            'description' => $this->description,
+            'type' => $this->type->value,
+            'discount' => $this->discount,
+            'discount_type' => $this->discount_type->value,
+            'quantity' => $this->quantity,
+            'sold'=>$this->sold,
+            'status' => $this->status->value,
+            'creator_id' => $this->creator->user_id,
+            'created_at' => $this->created_at,
+            'creator' => $this->creator->username,
+            ...$this->getProductData()
+
+        ];
     }
 
 }

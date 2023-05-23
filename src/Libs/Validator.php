@@ -81,7 +81,7 @@ class Validator{
     /**
      * @throws ProductException
      */
-    public static function validate_product_creation_data(ShopType $shopType, Request $req): true
+    public static function validate_product_creation_data(ShopType $shopType, Request $req, $edit = false): true
     {
         $fields = $req->body();
         if(empty($fields['name'])){
@@ -109,10 +109,10 @@ class Validator{
         if(!$discountType->validate($fields['discount'] , $fields['price'])){
             throw new ProductException("Invalid discount value", 303);
         }
-        if(!isset($_FILES[ProductImage::HTTP_IMAGE_NAME])){
+        if(!isset($_FILES[ProductImage::HTTP_IMAGE_NAME]) && !$edit){
             throw new ProductException("Product images required", 303);
         }
-        if(count($_FILES[ProductImage::HTTP_IMAGE_NAME]["name"]) < 1){
+        if(!$edit && count($_FILES[ProductImage::HTTP_IMAGE_NAME]["name"]) < 1 ){
             throw new ProductException("You need to submit at least one Image", 303);
         }
         if(!$shopType->validateProductFormField($req))

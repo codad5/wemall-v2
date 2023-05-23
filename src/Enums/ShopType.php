@@ -16,9 +16,22 @@ enum ShopType: string
         };
     }
 
+    public function getProductUpdateSqlQuery(): string
+    {
+        return match ($this){
+            self::clothing => "INSERT INTO {$this->value}_products  (product_id, color, gender, size) VALUES (:product_id, :color, :gender, :size)"
+        };
+    }
+
     public function getProductTableName(): string
     {
         return $this->value."_products";
+    }
+    function getFields() : array
+    {
+        return match ($this){
+            self::clothing => ['size', 'color', "gender"]
+        };
     }
 
     /**

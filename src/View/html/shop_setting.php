@@ -67,7 +67,8 @@ $limited_access = $_SESSION['admin_level'] < 2;
                                         </tr>
                                         </thead>
                                         <tbody class="product_table_body">
-
+                                        <form action="/shop/<?=$shop['shop_id']?>/admin/delete" method="post" id="delete_admin_form">
+                                        <input type="hidden" name="user_id" data-user-id>
                                         <?php
                                         foreach($admins as $admin):
                                             $is_self = $admin['username'] == $_SESSION['username'];
@@ -80,23 +81,22 @@ $limited_access = $_SESSION['admin_level'] < 2;
                                                 <td><a href="mailto:<?=$admin['email']?>"> <?=$admin['email']?> </a></td>
                                                 <td><?=$admin['level']?></td>
                                                 <td><?=$admin['added_by_username'] == $admin['username'] ? 'Creator' : $admin['added_by_username']?></td>
-                                                <td><button type="button" class="alter_product_btn delete_product_btn btn <?=$cant_be_deleted ? 'btn-danger disabled' : 'btn-danger' ?>" <?=$cant_be_deleted ? 'disabled' : '' ?> readonly data-product-action="delete" data-product-id="<?=$admin['user_id']?>">DELETE</button></td>
+                                                <td><button type="button"  class="alter_product_btn delete_product_btn btn <?=$cant_be_deleted ? 'btn-danger disabled' : 'btn-danger' ?>" <?=$cant_be_deleted ? 'disabled' : '' ?> readonly  data-user-id="<?=$admin['user_id']?>">DELETE</button></td>
                                             </tr>
                                         <?php
                                         endforeach;
                                         ?>
+                                        </form>
                                         <!-- script to  load the edit form through ajax and delete the edit form -->
                                         <script>
-                                            $(document).ready(function(){
-                                                $('.edit_product_btn').click(function(){
-                                                    var product_id = $(this).attr('data-product-id');
-                                                    var product_action = $(this).attr('data-product-action');
-                                                    $('#edit_product_cnt').load(`/shop/<?=$shop['shop_id']?>/product/${product_id}/edit`,
-                                                        function(){
-                                                            $('#product_edit').click();
-                                                        });
-                                                });
-                                            });
+                                            document.querySelectorAll("button[data-user-id]").forEach(button => {
+                                                button.addEventListener('click', (e) => {
+                                                    console.clear()
+                                                    console.log('trying', e.target.dataset.userId)
+                                                    document.querySelector('input[data-user-id]').value = e.target.dataset.userId
+                                                    if(confirm("Are you sure you wanna delete This admin?")) document.querySelector('form#delete_admin_form').submit();
+                                                })
+                                            })
                                         </script>
                                         <!-- end of script to  load the edit form through ajax and delete the edit form -->
 

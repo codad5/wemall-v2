@@ -3,7 +3,7 @@
   $values = json_encode($values);
   $values = json_decode($values);
 ?>
-<form class="row g-3" id="add_product" action="/shop/<?=$shop['shop_id']?>/product/<?=$values->form_action ?? "create"?>" method="post" enctype="multipart/form-data">
+<form class="row g-3" id="add_product" action="/shop/<?=$shop['shop_id']?>/product/<?=isset($values->form_action) ? "$values->product_id/$values->form_action" : "create"?>" method="post" enctype="multipart/form-data">
   <div class="col-md-4" id="product_name_cnt">
     <label for="product_name" class="form-label">Product name</label>
       <input type="text" class="form-control  " name="name" id="product_name" value="<?=$values?->name ?? '' ?>">

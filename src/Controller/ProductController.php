@@ -3,6 +3,7 @@
 namespace Codad5\Wemall\Controller;
 
 use Codad5\Wemall\Libs\Exceptions\CustomException;
+use Codad5\Wemall\Libs\Exceptions\ProductException;
 use Codad5\Wemall\Libs\Exceptions\ShopException;
 use Codad5\Wemall\Libs\Validator;
 use Codad5\Wemall\Libs\ViewLoader;
@@ -29,6 +30,20 @@ class ProductController
 
         }
     }
+    static function delete_product(Request $req, Response $res): Response
+    {
+        ['id' => $shopId, 'product_id' => $product_id] = $req->params();
+        try{
+            $shop = Shop::find($shopId);
+            $product = $shop->findProduct($product_id);
+            if(!$product) throw new ProductException('Product not found');
+            $product = $product->delete();
+            return $res->redirect("/shop/$shopId/product?warn=Product successfully deleted");
+        }catch(\Exception $e){
+            return $res->redirect("/shop/$shopId/product?error=".$e->getMessage());
+
+        }
+    }
 
     static function edit_view(Request $req, Response $res): Response
     {
@@ -47,6 +62,22 @@ class ProductController
         }catch(\Exception $e){
             return $res->send(ViewLoader::load_error_page($e->getCode(), $e->getMessage()));
             // return $res->redirect('/home?error='.$e->getMessage());
+
+        }
+    }
+    static function update(Request $req, Response $res)
+    {
+        ['id' => $shopId, 'product_id' => $product_id] = $req->params();
+        try{
+            $shop = Shop::find($shopId);
+            $product = $shop->findProduct($product_id);
+            if(!$product) throw new ProductException('Product not found');
+            if (!Validator::validate_product_creation_data($shop->type, $req, true))
+                throw new CustomException("Error is shop Data", 300);
+            $product = $product->update($shop, $req->body());
+            return $res->redirect("/shop/$shopId/product?success=Product successfully created");
+        }catch(\Exception $e){
+            return $res->redirect("/shop/$shopId/product?error=".$e->getMessage());
 
         }
     }

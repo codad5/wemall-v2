@@ -92,7 +92,7 @@ class ShopController
     /**
      * @throws AuthException
      */
-    static function add_admin_to_shop(Request $request, Response $response)
+    static function add_admin_to_shop(Request $request, Response $response): Response
     {
         $shop_id = $request->params('id');
         try {
@@ -103,6 +103,25 @@ class ShopController
             if($shop->isAdmin($user)) throw new \Exception("{$request->body('email')} is already an admin");
             $shop->addUserAsAdmin($user, AdminType::tryFrom($request->body('level')));
             return $response->redirect("/shop/$shop_id/settings?success=Admin added");
+
+        }catch (\Exception $e)
+        {
+            return $response->redirect("/shop/$shop_id/settings?error=".$e->getMessage());
+        }
+    }
+
+    static function delete_admin_from_shop(Request $request, Response $response): Response
+    {
+        $shop_id = $request->params('id');
+        try {
+            if(empty($request->body('user_id'))) throw new \Exception('Something went wrong');
+            $shop = Shop::find($shop_id);
+            $user = User::find($request->body('user_id'));
+            if(UserAuth::who_is_loggedin()->user_id == $user->user_id || $shop->isCreator($user)) throw new \Exception("Fail to Delete");
+            if(!$user) throw new AuthException("User {$request->body('user_id')} dont Exist");
+            if(!$shop->isAdmin($user)) throw new \Exception("{$user->username} is not an admin");
+            $shop->removeUserFromAdmin($user);
+            return $response->redirect("/shop/$shop_id/settings?warn=Admin eliminated");
 
         }catch (\Exception $e)
         {

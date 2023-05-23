@@ -1,6 +1,7 @@
 <?php
 namespace Codad5\Wemall\Libs\Exceptions;
 use Codad5\Wemall\Libs\ErrorHandler;
+use Codad5\Wemall\Libs\Helper\Helper;
 use Exception;
 use ReturnTypeWillChange;
 
