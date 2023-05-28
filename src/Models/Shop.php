@@ -4,6 +4,7 @@ namespace Codad5\Wemall\Models;
 
 
 use Codad5\Wemall\Enums\AdminType;
+use Codad5\Wemall\Enums\AppKeyType;
 use Codad5\Wemall\Enums\ShopType;
 use Codad5\Wemall\Libs\Database;
 use Codad5\Wemall\Libs\Exceptions\AuthException;
@@ -25,6 +26,10 @@ class Shop
      * @var User[]
      */
     readonly array $admins;
+    /**
+     * @var Apikey
+     */
+    readonly array $apikeys;
     readonly string $created_at;
     readonly Database $conn;
     public array $products;
@@ -133,7 +138,8 @@ class Shop
             'creator_id' => $this->creator->user_id,
             'created_at' => $this->created_at,
             'products' => $this->products,
-            'admins' => $this->admins ?? []
+            'admins' => $this->admins ?? [],
+            'api_keys' => $this->apikeys ?? []
         ];
     }
 
@@ -152,9 +158,9 @@ class Shop
 
 
 
-    protected function generate_api_key() : string
+    public function generate_api_key($name, AppKeyType $keyType, $constraint) : string
     {
-        return strtolower(substr('api_u_'.$this->last_id()."A".md5(uniqid(rand(), true)), 0, 21));
+        return Apikey::new($this, $keyType, $name, $constraint);
     }
 
     static function find($login): ?Shop
@@ -201,7 +207,12 @@ class Shop
         return $this;
     }
 
-    public function getAdmins(Shop $shop ,AdminType $level = AdminType::admin, $as_array = true) : array
+    function withAppKeys() : static
+    {
+        $this->apikeys =  $this->apikeys ?? $this->getAppKeys($this);
+        return $this;
+    }
+    static function getAdmins(Shop $shop ,AdminType $level = AdminType::admin, $as_array = true) : array
     {
         $admins = Database::query("SELECT shop_admin.*, users.*, addedby.username as added_by_username FROM shop_admin INNER JOIN  users ON shop_admin.user_id = users.user_id INNER JOIN users addedby ON shop_admin.added_by = addedby.user_id WHERE shop_id = ? AND level >= ? ORDER BY shop_admin.level DESC", [$shop->shop_id, $level->value])->fetchAll();
         if($as_array) return $admins;
@@ -210,6 +221,17 @@ class Shop
         }
         return $admins;
     }
+
+    static function getAppKeys(Shop $shop, $as_array = true) : array
+    {
+        $keys = Apikey::getShopKeys($shop) ?? [];
+        if($as_array) return $keys;
+        foreach ($keys as $index => $key) {
+            $keys[$index] = Apikey::find($key['user_id']);
+        }
+        return $keys;
+    }
+
 
 //    function getAdmins
 

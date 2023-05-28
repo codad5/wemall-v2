@@ -15,6 +15,9 @@ $router->get('/', function () {
     echo "mean";
 });
 
+#create a new app api key
+$router->post("/:id/apikey/new", [Middleware::class, "redirect_if_user_is_not_super_admin"], [ShopController::class, 'generate_app_key']);
+
 //shop delete route
 $router->delete('/:id/delete',function($req, $res){
     try{

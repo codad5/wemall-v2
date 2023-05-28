@@ -3,18 +3,27 @@
   
 // Starting clock time in seconds
 $json_array = json_decode(file_get_contents('index.json'), true);
+$json_array['data'] = [];
+$json_array['rates'] = [];
 $file = fopen('index.json', 'w') or die('crash record');
 
 // Start loop
-function start_now($rate, $echo = false)
+function start_now($rate, &$json_array, $echo = false)
 {
     $file = "";
+    $rate_data = [];
     $start_time = microtime(true);
     for ($i = 1; $i <= $rate; $i++) {
-        $file = file_get_contents("http://localhost:2000/shop_20d94aa2b98221/product");
+        $file = file_get_contents("http://localhost:4000/login?");
+        $rate_data[] = [
+            "time_taken" => microtime(true) - $start_time,
+            "position" => $i,
+            "total_rate" => $rate
+        ];
     }
     $end_time = microtime(true);
     if($echo) echo $file;
+    $json_array['rates'][] = $rate_data;
     return  ($end_time - $start_time);
 }
 // End clock time in seconds
@@ -22,7 +31,7 @@ function start_now($rate, $echo = false)
 // Calculate script execution time
 $rate = $argv[1] ?? 20;
 for ($i = 0; $i < 2; $i++){
-    $execution_time = start_now($rate);
+    $execution_time = start_now($rate, $json_array);
     $speed = $rate / $execution_time;
     $json_array['data'][] = [
         'no_of_users' => (int) $rate,

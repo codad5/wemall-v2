@@ -13,7 +13,7 @@ class ShopAuth
         return Shop::find($id);
     }
 
-    static function is_shop_admin_with_access($shop_id, User|int $user, AdminType $min_level = AdminType::admin){
+    static function is_shop_admin_with_access($shop_id, User $user, AdminType $min_level = AdminType::admin){
         $shop = new Shop($shop_id);
         return $shop->isAdmin($user, $min_level);
     }

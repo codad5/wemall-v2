@@ -3,6 +3,7 @@
 namespace Codad5\Wemall\Controller;
 
 use Codad5\Wemall\Enums\AdminType;
+use Codad5\Wemall\Enums\AppKeyType;
 use Codad5\Wemall\Enums\ShopType;
 use Codad5\Wemall\Libs\Exceptions\AuthException;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
@@ -79,9 +80,9 @@ class ShopController
         try{
             //get the shop id
             ['id' => $id] = $req->params();
-            $shop = Shop::find($id)->withAdmins()->toArray();
+            $shop = Shop::find($id)->withAdmins()->withAppKeys()->toArray();
             //load add product page
-            return $res->send(ViewLoader::load('html/shop_setting.php', ["request" => $req, "shop" => $shop, "admins" => $shop['admins']]));
+            return $res->send(ViewLoader::load('html/shop_setting.php', ["request" => $req, "shop" => $shop, "admins" => $shop['admins'], "api_keys" => $shop['api_keys']]));
         }catch(\Exception $e){
             var_dump($e);
             return $res->redirect('/home?error='.$e->getMessage());
@@ -126,6 +127,24 @@ class ShopController
         }catch (\Exception $e)
         {
             return $response->redirect("/shop/$shop_id/settings?error=".$e->getMessage());
+        }
+    }
+
+    static function generate_app_key(Request $req, Response $res)
+    {
+        $shop_id = $req->params('id');
+        try {
+            $app_name = $req->body('app-name');
+            if(empty($app_name)) throw new \Exception('App Name needed');
+            if(empty($req->body('app-type'))) throw new \Exception('App Type needed');
+            $type = AppKeyType::from($req->body('app-type'));
+            $shop = Shop::find($shop_id);
+            $shop->generate_api_key($app_name, $type, $type->getConstraint($req->body('domain-input')));
+            return $res->redirect("/shop/$shop_id/settings?success=created app key");
+
+        }catch (\Exception $e)
+        {
+            return $res->redirect("/shop/$shop_id/settings?error=".$e->getMessage());
         }
     }
 }

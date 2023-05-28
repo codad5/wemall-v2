@@ -93,6 +93,19 @@ CREATE TABLE `shop_admin` (
     FOREIGN KEY (added_by) REFERENCES users(user_id),
     FOREIGN KEY (shop_id) REFERENCES shops(shop_id)
 );
+
+CREATE TABLE `app_key` (
+    `id` int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    `app_name` varchar(11) NOT NULL ,
+    `app_key` varchar(225) UNIQUE NOT NULL,
+    `app_constraint` varchar(225) NOT NULL,
+    `platform` ENUM('web', 'app') NOT NULL DEFAULT  'web',
+    `shop_id` varchar(11) NOT NULL,
+    `creator_id` varchar(11) NOT NULL ,
+    `expire` date DEFAULT current_date(),
+    FOREIGN KEY (shop_id) REFERENCES shops(shop_id),
+    FOREIGN KEY (creator_id) REFERENCES users(user_id)
+);
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

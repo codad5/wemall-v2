@@ -200,7 +200,7 @@ class Product
      */
     static function getProductFromShop(Shop $shop, string $product_id = null, ProductStatus $status = ProductStatus::active): false|array
     {
-        $query = "SELECT main.*, sub.*, users.username AS creator FROM " . self::TABLE ." AS main INNER JOIN {$shop->type->getProductTableName()} AS sub ON main.product_id = sub.product_id INNER JOIN users ON main.creator_id = users.user_id wHERE main.shop_id = ? AND main.status = ?";
+        $query = "SELECT main.*, sub.*, users.username AS creator FROM " .self::TABLE ." AS main INNER JOIN {$shop->type->getProductTableName()} AS sub ON main.product_id = sub.product_id INNER JOIN users ON main.creator_id = users.user_id wHERE main.shop_id = ? AND main.status = ?";
         $binding = [$shop->shop_id, $status->value];
         if($product_id) {
             $query .= "AND main.product_id = ?";

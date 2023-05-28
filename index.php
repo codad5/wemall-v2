@@ -57,7 +57,10 @@ $router->get('/logout', function (Request $req, Response $res) {
     return $res->redirect('/login?'.$new_query);
 });
 
-
-
-
+//$key = $_ENV['JWT_KEY'];
+//$alg = $_ENV['JWT_ALG'];
+//$jwt = \Codad5\Wemall\Models\Apikey::generateApiToken("www.codad5.me");
+//var_dump($jwt);
+//sleep(6);
+//var_dump(Firebase\JWT\JWT::decode(str_replace('shop_', '', $jwt), new \Firebase\JWT\Key($key, $alg)));
 $router->serve();
