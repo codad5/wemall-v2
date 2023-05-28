@@ -4,3 +4,7 @@
 /asset/images/products
 *.log
 logs
+power
+index.json
+start.sh
+bin
