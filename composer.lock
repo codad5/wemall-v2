@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7b55c398ec028f5dd9e3d2994ddc07d",
+    "content-hash": "fb27c525ac3725bdc663ad4ae7487963",
     "packages": [
         {
             "name": "codad5/file-helper",
@@ -91,6 +91,73 @@
                 "source": "https://github.com/codad5/php-inex/tree/v1.0.0"
             },
             "time": "2022-12-05T01:32:56+00:00"
+        },
+        {
+            "name": "codad5/php-router",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codad5/php-router.git",
+                "reference": "2d475adde6ef4eaceb99c4fffc1956e98ac488f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codad5/php-router/zipball/2d475adde6ef4eaceb99c4fffc1956e98ac488f5",
+                "reference": "2d475adde6ef4eaceb99c4fffc1956e98ac488f5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "firebase/php-jwt": "^6.3",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "codad5/php-inex": "^1.0",
+                "phpunit/phpunit": "^9"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Codad5\\PhpRouter\\": "src/"
+                }
+            },
+            "scripts": {
+                "start:dev": [
+                    "php -S localhost:20000 -t examples"
+                ],
+                "test": [
+                    "vendor/bin/phpunit --verbose __tests__"
+                ],
+                "test:watch": [
+                    "vendor/bin/phpunit --verbose --watch __tests__"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ayodeji O",
+                    "email": "osasonaayodeji1@gmail.com"
+                },
+                {
+                    "name": "Chibueze A",
+                    "email": "aniezeoformic@gmail.com"
+                }
+            ],
+            "description": "A simple express-style router for PHP",
+            "homepage": "https://github.com/codad5/php-router",
+            "keywords": [
+                "api",
+                "express",
+                "php",
+                "router"
+            ],
+            "support": {
+                "source": "https://github.com/codad5/php-router/tree/main"
+            },
+            "time": "2023-06-07T12:31:32+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -1156,7 +1223,7 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "3.4.x-dev",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
@@ -1171,6 +1238,7 @@
             "require": {
                 "php": ">=8.1"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1203,7 +1271,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/3.4"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.3.0"
             },
             "funding": [
                 {
@@ -1700,29 +1768,34 @@
         },
         {
             "name": "doctrine/deprecations",
-            "version": "v1.0.0",
+            "version": "1.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de"
+                "reference": "e906430998dc07b6a39973c371f65134ae32e503"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de",
-                "reference": "0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/e906430998dc07b6a39973c371f65134ae32e503",
+                "reference": "e906430998dc07b6a39973c371f65134ae32e503",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1|^8.0"
+                "php": "^7.1 || ^8.0"
             },
             "require-dev": {
                 "doctrine/coding-standard": "^9",
-                "phpunit/phpunit": "^7.5|^8.5|^9.5",
-                "psr/log": "^1|^2|^3"
+                "phpstan/phpstan": "1.4.10 || 1.10.15",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+                "psalm/plugin-phpunit": "0.18.4",
+                "psr/log": "^1 || ^2 || ^3",
+                "vimeo/psalm": "4.30.0 || 5.12.0"
             },
             "suggest": {
                 "psr/log": "Allows logging deprecations via PSR-3 logger implementation"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -1737,9 +1810,9 @@
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
-                "source": "https://github.com/doctrine/deprecations/tree/v1.0.0"
+                "source": "https://github.com/doctrine/deprecations/tree/1.1.x"
             },
-            "time": "2022-05-02T15:47:09+00:00"
+            "time": "2023-06-06T15:49:16+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -1935,12 +2008,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phar-io/manifest.git",
-                "reference": "36d8a21e851a9512db2b086dc5ac2c61308f0138"
+                "reference": "67729272c564ab9f953c81f48db44e8b1cb1e1c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/manifest/zipball/36d8a21e851a9512db2b086dc5ac2c61308f0138",
-                "reference": "36d8a21e851a9512db2b086dc5ac2c61308f0138",
+                "url": "https://api.github.com/repos/phar-io/manifest/zipball/67729272c564ab9f953c81f48db44e8b1cb1e1c3",
+                "reference": "67729272c564ab9f953c81f48db44e8b1cb1e1c3",
                 "shasum": ""
             },
             "require": {
@@ -1949,7 +2022,7 @@
                 "ext-phar": "*",
                 "ext-xmlwriter": "*",
                 "phar-io/version": "^3.0.1",
-                "php": "^7.2 || ^8.0"
+                "php": "^7.3 || ^8.0"
             },
             "default-branch": true,
             "type": "library",
@@ -1995,7 +2068,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-21T19:55:33+00:00"
+            "time": "2023-06-01T14:19:47+00:00"
         },
         {
             "name": "phar-io/version",
@@ -2171,12 +2244,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "dfc078e8af9c99210337325ff5aa152872c98714"
+                "reference": "b2fe4d22a5426f38e014855322200b97b5362c0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/dfc078e8af9c99210337325ff5aa152872c98714",
-                "reference": "dfc078e8af9c99210337325ff5aa152872c98714",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/b2fe4d22a5426f38e014855322200b97b5362c0d",
+                "reference": "b2fe4d22a5426f38e014855322200b97b5362c0d",
                 "shasum": ""
             },
             "require": {
@@ -2220,9 +2293,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.7.1"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.7.2"
             },
-            "time": "2023-03-27T19:02:04+00:00"
+            "time": "2023-05-30T18:13:47+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -2295,22 +2368,23 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.21.x-dev",
+            "version": "1.22.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "ff27205d5269be8fdbef9f29c158c092060545e8"
+                "reference": "d7b38ea9cc92628c2b97e1b4034c19c100ba9aae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/ff27205d5269be8fdbef9f29c158c092060545e8",
-                "reference": "ff27205d5269be8fdbef9f29c158c092060545e8",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/d7b38ea9cc92628c2b97e1b4034c19c100ba9aae",
+                "reference": "d7b38ea9cc92628c2b97e1b4034c19c100ba9aae",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2 || ^8.0"
             },
             "require-dev": {
+                "doctrine/annotations": "^2.0",
                 "nikic/php-parser": "^4.15",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
                 "phpstan/extension-installer": "^1.0",
@@ -2336,9 +2410,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.21.x"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.22.x"
             },
-            "time": "2023-05-26T10:58:32+00:00"
+            "time": "2023-06-05T07:52:02+00:00"
         },
         {
             "name": "phpstan/phpstan",
@@ -2346,12 +2420,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3b6bd74576bc2b244d5dca5e07005cd37387cdad"
+                "reference": "b3e4415a09bba406259776accf6b8b948f9c4bc9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3b6bd74576bc2b244d5dca5e07005cd37387cdad",
-                "reference": "3b6bd74576bc2b244d5dca5e07005cd37387cdad",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b3e4415a09bba406259776accf6b8b948f9c4bc9",
+                "reference": "b3e4415a09bba406259776accf6b8b948f9c4bc9",
                 "shasum": ""
             },
             "require": {
@@ -2401,7 +2475,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-25T11:13:21+00:00"
+            "time": "2023-06-06T16:33:09+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3901,7 +3975,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "monolog/monolog": 20
+        "monolog/monolog": 20,
+        "predis/predis": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

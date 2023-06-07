@@ -14,8 +14,8 @@ use Codad5\Wemall\Libs\ViewLoader;
 use Codad5\Wemall\Models\Product;
 use Codad5\Wemall\Models\Shop;
 use Codad5\Wemall\Models\User;
-use Trulyao\PhpRouter\HTTP\Request;
-use Trulyao\PhpRouter\HTTP\Response;
+use Codad5\PhpRouter\HTTP\Request;
+use Codad5\PhpRouter\HTTP\Response;
 use Codad5\Wemall\View\V1 as View;
 
 class ShopController

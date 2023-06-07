@@ -10,7 +10,7 @@
         }
     },
     "require": {
-        "trulyao/php-router": "^2.0",
+        "codad5/php-router": "*",
         "trulyao/neat-http": "^1.0",
         "guzzlehttp/guzzle": "^7.5",
         "vlucas/phpdotenv": "^5.4",
@@ -32,5 +32,11 @@
         "test":"./vendor/bin/phpunit",
         "stan": "./vendor/bin/phpstan analyse -c phpstan.neon",
         "start": "php -S localhost:2000"
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/codad5/php-router"
+        }
+    ]
 }

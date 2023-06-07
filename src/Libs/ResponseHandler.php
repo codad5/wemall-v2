@@ -2,7 +2,7 @@
 namespace Codad5\Wemall\Libs;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Exception;
-use Trulyao\PhpRouter\HTTP\Response as Response;
+use Codad5\PhpRouter\HTTP\Response as Response;
 
 Class ResponseHandler{
     public static function success(Response $res, string $message, array $body = null, array $header = [], int $status_code = 200): Response

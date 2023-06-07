@@ -3,9 +3,9 @@
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Middleware;
 use Codad5\Wemall\Libs\ViewLoader;
-use Trulyao\PhpRouter\HTTP\Request as Request;
-use Trulyao\PhpRouter\HTTP\Response as Response;
-use Trulyao\PhpRouter\Router as Router;
+use Codad5\PhpRouter\HTTP\Request as Request;
+use Codad5\PhpRouter\HTTP\Response as Response;
+use Codad5\PhpRouter\Router as Router;
 use \Codad5\Wemall\Libs\Utils\UserAuth;
 use \Codad5\Wemall\Controller\{ShopController, HomeController};
 

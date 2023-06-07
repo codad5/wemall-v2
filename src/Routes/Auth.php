@@ -2,9 +2,9 @@
 
 
 use Codad5\Wemall\Libs\ViewLoader;
-use \Trulyao\PhpRouter\Router as Router;
-use \Trulyao\PhpRouter\HTTP\Response as Response;
-use \Trulyao\PhpRouter\HTTP\Request as Request;
+use \Codad5\PhpRouter\Router as Router;
+use \Codad5\PhpRouter\HTTP\Response as Response;
+use \Codad5\PhpRouter\HTTP\Request as Request;
 use \Codad5\Wemall\Controller\AuthController;
 use \Codad5\Wemall\Libs\Utils\UserAuth;
 

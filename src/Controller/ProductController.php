@@ -10,8 +10,8 @@ use Codad5\Wemall\Libs\ViewLoader;
 use Codad5\Wemall\View\V1 as View;
 use Codad5\Wemall\Models\Product;
 use Codad5\Wemall\Models\Shop;
-use Trulyao\PhpRouter\HTTP\Request;
-use Trulyao\PhpRouter\HTTP\Response;
+use Codad5\PhpRouter\HTTP\Request;
+use Codad5\PhpRouter\HTTP\Response;
 
 class ProductController
 {

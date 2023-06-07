@@ -6,8 +6,8 @@ use Codad5\Wemall\Libs\Exceptions\AuthException;
 use Codad5\Wemall\Libs\Utils\UserAuth;
 use Codad5\Wemall\Libs\Validator;
 use Codad5\Wemall\Models\User;
-use Trulyao\PhpRouter\HTTP\Request;
-use Trulyao\PhpRouter\HTTP\Response;
+use Codad5\PhpRouter\HTTP\Request;
+use Codad5\PhpRouter\HTTP\Response;
 
 class AuthController
 {

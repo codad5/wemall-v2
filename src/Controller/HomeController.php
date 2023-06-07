@@ -5,7 +5,7 @@ namespace Codad5\Wemall\Controller;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Utils\UserAuth;
 use Codad5\Wemall\Libs\ViewLoader;
-use Trulyao\PhpRouter\HTTP\{Request, Response};
+use Codad5\PhpRouter\HTTP\{Request, Response};
 
 class HomeController
 {

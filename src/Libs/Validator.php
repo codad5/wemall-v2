@@ -7,7 +7,7 @@ use Codad5\Wemall\Libs\Exceptions\ProductException;
 use Codad5\Wemall\Libs\Exceptions\ShopException;
 use Codad5\Wemall\Libs\Exceptions\ValueException;
 use Codad5\Wemall\Models\ProductImage;
-use Trulyao\PhpRouter\HTTP\Request;
+use Codad5\PhpRouter\HTTP\Request;
 use Codad5\Wemall\Enums\{DiscountType, ShopType};
 
 class Validator{

@@ -1,7 +1,7 @@
 <?php
 
 use Codad5\Wemall\Libs\Middleware;
-use Trulyao\PhpRouter\Router as ShopRouter;
+use Codad5\PhpRouter\Router as ShopRouter;
 use Codad5\Wemall\Controller\{ProductController, ShopController};
 $router = new ShopRouter(__DIR__ . "/src/view/", "/", '/shop');
 

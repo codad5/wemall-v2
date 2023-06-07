@@ -28,7 +28,7 @@ class ProductImage
     static function uploadPhotos(string $product_id, Shop $shop)
     {
         $upload_paths = (new FileUploader(self::HTTP_IMAGE_NAME, self::IMAGE_PATH))
-            ->set_reporting(false, false, false)
+            ->set_reporting(false, true, true)
             ->add_ext('jpg', 'jpeg', 'png', 'gif')
             ->set_sizes(1000000, 20)
             ->set_prefix($product_id)

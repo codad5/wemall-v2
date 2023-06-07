@@ -3,8 +3,8 @@ namespace Codad5\Wemall\Libs;
 use Codad5\Wemall\Enums\AdminType;
 use Codad5\Wemall\Libs\Utils\ShopAuth;
 use Codad5\Wemall\Libs\Utils\UserAuth;
-use Trulyao\PhpRouter\HTTP\Request;
-use Trulyao\PhpRouter\HTTP\Response;
+use Codad5\PhpRouter\HTTP\Request;
+use Codad5\PhpRouter\HTTP\Response;
 $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
 $dontenv->load();
 
