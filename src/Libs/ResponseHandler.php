@@ -3,45 +3,34 @@ namespace Codad5\Wemall\Libs;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Exception;
 use Codad5\PhpRouter\HTTP\Response as Response;
+use Predis\Client;
 
-Class ResponseHandler{
-    public static function success(Response $res, string $message, array $body = null, array $header = [], int $status_code = 200): Response
-    {
-        ResponseHandler::setHeader($header);
-        return $res->status($status_code)->send([
-            "success" => true,
-            "message" => $message, 
-            "data" => $body
-        ]);
-        
-    }
-    public static function error(Response $res, Exception|CustomException $e, array $header = []): Response
-    {
-        ResponseHandler::setHeader($header);
-        $code = 500;
-        $message = "Something is went wrong";
-        $data = [];
 
-        if($e instanceof CustomException){
-            $code = $e->getCode();
-            $message = $e->getMessage();
-            $data = $e->getData();
-        }
-        $return_array = [
-            "success" => false,
-            "error" => $data,
-            "message" => $e->getMessage(), 
-            
+class ResponseHandler {
+    public static function sendSuccessResponse(Response $res, $data, $options = []) {
+        $response = [
+            'success' => true,
+            'cache' => false,
+            ...$options,
+            'data' => $data
         ];
-        return $res->status($code)->send($return_array);
-    }
-
-    public static function setHeader(array $headers)
-    {
-        foreach($headers as $header => $value){
-            header("$header: $value");
+        if (isset($options['token'])) {
+            header('Authorization', 'Bearer ' . $options['token']);
         }
+        if (isset($options['cache_data']) && !isset($options['token'])){
+            $client = new Client();
+            $client->setex("route:{$options['cache_data']}", 360, json_encode($data));
+            unset($response['cache_data']);
+        }
+        return $res->status(200)->json($response);
     }
 
-    // public static
+    public static function sendErrorResponse(Response $res, string $errorMessage, $statusCode = 500) {
+        $response = [
+            'success' => false,
+            'error' => $errorMessage,
+        ];
+
+        return $res->status($statusCode)->json($response);
+    }
 }

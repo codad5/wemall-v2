@@ -2,9 +2,6 @@
 namespace Codad5\Wemall\Libs;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Helper\Helper;
-
-$dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../');
-$dontenv->load();
 class Database
 {
     private static Database $instance;
@@ -14,7 +11,7 @@ class Database
 
     public function __construct($table = null, $config = [])
     {
-        new ErrorHandler('pdo-error');
+        new ErrorHandler('pdo-error', false, $_SERVER["DOCUMENT_ROOT"]."/log/db.log");
         self::$table = $table;
         if(empty($config))
         {
@@ -70,8 +67,8 @@ class Database
     }
     public static function getInstance(string $table = null) :self
     {
-        if (!self::$instance) {
-            return new self($table ?? self::$table);
+        if (!isset(self::$instance)) {
+            return new self($table ?? isset(self::$table) ? self::$table : '');
         }
         return self::$instance;
     }
@@ -130,11 +127,10 @@ class Database
             $stmt->execute(is_array($bindings) ? $bindings : [$bindings]);
         }
         catch(\PDOException $e){
-            (new ErrorHandler('pdo-error'))->handleException($e);
+            (new ErrorHandler('pdo-error', false, 'pdo-error'))->handleException($e);
             throw new CustomException('server error', 500);
-        }finally{
-            return $stmt ?? null;
         }
+        return $stmt;
     }
 
 }

@@ -6,10 +6,10 @@ use Codad5\Wemall\Libs\Utils\UserAuth;
 use Codad5\PhpRouter\HTTP\Request;
 use Codad5\PhpRouter\HTTP\Response;
 
-Class Middleware {
+Class APIMiddleWare {
     public static function redirect_if_logged_out(Request $req, Response $res): Response
     {
-    // setcookie('redirect_to_login', '', time() - 3600, '/');
+        // setcookie('redirect_to_login', '', time() - 3600, '/');
         if(!UserAuth::who_is_loggedin()){
             //unset previous cookie
             //set cookie for url that was for 10mins
@@ -40,7 +40,7 @@ Class Middleware {
         }
         return $res;
     }
-    
+
     public static function redirect_if_user_is_not_shop_owner(Request $req, Response $res): Response
     {
         if(!$has_access = ShopAuth::is_shop_admin_with_access($req->params('id'), UserAuth::who_is_loggedin())){
@@ -59,15 +59,5 @@ Class Middleware {
         $_SESSION["admin_level"] = intval($has_access['level']);
         return $res;
     }
-    public static function is_user_shop_owner($shop_id, $user_id): bool
-    {
-        if(!ShopController::exist($shop_id)){
-            return false;
-        }
-        if(ShopController::is_shop_admin($shop_id, $user_id)){
-            return true;
-        }
-        return false;
-    }
-    
+
 }

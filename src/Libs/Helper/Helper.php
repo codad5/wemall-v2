@@ -1,7 +1,7 @@
 <?php
 namespace Codad5\Wemall\Libs\Helper;
-use Codad5\Wemall\Controller\V1\ShopController;
-use Codad5\Wemall\Controller\V1\UserController;
+use Codad5\Wemall\Controller\API\V1\ShopController;
+use Codad5\Wemall\Controller\API\V1\UserController;
 use Trulyao\PhpRouter\HTTP\Request;
 use Trulyao\PhpRouter\HTTP\Response;
 $dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../../');

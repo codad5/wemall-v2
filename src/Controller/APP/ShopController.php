@@ -1,7 +1,9 @@
 <?php
 
-namespace Codad5\Wemall\Controller;
+namespace Codad5\Wemall\Controller\APP;
 
+use Codad5\PhpRouter\HTTP\Request;
+use Codad5\PhpRouter\HTTP\Response;
 use Codad5\Wemall\Enums\AdminType;
 use Codad5\Wemall\Enums\AppKeyType;
 use Codad5\Wemall\Enums\ShopType;
@@ -11,11 +13,8 @@ use Codad5\Wemall\Libs\Exceptions\ShopException;
 use Codad5\Wemall\Libs\Utils\UserAuth;
 use Codad5\Wemall\Libs\Validator;
 use Codad5\Wemall\Libs\ViewLoader;
-use Codad5\Wemall\Models\Product;
 use Codad5\Wemall\Models\Shop;
 use Codad5\Wemall\Models\User;
-use Codad5\PhpRouter\HTTP\Request;
-use Codad5\PhpRouter\HTTP\Response;
 use Codad5\Wemall\View\V1 as View;
 
 class ShopController

@@ -1,11 +1,11 @@
 <?php
 
-namespace Codad5\Wemall\Controller;
+namespace Codad5\Wemall\Controller\APP;
 
+use Codad5\PhpRouter\HTTP\{Request, Response};
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Utils\UserAuth;
 use Codad5\Wemall\Libs\ViewLoader;
-use Codad5\PhpRouter\HTTP\{Request, Response};
 
 class HomeController
 {

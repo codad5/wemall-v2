@@ -175,11 +175,11 @@ class Product
         return $this->last_id = count($data) > 0 ? $data[0]['id'] : 0;
     }
 
-    public static function all(?ShopType $shopType = null): false|array
+    public static function all(?ShopType $shopType = null): null|array
     {
         $query = "SELECT * FROM " . self::TABLE;
         if ($shopType) $query .= "INNER JOIN {$shopType->getProductTableName()} ON ".self::TABLE.".product_id = {$shopType->getProductTableName()}.product_id";
-        return Database::query($query)->fetchAll();
+        return Database::query($query)?->fetchAll();
     }
 
     /**

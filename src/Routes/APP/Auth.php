@@ -5,7 +5,7 @@ use Codad5\Wemall\Libs\ViewLoader;
 use \Codad5\PhpRouter\Router as Router;
 use \Codad5\PhpRouter\HTTP\Response as Response;
 use \Codad5\PhpRouter\HTTP\Request as Request;
-use \Codad5\Wemall\Controller\AuthController;
+use Codad5\Wemall\Controller\APP\AuthController;
 use \Codad5\Wemall\Libs\Utils\UserAuth;
 
 $router = new Router(__DIR__ . "/src2/view/", "/");

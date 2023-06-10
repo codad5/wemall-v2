@@ -1,8 +1,9 @@
 <?php
 
-use Codad5\Wemall\Libs\Middleware;
 use Codad5\PhpRouter\Router as ShopRouter;
-use Codad5\Wemall\Controller\{ProductController, ShopController};
+use Codad5\Wemall\Controller\APP\{ProductController, ShopController};
+use Codad5\Wemall\Libs\Middleware;
+
 $router = new ShopRouter(__DIR__ . "/src/view/", "/", '/shop');
 
 $router->run([Middleware::class, "redirect_if_logged_out"]);
@@ -16,7 +17,7 @@ $router->get('/', function () {
 });
 
 #create a new app api key
-$router->post("/:id/apikey/new", [Middleware::class, "redirect_if_user_is_not_super_admin"], [ShopController::class, 'generate_app_key']);
+$router->post("/:id/apikey/new", [APIMiddleWare::class, "redirect_if_user_is_not_super_admin"], [ShopController::class, 'generate_app_key']);
 
 //shop delete route
 $router->delete('/:id/delete',function($req, $res){
@@ -30,9 +31,9 @@ $router->delete('/:id/delete',function($req, $res){
 
 
 # add a new admin
-$router->post('/:id/admin/add', [Middleware::class, "redirect_if_user_is_not_super_admin"], [ShopController::class, 'add_admin_to_shop']);
+$router->post('/:id/admin/add', [APIMiddleWare::class, "redirect_if_user_is_not_super_admin"], [ShopController::class, 'add_admin_to_shop']);
 # Delete an admin
-$router->post('/:id/admin/delete', [Middleware::class, "redirect_if_user_is_not_super_admin"], [ShopController::class, 'delete_admin_from_shop']);
+$router->post('/:id/admin/delete', [APIMiddleWare::class, "redirect_if_user_is_not_super_admin"], [ShopController::class, 'delete_admin_from_shop']);
 # Display a shop
 $router->get('/:id',[ShopController::class, 'index']);
 # delete a product

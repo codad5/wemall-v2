@@ -1,6 +1,6 @@
 <?php
 
-namespace Codad5\Wemall\Controller;
+namespace Codad5\Wemall\Controller\API;
 
 use Codad5\Wemall\Libs\Exceptions\AuthException;
 use Codad5\Wemall\Libs\Utils\UserAuth;
@@ -46,7 +46,7 @@ class AuthController
             $user = User::find($login);
             if (!$user)
                 throw new AuthException("User $login not found", 400);
-            if(!password_verify($request->body('password'), $user->password)){
+            if(!$user->verify_password($request->body('password'))){
                 throw new AuthException("Incorrect Credentials ", 401);
             }
             UserAuth::set_user_session($user);
