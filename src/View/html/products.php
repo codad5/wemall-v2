@@ -76,9 +76,12 @@
                     <td><?=$product['price']?></td>
                     <td><?=$product['sell_price']?></td>
                     <td><?=$product['quantity']?></td>
-                    <td><?=$product['creator']['username']?></td>
+                    <td><?=$product['creator']?></td>
                     <td><button type="button" class="alter_product_btn edit_product_btn btn btn-primary" data-product-action="edit" data-product-id="<?=$product['product_id']?>">EDIT</button></td>
-                    <td><button type="button" class="alter_product_btn delete_product_btn btn btn-danger" data-product-action="delete" data-product-id="<?=$product['product_id']?>">DELETE</button></td>
+                    <td>
+                        <form action="/shop/<?=$shop['shop_id']?>/product/<?=$product['product_id']?>/delete" method="post">
+                            <button href="button"  class="btn btn-danger" >DELETE</button></td>
+                        </form>
                 </tr>
                 <?php
                   endforeach;
@@ -89,7 +92,7 @@
                     $('.edit_product_btn').click(function(){
                       var product_id = $(this).attr('data-product-id');
                       var product_action = $(this).attr('data-product-action');
-                      $('#edit_product_cnt').load(`/shop/<?=$shop['unique_id']?>/product/${product_id}/edit`, 
+                      $('#edit_product_cnt').load(`/shop/<?=$shop['shop_id']?>/product/${product_id}/edit`,
                       function(){
                         $('#product_edit').click();
                       });

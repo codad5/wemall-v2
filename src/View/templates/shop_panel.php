@@ -1,3 +1,4 @@
+<?php if(isset($shop)): ?>
 <style>
     nav{
         height: 60px;
@@ -51,27 +52,27 @@
         <div class="card-body">
             <ul class="list-group">
                 <li class="list-group-item">
-                    <a href="/shop/<?=$shop['unique_id']?>">
+                    <a href="/shop/<?=$shop['shop_id']?>">
                         <i class="fa fa-home"></i> Shop Home
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <a href="/shop/<?=$shop['unique_id']?>/product">
+                    <a href="/shop/<?=$shop['shop_id']?>/product">
                         <i class="fa fa-shopping-cart"></i> Products
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <a href="/shop/<?=$shop['unique_id']?>/orders">
+                    <a href="/shop/<?=$shop['shop_id']?>/orders">
                         <i class="fa fa-shopping-bag"></i> Orders
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <a href="/shop/<?=$shop['unique_id']?>/edit">
-                        <i class="fa fa-edit"></i> Edit Shop
+                    <a href="/shop/<?=$shop['shop_id']?>/settings">
+                        <i class="fa fa-edit"></i> Shop Settings
                     </a>
                 </li>
                 <li class="list-group-item">
-                    <a href="/shop/<?=$shop['unique_id']?>/delete">
+                    <a href="/shop/<?=$shop['shop_id']?>/delete">
                         <i class="fa fa-trash"></i> Delete Shop
                     </a>
                 </li>
@@ -87,3 +88,5 @@
         width: 80%;
     }
 </style>
+
+<?php endif; ?>

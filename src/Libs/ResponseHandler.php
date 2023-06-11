@@ -1,47 +1,52 @@
 <?php
 namespace Codad5\Wemall\Libs;
-use Codad5\Wemall\Libs\CustomException;
+use Codad5\Wemall\Enums\AppError;
+use Codad5\Wemall\Enums\StatusCode;
+use Codad5\Wemall\Enums\UserError;
+use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Exception;
-use \Trulyao\PhpRouter\HTTP\Response as Response;
+use Codad5\PhpRouter\HTTP\Response as Response;
+use Predis\Client;
+use Predis\ClientException;
+use Predis\Connection\ConnectionException;
 
-Class ResponseHandler{
-    public static function success(Response $res, string $message, array $body = null, array $header = [], int $status_code = 200): Response
-    {
-        ResponseHandler::setHeader($header);
-        return $res->status($status_code)->send([
-            "success" => true,
-            "message" => $message, 
-            "data" => $body
-        ]);
-        
-    }
-    public static function error(Response $res, Exception|CustomException $e, array $header = []): Response
-    {
-        ResponseHandler::setHeader($header);
-        $code = 500;
-        $message = "Something is went wrong";
-        $data = [];
 
-        if($e instanceof CustomException){
-            $code = $e->getCode();
-            $message = $e->getMessage();
-            $data = $e->getData();
-        }
-        $return_array = [
-            "success" => false,
-            "error" => $data,
-            "message" => $e->getMessage(), 
-            
+class ResponseHandler {
+    public static function sendSuccessResponse(Response $res, $data, $options = []) {
+        $response = [
+            'success' => true,
+            'message' => $options['message'] ?? 'success',
+            'cache' => false,
+            ...$options,
+            'data' => $data
         ];
-        return $res->status($code)->send($return_array);
-    }
-
-    public static function setHeader(array $headers)
-    {
-        foreach($headers as $header => $value){
-            header("$header: $value");
+        if (isset($options['token'])) {
+            header('Authorization', 'Bearer ' . $options['token']);
         }
+        if (isset($options['cache_data']) && !isset($options['token'])){
+            try{
+                $client = new Client();
+                $client->setex("route:{$options['cache_data']}", 360, json_encode($data));
+                unset($response['cache_data']);
+            }
+            catch (ConnectionException|ClientException  $e){
+                (new ErrorHandler('predis.php', false))->handleException($e);
+            }
+        }
+        return $res->status(200)->json($response);
     }
 
-    // public static
+    public static function sendErrorResponse(Response $res, string $errorMessage, StatusCode|UserError|AppError|int $statusCode = StatusCode::INTERNAL_ERROR) {
+        if ($statusCode instanceof  StatusCode || $statusCode instanceof UserError || $statusCode instanceof AppError) $statusCode = $statusCode->value;
+        $responseCode = $statusCode;
+        if($responseCode > 599) $responseCode = 400;
+        if($statusCode instanceof AppError) $responseCode = 500;
+        $response = [
+            'success' => false,
+            'message' => $errorMessage,
+            'code' => $statusCode
+        ];
+
+        return $res->status($responseCode)->json($response);
+    }
 }

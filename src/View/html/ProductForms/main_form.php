@@ -3,7 +3,7 @@
   $values = json_encode($values);
   $values = json_decode($values);
 ?>
-<form class="row g-3" id="add_product" action="/shop/<?=$shop['unique_id']?>/product/<?=$values->form_action ?? "create"?>" method="post" enctype="multipart/form-data">
+<form class="row g-3" id="add_product" action="/shop/<?=$shop['shop_id']?>/product/<?=isset($values->form_action) ? "$values->product_id/$values->form_action" : "create"?>" method="post" enctype="multipart/form-data">
   <div class="col-md-4" id="product_name_cnt">
     <label for="product_name" class="form-label">Product name</label>
       <input type="text" class="form-control  " name="name" id="product_name" value="<?=$values?->name ?? '' ?>">
@@ -40,7 +40,7 @@
   <div class="col-md-4" id="discount_method_cnt">
     <label for="discount_method" class="form-label">Discount Method</label>
     <select class="form-select" name="discount_type" id="discount_method" value="<?=$values?->discount_type ?? '' ?>">
-      <option value="flat">Flat</option>
+      <option value="cut">Flat</option>
       <option value="percentage">Percentage</option>
     </select>
     <div class="invalid-feedback">
@@ -75,11 +75,11 @@
   </fieldset> -->
 
   <!-- SHOP FROM -->
-  <?=$shop['form']($shop['shop_type'], $values)?>
+  <?=$shop['form']($shop['type'], $values)?>
   <!-- END OF SHOP FORM -->
   <div class="col-md-3" id="product_quantity_cnt">
     <label for="product_quantity" class="form-label">Quantity <?=isset($values?->form_action) ? 'Left' : 'To be added' ?></label>
-    <input type="number" class="form-control " value="<?=$values?->quantity_left ?? '' ?>" id="product_quantity" required="" min="0" name="quantity">
+      <input type="number" class="form-control " value="<?=isset($values?->quantity) ? $values?->quantity - $values?->sold : '' ?>" id="product_quantity" required="" min="0" name="quantity">
     <div class="invalid-feedback">
       Error Here
     </div>
@@ -100,7 +100,7 @@
     <label for="validationServerUsername" class="form-label">Added By</label>
     <div class="input-group">
       <span class="input-group-text" id="inputGroupPrepend3">@</span>
-      <input type="text" class="form-control" id="validationServerUsername" name="created_by" value="<?=$_SESSION['username']?>" aria-describedby="inputGroupPrepend3" required="" readonly="">
+      <input type="text" class="form-control" id="validationServerUsername" name="created_by" value="<?=$values?->creator ?? $_SESSION['username']?>" aria-describedby="inputGroupPrepend3" required="" readonly="">
       <div class="invalid-feedback">
         Please choose a username.
       </div>
@@ -129,7 +129,7 @@
   var product_price = document.getElementById('product_price');
   product_discount.addEventListener('input', function(e) {
     let invalid_cnt = document.getElementById('product_discount_cnt').querySelector('.invalid-feedback');
-    if (discount_method.value == 'flat') {
+    if (discount_method.value == 'cut') {
       if (parseInt(product_discount.value) > parseInt(product_price.value)) {
         product_discount.setCustomValidity("Discount cannot be greater than price");
         // add is invalid class to input

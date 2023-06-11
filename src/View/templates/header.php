@@ -1,3 +1,7 @@
+<?php
+//$app_name = $app_name ?? 'Wemall';
+//$app_name = $title ?? 'Wemall';
+?>
 <!-- html stater template for header -->
 <!DOCTYPE html>
 <html lang="en">
@@ -5,13 +9,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?=$app_name?> -|- <?=$title?></title>
+    <title><?=$app_name ?? "Wemall"?> -|- <?=$title ?? 'Home'?></title>
     <!-- font awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
     <!-- link to bootstrap online version -->
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link rel="stylesheet" href="<?=$asset('css/style.css')?>">
+    <link rel="stylesheet" href="<?= isset($asset) ? $asset('css/style.css') : ''?>">
     <!-- font awesomne -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"  integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous" defer></script>
     <!-- bootstrap javascript -->
@@ -37,7 +41,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <?php 
-                if(isset($_SESSION['user_unique'])):
+                if(isset($_SESSION['user_id'])):
                 ?>
                 <li class="nav-item">
                     <a class="nav-link" href="/home">Home</a>
@@ -53,8 +57,15 @@
                 </li>
                 <?php endif; ?>
             </ul>
+
+        </div>
+        <div>
+            <?php if(isset($_SESSION['username'])) : ?>
+            Signed in as  <b><?=strtoupper($_SESSION['username'])?></b>
+            <?php endif; ?>
         </div>
     </nav>
+<?php if(isset($notification) && isset($include)): ?>
 <?=$notification()?>
 <?php
     if(isset($shop)){
@@ -63,4 +74,5 @@
         ]);
     }
 ?>
+<?php endif; ?>
 <main>
