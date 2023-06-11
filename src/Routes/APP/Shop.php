@@ -10,10 +10,6 @@ $router->run([Middleware::class, "redirect_if_logged_out"]);
 $router->run([Middleware::class, "redirect_if_shop_does_not_exist"]);
 $router->run([Middleware::class, "redirect_if_user_is_not_shop_owner"]);
 
-$router->run(function (){
-    echo "dead";
-});
-
 $router->get('/', function () {
     echo "mean";
 });

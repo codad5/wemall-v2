@@ -35,7 +35,7 @@ Class Middleware {
     public static function redirect_if_shop_does_not_exist(Request $req, Response $res): Response
     {
         if(!ShopAuth::shop_is_valid($req->params('id'))){
-            return $res->redirect('/home?error=Shop does not exist');
+            $res->redirect('/home?error=Shop does not exist');
         }
         return $res;
     }

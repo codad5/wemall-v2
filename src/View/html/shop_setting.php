@@ -5,8 +5,7 @@ $limited_access = $_SESSION['admin_level'] < 2;
 ?>
 <section class="my-3" id="accordion">
     <div class="bd-heading sticky-xl-top align-self-start mt-5 mb-3 mt-xl-0 mb-xl-2" style="background:#fff;z-index:10;">
-        <h3>Products Settings</h3>
-        <a class="d-flex align-items-center" href="">Products Settings</a>
+        <h3>Shop Settings</h3>
     </div>
     <div>
         <div class="bd-example">
