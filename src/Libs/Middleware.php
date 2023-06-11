@@ -9,7 +9,6 @@ use Codad5\PhpRouter\HTTP\Response;
 Class Middleware {
     public static function redirect_if_logged_out(Request $req, Response $res): Response
     {
-    // setcookie('redirect_to_login', '', time() - 3600, '/');
         if(!UserAuth::who_is_loggedin()){
             //unset previous cookie
             //set cookie for url that was for 10mins

@@ -8,7 +8,7 @@ use \Codad5\PhpRouter\HTTP\Request as Request;
 use Codad5\Wemall\Controller\APP\AuthController;
 use \Codad5\Wemall\Libs\Utils\UserAuth;
 
-$router = new Router(__DIR__ . "/src2/view/", "/");
+$router = new Router(__DIR__ . "/src/view/", "/");
 $router->run(function(Request $req, Response $res){
     if(UserAuth::who_is_loggedin()){
         return $res->redirect('/home');

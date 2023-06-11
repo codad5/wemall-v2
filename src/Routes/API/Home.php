@@ -9,7 +9,7 @@ use Codad5\PhpRouter\Router as Router;
 use \Codad5\Wemall\Libs\Utils\UserAuth;
 use Codad5\Wemall\Controller\API\{ShopController, HomeController};
 
-$router = new Router(__DIR__ . "/src2/view/", "/");
+$router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->run([APIMiddleWare::class, "redirect_if_logged_out"]);
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fb27c525ac3725bdc663ad4ae7487963",
+    "content-hash": "6730195e3ae8f7679f327cdaa8f8eaa4",
     "packages": [
         {
             "name": "codad5/file-helper",
@@ -98,12 +98,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/codad5/php-router.git",
-                "reference": "2d475adde6ef4eaceb99c4fffc1956e98ac488f5"
+                "reference": "40b9a2821566e0e782e9bc7ec70887deab9fb8da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/codad5/php-router/zipball/2d475adde6ef4eaceb99c4fffc1956e98ac488f5",
-                "reference": "2d475adde6ef4eaceb99c4fffc1956e98ac488f5",
+                "url": "https://api.github.com/repos/codad5/php-router/zipball/40b9a2821566e0e782e9bc7ec70887deab9fb8da",
+                "reference": "40b9a2821566e0e782e9bc7ec70887deab9fb8da",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
             "support": {
                 "source": "https://github.com/codad5/php-router/tree/main"
             },
-            "time": "2023-06-07T12:31:32+00:00"
+            "time": "2023-06-11T18:41:46+00:00"
         },
         {
             "name": "firebase/php-jwt",
@@ -854,12 +854,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/predis/predis.git",
-                "reference": "95c23fb94d5cac0e8ca71f6f888f1b5c74bfbf61"
+                "reference": "e46d56c45ced0270d1a41f8f4637436c7c9d1893"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/predis/predis/zipball/95c23fb94d5cac0e8ca71f6f888f1b5c74bfbf61",
-                "reference": "95c23fb94d5cac0e8ca71f6f888f1b5c74bfbf61",
+                "url": "https://api.github.com/repos/predis/predis/zipball/e46d56c45ced0270d1a41f8f4637436c7c9d1893",
+                "reference": "e46d56c45ced0270d1a41f8f4637436c7c9d1893",
                 "shasum": ""
             },
             "require": {
@@ -900,7 +900,7 @@
             ],
             "support": {
                 "issues": "https://github.com/predis/predis/issues",
-                "source": "https://github.com/predis/predis/tree/v2.2.0-RC1"
+                "source": "https://github.com/predis/predis/tree/v2.x"
             },
             "funding": [
                 {
@@ -908,7 +908,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-05-09T17:45:20+00:00"
+            "time": "2023-06-08T15:33:25+00:00"
         },
         {
             "name": "psr/cache",
@@ -1585,58 +1585,6 @@
             "time": "2022-09-01T18:02:01+00:00"
         },
         {
-            "name": "trulyao/php-router",
-            "version": "2.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/aosasona/php-router.git",
-                "reference": "d7b92bbcff4981107a018704488112fc827031ff"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/aosasona/php-router/zipball/d7b92bbcff4981107a018704488112fc827031ff",
-                "reference": "d7b92bbcff4981107a018704488112fc827031ff",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": ">=7.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Trulyao\\PhpRouter\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ayodeji O",
-                    "email": "osasonaayodeji1@gmail.com"
-                }
-            ],
-            "description": "A simple express-style router for PHP",
-            "homepage": "https://github.com/aosasona/php-router",
-            "keywords": [
-                "api",
-                "express",
-                "php",
-                "router"
-            ],
-            "support": {
-                "issues": "https://github.com/aosasona/php-router/issues",
-                "source": "https://github.com/aosasona/php-router/tree/2.0.5"
-            },
-            "abandoned": true,
-            "time": "2022-09-07T13:09:39+00:00"
-        },
-        {
             "name": "vlucas/phpdotenv",
             "version": "dev-master",
             "source": {
@@ -1772,12 +1720,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "e906430998dc07b6a39973c371f65134ae32e503"
+                "reference": "eac01fbdf4e4a3635169b056608730ec0930e188"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/e906430998dc07b6a39973c371f65134ae32e503",
-                "reference": "e906430998dc07b6a39973c371f65134ae32e503",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/eac01fbdf4e4a3635169b056608730ec0930e188",
+                "reference": "eac01fbdf4e4a3635169b056608730ec0930e188",
                 "shasum": ""
             },
             "require": {
@@ -1812,7 +1760,7 @@
                 "issues": "https://github.com/doctrine/deprecations/issues",
                 "source": "https://github.com/doctrine/deprecations/tree/1.1.x"
             },
-            "time": "2023-06-06T15:49:16+00:00"
+            "time": "2023-06-07T19:57:14+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -2420,12 +2368,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b3e4415a09bba406259776accf6b8b948f9c4bc9"
+                "reference": "613c57c741bcdb685ef44a6fab85efaae35bf72d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b3e4415a09bba406259776accf6b8b948f9c4bc9",
-                "reference": "b3e4415a09bba406259776accf6b8b948f9c4bc9",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/613c57c741bcdb685ef44a6fab85efaae35bf72d",
+                "reference": "613c57c741bcdb685ef44a6fab85efaae35bf72d",
                 "shasum": ""
             },
             "require": {
@@ -2475,7 +2423,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-06T16:33:09+00:00"
+            "time": "2023-06-09T16:13:46+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

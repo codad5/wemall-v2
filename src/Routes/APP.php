@@ -10,7 +10,7 @@ use Codad5\PhpInex\Import as Import;
 
 $errorHandler = new ErrorHandler('app.php', false);
 
-$router = new Router(__DIR__ . "/src2/view/", "/");
+$router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
 

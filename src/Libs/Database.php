@@ -7,11 +7,12 @@ class Database
     private static Database $instance;
     readonly private \PDO $pdo;
     private static string $table;
+    private ErrorHandler $errorHandler;
 
 
     public function __construct($table = null, $config = [])
     {
-        new ErrorHandler('pdo-error', false, $_SERVER["DOCUMENT_ROOT"]."/log/db.log");
+        $this->errorHandler = new ErrorHandler('pdo-error', false, $_SERVER["DOCUMENT_ROOT"]."/log/db.log");
         self::$table = $table;
         if(empty($config))
         {
@@ -127,7 +128,7 @@ class Database
             $stmt->execute(is_array($bindings) ? $bindings : [$bindings]);
         }
         catch(\PDOException $e){
-            (new ErrorHandler('pdo-error', false, 'pdo-error'))->handleException($e);
+            (new ErrorHandler('pdo-error', false, $_SERVER["DOCUMENT_ROOT"]."/logs/db.log"))->handleException($e);
             throw new CustomException('server error', 500);
         }
         return $stmt;

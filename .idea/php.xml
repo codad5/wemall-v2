@@ -32,7 +32,6 @@
       <path value="$PROJECT_DIR$/vendor/phpunit/phpunit" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
       <path value="$PROJECT_DIR$/vendor/trulyao/neat-http" />
-      <path value="$PROJECT_DIR$/vendor/trulyao/php-router" />
       <path value="$PROJECT_DIR$/vendor/doctrine/instantiator" />
       <path value="$PROJECT_DIR$/vendor/codad5/php-inex" />
       <path value="$PROJECT_DIR$/vendor/codad5/file-helper" />

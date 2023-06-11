@@ -4,9 +4,9 @@ use Codad5\PhpRouter\Router as Router;
 use Codad5\Wemall\Controller\APP\{HomeController, ShopController};
 use Codad5\Wemall\Libs\Middleware;
 
-$router = new Router(__DIR__ . "/src2/view/", "/");
+$router = new Router(__DIR__ . "/src/view/", "/");
 
-$router->run([APIMiddleWare::class, "redirect_if_logged_out"]);
+$router->run([Middleware::class, "redirect_if_logged_out"]);
 
 $router->get('/', function ($req, $res) {
     echo 'hello';

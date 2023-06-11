@@ -10,11 +10,11 @@ use Codad5\Wemall\Controller\API\AuthController;
 use \Codad5\Wemall\Libs\Utils\UserAuth;
 use \Codad5\Wemall\Libs\{ResponseHandler};
 
-$router = new Router(__DIR__ . "/api/view/", "/", "/product");
+$router = new Router(__DIR__ . "/src/view/",  "/product");
 
 $router->get("/", [ProductController::class, 'get_all_product']);
 $router->get("/type/:type", [ProductController::class, 'get_all_product']);
-$router->get("/:type/search", [ProductController::class, 'serach_product']);
+$router->get("/:type/search", [ProductController::class, 'search_product']);
 $router->route('/:id')
 ->get([ProductController::class, 'get_product']);
 

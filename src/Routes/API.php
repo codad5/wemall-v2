@@ -6,17 +6,17 @@ use Codad5\Wemall\Libs\ResponseHandler;
 use Codad5\Wemall\Libs\Helper\Helper;
 use Codad5\PhpRouter\HTTP\Request as Request;
 use Codad5\PhpInex\Import as Import;
-use Predis\Client;
+use Predis\{Client, ClientException, Connection, Connection\ConnectionException};
 
-$client = new Client();
 
 $errorHandler = new ErrorHandler('api.php', false);
 
-$router = new Router(__DIR__ . "/src/view/", "/", '/api');
+$router = new Router(__DIR__ . "/src/view/",  '/api');
 
 $router->allowed(['application/json', 'application/xml', 'application/x-www-form-urlencoded', 'multipart/form-data']);
-$router->run(function (Request $request, Response $res) use ($client) {
+$router->run(function (Request $request, Response $res) use ($errorHandler){
     try{
+        $client = new Client();
         $route = $request->path();
         $cache = $client->get("route:$route");
         if ($cache && count($request->body()) == 0 && count($request->query()) == 0) {
@@ -26,6 +26,7 @@ $router->run(function (Request $request, Response $res) use ($client) {
     }
     catch (\Exception $e)
     {
+        $errorHandler->handleException($e);
         return $request;
     }
 });

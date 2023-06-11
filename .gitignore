@@ -3,6 +3,7 @@
 /test
 /asset/images/products
 *.log
+log
 logs
 power
 index.json

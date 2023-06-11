@@ -1,5 +1,8 @@
 <?php
 namespace Codad5\Wemall\Libs\Exceptions;
+use Codad5\Wemall\Enums\AppError;
+use Codad5\Wemall\Enums\StatusCode;
+use Codad5\Wemall\Enums\UserError;
 use Codad5\Wemall\Libs\ErrorHandler;
 use Codad5\Wemall\Libs\Helper\Helper;
 use Exception;
@@ -9,8 +12,9 @@ use ReturnTypeWillChange;
 class CustomException extends Exception
 {
     private ErrorHandler $handler;
-    public function __construct($message, $code = 0, Exception $previous = null)
+    public function __construct($message, StatusCode|UserError|AppError|int $code = StatusCode::INTERNAL_ERROR, Exception $previous = null)
     {
+        if ($code instanceof  StatusCode || $code instanceof UserError || $code instanceof AppError) $code = $code->value;
         parent::__construct($message, $code, $previous);
         $this->handler = new ErrorHandler;
     }

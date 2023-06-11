@@ -178,7 +178,7 @@ class Product
     public static function all(?ShopType $shopType = null): null|array
     {
         $query = "SELECT * FROM " . self::TABLE;
-        if ($shopType) $query .= "INNER JOIN {$shopType->getProductTableName()} ON ".self::TABLE.".product_id = {$shopType->getProductTableName()}.product_id";
+        if ($shopType) $query .= " INNER JOIN {$shopType->getProductTableName()} ON ".self::TABLE.".product_id = {$shopType->getProductTableName()}.product_id";
         return Database::query($query)?->fetchAll();
     }
 

@@ -7,7 +7,7 @@ use Codad5\PhpRouter\HTTP\Response as Response;
 use Codad5\PhpRouter\HTTP\Request as Request;
 use Codad5\Wemall\Controller\API\{ProductController, ShopController};
 use Codad5\Wemall\View\V1 as View;
-$router = new ShopRouter(__DIR__ . "/src2/view/", "/", '/shop');
+$router = new ShopRouter(__DIR__ . "/src2/view/",  '/shop');
 
 //$router->run([Middleware::class, "redirect_if_logged_out"]);
 //$router->run([Middleware::class, "redirect_if_shop_does_not_exist"]);

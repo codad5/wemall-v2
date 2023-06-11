@@ -3,6 +3,8 @@
 namespace Codad5\Wemall\Controller\API;
 
 use Codad5\Wemall\Enums\ShopType;
+use Codad5\Wemall\Enums\StatusCode;
+use Codad5\Wemall\Enums\UserError;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Exceptions\ProductException;
 use Codad5\Wemall\Libs\Exceptions\ShopException;
@@ -57,9 +59,8 @@ class ProductController
     {
         ['id' => $product_id] = $req->params();
         try{
-            var_dump($req->path(), $product_id);
             $product = Product::find($product_id);
-            if(!$product) throw new ProductException('Product not found');
+            if(!$product) throw new ProductException("Product not found for id ($product_id)", 404);
             return ResponseHandler::sendSuccessResponse($res, $product->toArray(), ['cache_data' => $req->path()]);
         }catch (\Exception $exception)
         {
@@ -79,11 +80,12 @@ class ProductController
             return ResponseHandler::sendErrorResponse($res, $exception->getMessage(), $exception->getCode());
         }
     }
-    static function serach_product(Request $req, Response $res)
+    static function search_product(Request $req, Response $res)
     {
         try{
             $type = ShopType::tryFrom($req->params('type'));
-            if(!$type) throw new \Exception("Invalid shop type ".$req->params('type'));
+//            var_dump();
+            if(!$type) throw new ProductException("Invalid shop type ".$req->params('type'), UserError::INVALID_TYPE);
             $products = Product::search([...$req->query()], $type);
             return ResponseHandler::sendSuccessResponse($res, $products, ['cache_data' => $req->path(), "query" =>  $req->query()]);
         }catch (\Exception $exception)
