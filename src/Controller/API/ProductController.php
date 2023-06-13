@@ -73,7 +73,7 @@ class ProductController
         try{
             $type_ = $type = $req->params("type");
             if(isset($type)) $type = ShopType::tryFrom($type_);
-            if (!$type) throw new CustomException("Product type ({$type_}) not supported", UserError::INVALID_TYPE);
+            if (!$type && $type_) throw new CustomException("Product type ({$type_}) not supported", UserError::INVALID_TYPE);
             $products = Product::all($type);
             if(!$products) throw new ProductException('Product not found');
             $products = array_map(function($data) { unset($data['id']); return [...$data, 'images' => ProductImage::getImaagesFromProduct($data['product_id'])];}, $products);
