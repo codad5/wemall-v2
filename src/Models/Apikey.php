@@ -39,9 +39,9 @@ class Apikey
      */
     private function ready(string $id)
     {
-        if(!$id) $id = $this->shop_id;
+        if(!$id) $id = $this->key;
         if($this->ready) return $this;
-        $key = $this->get_by('shop_id', $id);
+        $key = $this->get_by('app_key', $id);
         if(!$key) throw  new ShopException("shop not found", 400);
         $key = $key[0];
         $this->app_constraint = $key['app_constraint'];
@@ -92,6 +92,13 @@ class Apikey
 
     public static function find(mixed $user_id)
     {
+    }
+
+    static function getKeyData($key)
+    {
+        $sql = "SELECT * FROM ".self::TABLE." WHERE app_key = ? AND expire > ?";
+        $data = Database::query($sql, [AppKeyType::formatKey($key), date("Y-m-d", time())])->fetchAll();
+        return $data && count($data) > 0 ? $data[0] : false;
     }
 
 }

@@ -31,7 +31,7 @@ class User
 
     public function ready(string $id = null)
     {
-        if(!$id) $id = $this->user_id;
+        if(!$id && isset($this->user_id)) $id = $this->user_id;
         if($this->ready) return $this;
         $data = $this->get_user_by('user_id', $id);
         if(!$data) Throw new AuthException('User not found');

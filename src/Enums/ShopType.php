@@ -3,7 +3,7 @@
 namespace Codad5\Wemall\Enums;
 
 use Codad5\Wemall\Libs\Exceptions\ProductException;
-use Trulyao\PhpRouter\HTTP\Request;
+use Codad5\PhpRouter\HTTP\Request;
 
 enum ShopType: string
 {

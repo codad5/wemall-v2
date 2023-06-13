@@ -44,4 +44,6 @@ enum AppKeyType: string
         ];
         return self::formatConstraint(JWT::encode($payload, $key,  $alg));
     }
+
+//    static Const
 }

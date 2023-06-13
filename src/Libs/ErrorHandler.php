@@ -20,14 +20,18 @@ class ErrorHandler
         }
     }
 
-    public function handleException($e) : self
+    public function handleException($e, $as_json = false) : self
     {
         // Log the exception
         $this->logger->error($e->getMessage(), $this->getContext($e));
         // Return a custom response to the user
-        if($_ENV['env'] == 'development' && $e->getCode() < 500){
-            Helper::add_notification('dev_warning', json_encode(['error' => $e->getMessage()]));
-            ViewLoader::load_error_page(500, json_encode(['error' => $e->getMessage()]));
+        if(isset($_ENV['env']) && $_ENV['env'] == 'development' && $e->getCode() < 500){
+            if ($as_json):
+                echo json_encode(['error' => $e->getMessage()]);
+            else:
+                Helper::add_notification('dev_warning', json_encode(['error' => $e->getMessage()]));
+                ViewLoader::load_error_page(500, json_encode(['error' => $e->getMessage()]));
+            endif;
         }
         return $this;
     }
@@ -43,7 +47,7 @@ class ErrorHandler
         // Log the error
         $this->logger->error("[$errno] $errstr in $errfile:$errline");
         // Return a custom response to the user
-        if($_ENV['env'] == 'development'){
+        if(isset($_ENV['env']) && $_ENV['env'] == 'development'){
             Helper::add_notification('dev_warning', json_encode(['error' => $errstr]));
         }
 
@@ -56,7 +60,7 @@ class ErrorHandler
             // Log the error
             $this->logger->error("[{$error['type']}] {$error['message']} in {$error['file']}:{$error['line']}");
             // Return a custom response to the user
-            if($_ENV['env'] == 'development'){
+            if(isset($_ENV['env']) && $_ENV['env'] == 'development'){
                 Helper::add_notification('dev_warning', json_encode(['error' => $error['message']]));
                 ViewLoader::load_error_page(500, json_encode(['error' => $error['message']]));
             }else{

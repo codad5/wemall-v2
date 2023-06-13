@@ -13,13 +13,16 @@ class ProductImage
     readonly string $alt;
     readonly string $path;
     readonly string $file_name;
+    readonly string $url;
     const HTTP_IMAGE_NAME = 'images';
     const IMAGE_PATH = "asset/images/products/";
     const TABLE = 'product_images';
     function __construct($path, $alt = ''){
+        $protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
         $this->alt = $alt;
         $this->path = $path;
         $this->file_name = basename($this->path);
+        $this->url = "$protocol://".$_SERVER['HTTP_HOST']."/".self::IMAGE_PATH."/".$this->path;
     }
 
     /**
@@ -54,5 +57,16 @@ class ProductImage
             $images[$key] = new self($image['image_path']);
         }
         return $images;
+    }
+
+    public function toArray()
+    {
+
+        return [
+            'alt' => $this->alt,
+            'path'=> $this->path,
+            'file_name' => $this->file_name,
+            'url' => $this->url
+        ];
     }
 }

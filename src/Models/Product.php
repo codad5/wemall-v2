@@ -175,11 +175,16 @@ class Product
         return $this->last_id = count($data) > 0 ? $data[0]['id'] : 0;
     }
 
-    public static function all(?ShopType $shopType = null): null|array
+    public static function all(?ShopType $shopType = null, $active = true): null|array
     {
-        $query = "SELECT * FROM " . self::TABLE;
-        if ($shopType) $query .= " INNER JOIN {$shopType->getProductTableName()} ON ".self::TABLE.".product_id = {$shopType->getProductTableName()}.product_id";
-        return Database::query($query)?->fetchAll();
+        $query = "SELECT * FROM " . self::TABLE. " AS m ";
+        if ($shopType) $query .= " INNER JOIN {$shopType->getProductTableName()} AS s ON m.product_id = s.product_id";
+        $binding = [];
+        if ($active) {
+            $query .= " WHERE m.status = ?";
+            $binding[] = ProductStatus::active->value;
+        }
+        return Database::query($query, $binding)?->fetchAll();
     }
 
     /**
@@ -192,6 +197,22 @@ class Product
         $this->images = ProductImage::getImaagesFromProduct($this->product_id);
         return $this;
     }
+
+    public function withImages() : static
+    {
+        if(isset($this->images) && count($this->images) > 0) return $this;
+        $this->images = ProductImage::getImaagesFromProduct($this->product_id);
+        return $this;
+    }
+
+    public function getImages($as_array = false): array
+    {
+        $images = $this->withImages()->images;
+        if (!$as_array) return $images;
+        return array_map(fn($img) => $img->toArray(), $images);
+    }
+
+
 
 
     /**
@@ -249,7 +270,7 @@ class Product
     function toArray(): array
     {
 
-        return [
+        $data =  [
             'product_id' => $this->product_id,
             'shop_id' => $this->shop->shop_id,
             'name' => $this->name,
@@ -264,9 +285,12 @@ class Product
             'creator_id' => $this->creator->user_id,
             'created_at' => $this->created_at,
             'creator' => $this->creator->username,
+            'images' => $this->getImages(true),
             ...$this->getProductData()
 
         ];
+        unset($data['id']);
+        return $data;
     }
 
 }

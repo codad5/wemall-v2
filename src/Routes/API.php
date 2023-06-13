@@ -1,9 +1,10 @@
 <?php
+
+use Codad5\Wemall\Libs\APIMiddleWare;
 use Codad5\Wemall\Libs\ErrorHandler;
 use Codad5\PhpRouter\HTTP\Response as Response;
 use Codad5\PhpRouter\Router as Router;
 use Codad5\Wemall\Libs\ResponseHandler;
-use Codad5\Wemall\Libs\Helper\Helper;
 use Codad5\PhpRouter\HTTP\Request as Request;
 use Codad5\PhpInex\Import as Import;
 use Predis\{Client, ClientException, Connection, Connection\ConnectionException};
@@ -14,6 +15,7 @@ $errorHandler = new ErrorHandler('api.php', false);
 $router = new Router(__DIR__ . "/src/view/",  '/api');
 
 $router->allowed(['application/json', 'application/xml', 'application/x-www-form-urlencoded', 'multipart/form-data']);
+$router->run([ApiMiddleWare::class, 'cors']);
 $router->run(function (Request $request, Response $res) use ($errorHandler){
     try{
         $client = new Client();
@@ -42,8 +44,8 @@ $router->use_route($customer_route);
 $router->get("/", function ($req, $res){
     return ResponseHandler::sendSuccessResponse($res, [
        "status" => "ok",
-
-    ], ['cache_data' => true]);
+       "server" => $_SERVER,
+    ], ['cache_data' => $req->path()]);
 });
 
 
