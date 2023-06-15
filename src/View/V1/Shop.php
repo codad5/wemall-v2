@@ -5,9 +5,6 @@ use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\ViewLoader;
 
 Class Shop{
-    /**
-     * @var ShopType[]
-     */
     private static array $shop_type_array = ["clothing", "food", "automobile", "phones", "furniture's"];
     protected static string $type;
     public function __construct(string $type)

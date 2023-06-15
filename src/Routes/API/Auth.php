@@ -1,6 +1,7 @@
 <?php
 
 
+use Codad5\Wemall\Controller\API\AuthController;
 use Codad5\Wemall\Libs\ViewLoader;
 use \Codad5\PhpRouter\Router as Router;
 use \Codad5\PhpRouter\HTTP\Response as Response;

@@ -15,24 +15,25 @@ use Codad5\Wemall\Libs\Utils\UserAuth;
 class Shop
 {
     const TABLE = 'shops';
-    readonly public string $shop_id;
-    readonly public string $name;
-    readonly string $email;
-    readonly string $description;
-    readonly SHopType $type;
+    public string $shop_id;
+    public string $name;
+    public string $email;
+    public string $description;
+    public SHopType $type;
     public bool $ready;
-    readonly User $creator;
+    public User $creator;
     /**
      * @var User[]
      */
-    readonly array $admins;
+    public array $admins;
     /**
-     * @var Apikey
+     * @var Apikey[]
      */
-    readonly array $apikeys;
-    readonly string $created_at;
+    public array $api_keys;
+    public string $created_at;
     readonly Database $conn;
     public array $products;
+    protected int $last_id;
     public function __construct(string $id = null)
     {
         $this->conn = new Database(self::TABLE);
@@ -127,6 +128,11 @@ class Shop
         return strtoupper(substr('S'.$this->last_id()."A".md5(uniqid(rand(), true)), 0, 10));
     }
 
+    public static function where(string $string, mixed $params, true $true): array
+    {
+        return [];
+    }
+
     public function toArray(): array
     {
         return [
@@ -139,7 +145,7 @@ class Shop
             'created_at' => $this->created_at,
             'products' => $this->products,
             'admins' => $this->admins ?? [],
-            'api_keys' => $this->apikeys ?? []
+            'api_keys' => $this->api_keys ?? []
         ];
     }
 
@@ -209,7 +215,7 @@ class Shop
 
     function withAppKeys() : static
     {
-        $this->apikeys =  $this->apikeys ?? $this->getAppKeys($this);
+        $this->api_keys =  $this->api_keys ?? $this->getAppKeys($this);
         return $this;
     }
     static function getAdmins(Shop $shop ,AdminType $level = AdminType::admin, $as_array = true) : array

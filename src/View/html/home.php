@@ -1,3 +1,4 @@
+<?php if (isset($header) && isset($footer)) : ?>
 <?=$header([] , "Home")?>
     <main>
         <div class="container">
@@ -96,3 +97,5 @@
                 </div>
             </div>
 <?=$footer()?>
+<?php endif; ?>
+

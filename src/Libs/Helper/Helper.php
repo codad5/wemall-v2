@@ -1,18 +1,18 @@
 <?php
 namespace Codad5\Wemall\Libs\Helper;
-use Codad5\Wemall\Controller\API\V1\ShopController;
-use Codad5\Wemall\Controller\API\V1\UserController;
-use Trulyao\PhpRouter\HTTP\Request;
-use Trulyao\PhpRouter\HTTP\Response;
-$dontenv = \Dotenv\Dotenv::createImmutable(__DIR__.'/../../../');
-$dontenv->load();
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__.'/../../../');
+$dotenv->load();
 
 Class Helper {
-    function gethost($url){
-        $sepreated = explode('/', $url);
-        return $sepreated[2] ?? false;
+    function getHost($url): false|string
+    {
+        $separated = explode('/', $url);
+        return $separated[2] ?? false;
     }
-    function fetch($url, $method, $data = null){
+    function fetch($url, $method, $data = null): bool|array|string
+    {
             $curl = curl_init();
 
             curl_setopt_array($curl, [
@@ -25,7 +25,7 @@ Class Helper {
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => $method,
                 CURLOPT_HTTPHEADER => [
-                    "X-RapidAPI-Host: ".gethost($_ENV[$data['host']]),
+                    "X-RapidAPI-Host: ". $this->getHost($_ENV[$data['host']]),
                     "X-RapidAPI-Key: ".$_ENV['RAPID_KEY']
                 ],
             ]);
@@ -47,23 +47,22 @@ Class Helper {
 
     }
 
-    public static function hash_password($password)
+    public static function hash_password($password): string
     {
         return password_hash($password, PASSWORD_DEFAULT);
     }
-    public static function resolve_public_asset(string $file) 
+    public static function resolve_public_asset(string $file): string
     {   
-        $http = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
         //return absolute path to the file from server host
-        return "$http://".$_SERVER['HTTP_HOST'] . '/asset/' . $file;
+        return "$protocol://".$_SERVER['HTTP_HOST'] . '/asset/' . $file;
     }
-    public static function resolve_asset($file)
+    public static function resolve_asset($file): string
     {
         return $_SERVER['DOCUMENT_ROOT']."/asset"."/$file";
     }
-    public static function resolve_view(string $file) 
-    {   
-        // echo file_exists($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR."asset".DIRECTORY_SEPARATOR."$file") ? "byeeee" : "calmmmmm";
+    public static function resolve_view(string $file): string
+    {
         return $_SERVER['DOCUMENT_ROOT']."/src/view"."/$file";
     }
 
@@ -80,19 +79,7 @@ Class Helper {
     }
     
     //check if shop exists
-    public static function shop_exists($id) {
-        return ShopController::exist($id);
-    }
-    public static function is_user_shop_owner($shop_id, $user_id){
-        if(!self::shop_exists($shop_id)){
-            return false;
-        }
-        if(ShopController::is_shop_admin($shop_id, $user_id)){
-            return true;
-        }
-        return false;
-    }
-    public static function set_notification_session($data)
+    public static function set_notification_session($data): void
     {
         $_SESSION['messages']['errors'][] = $_GET['error'] ?? null;
         $_SESSION['messages']['errors'] = array_merge($data['errors'] ?? [], $_SESSION['messages']['errors']);
@@ -110,7 +97,7 @@ Class Helper {
             $_SESSION['messages'][$key] = count($_SESSION['messages'][$key]) > 0 ? $_SESSION['messages'][$key] : null;
         }
     }
-    public static function add_notification($type, $message)
+    public static function add_notification($type, $message): void
     {
         $_SESSION['messages'][$type][] = $message;
     }

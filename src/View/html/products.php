@@ -1,4 +1,4 @@
-
+<?php if (isset($header) && isset($footer) && isset($shop) && isset($include)) : ?>
 <?=$header(["shop" => $shop])?>
         
 <!-- //add new product form with bootstrap styling -->
@@ -133,3 +133,4 @@
   
 </script>
 <?=$footer()?>
+<?php endif; ?>

@@ -2,23 +2,24 @@
 namespace Codad5\Wemall\Libs;
 
 use Codad5\Wemall\Libs\Helper\Helper;
+use JetBrains\PhpStorm\NoReturn;
 
 class ViewLoader {
     // to load / render php files to html
     /**
      * @param string $file path to FIle relative to the view folder
-     * @param array $data - data to be passed into the file 
-     * @template load_view('your/file/path', ["greeting" => "hello world"])
+     * @param array $data - data to be passed into the file
      * @return string
+     * @method string load(string $file, array $data = []) Sample usage ViewLoader::load("/html/dev.php", ['some_data" => $value])
      */
     public static function load(string $file, array $data = []) : string
     {
         $file = Helper::resolve_view($file);
         if(!file_exists($file)){
-            return self::load_error_page(404, "File not found");
+             self::load_error_page(404, "File not found");
         }
         Helper::set_notification_session($data);
-        
+
         ob_start();
         $data = array_merge($data, [
             'asset' => function($file){

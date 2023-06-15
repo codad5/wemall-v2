@@ -60,7 +60,7 @@ class ProductController
             // return $res->send(ViewLoader::load('html/edit_product.php', ["request" => $req, "shop" => $shop, "product" => $product]));
             return $res->send(ViewLoader::load('html/ProductForms/main_form.php', ["shop" => $shop, "values" => $product]));
         }catch(\Exception $e){
-            return $res->send(ViewLoader::load_error_page($e->getCode(), $e->getMessage()));
+            return $res->send([ViewLoader::load_error_page($e->getCode(), $e->getMessage())]);
             // return $res->redirect('/home?error='.$e->getMessage());
 
         }

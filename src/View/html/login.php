@@ -1,3 +1,4 @@
+<?php if (isset($header) && isset($footer) && isset($notification)) : ?>
 <?=$header([] , "Login")?>
 <?=$notification()?>
 <br>
@@ -35,3 +36,4 @@
     </main>
 </body>
 </html>
+<?php endif; ?>

@@ -9,17 +9,16 @@ use Codad5\Wemall\Libs\Exceptions\CustomException;
 
 class User
 {
-    readonly public string $name;
-    readonly public string $user_id;
-    readonly public string $username;
-    readonly public string $email;
-    readonly public string $password;
-    readonly public string $api_key;
-    readonly public string $created_at;
+    public string $name;
+    public string $user_id;
+    public string $username;
+    public string $email;
+    public string $password;
+    public string $api_key;
+    public string $created_at;
     readonly private Database $conn;
-    readonly private string $last_id;
+    private int $last_id;
     private bool $ready;
-    private string $lastid;
     const TABLE = 'users';
     public function __construct(string $id = null)
     {
@@ -125,5 +124,10 @@ class User
     function getShopsAsArrays() : array
     {
         return $this->conn->query("SELECT * FROM shop_admin INNER JOIN  shops ON shop_admin.shop_id = shops.shop_id WHERE user_id = ?", [$this->user_id])->fetchAll();
+    }
+
+    public function toArray(): array
+    {
+        return [];
     }
 }

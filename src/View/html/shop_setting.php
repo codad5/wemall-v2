@@ -1,5 +1,5 @@
-
-<?=$header(["shop" => $shop, $shop['name']])?>
+<?php if (isset($header) && isset($footer) && isset($shop)) : ?>
+    <?=$header(["shop" => $shop, $shop['name']])?>
 <?php
 $limited_access = $_SESSION['admin_level'] < 2;
 ?>
@@ -239,3 +239,4 @@ $limited_access = $_SESSION['admin_level'] < 2;
     })
 </script>
 <?=$footer()?>
+<?php endif; ?>

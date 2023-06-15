@@ -33,7 +33,7 @@ class Product
     public string $created_at;
     readonly Database $conn;
     protected bool $ready;
-    readonly array $product_data;
+    public array $product_data;
     /**
      * @var ProductImage[]
      */
@@ -47,6 +47,7 @@ class Product
         $this->ready = false;
         if($id)
             $this->ready($id);
+        $this->product_data = [];
     }
 
     private function ready(string $id = null)
@@ -112,6 +113,11 @@ class Product
             (new self($product_id))->delete();
             throw new ProductException("Something Went Wrong Adding you as Admin");
         }
+    }
+
+    public static function search(array $array, ShopType $type): array
+    {
+        return [];
     }
 
     function update(Shop $shop, array $fields)

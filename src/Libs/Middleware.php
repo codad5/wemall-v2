@@ -11,7 +11,7 @@ Class Middleware {
     {
         if(!UserAuth::who_is_loggedin()){
             //unset previous cookie
-            //set cookie for url that was for 10mins
+            //set cookie for url that was for 10 minutes
             $url = $_SERVER['REQUEST_URI'];
             //remove the query string
             $url = explode('?', $url)[0];
@@ -57,16 +57,6 @@ Class Middleware {
         }
         $_SESSION["admin_level"] = intval($has_access['level']);
         return $res;
-    }
-    public static function is_user_shop_owner($shop_id, $user_id): bool
-    {
-        if(!ShopController::exist($shop_id)){
-            return false;
-        }
-        if(ShopController::is_shop_admin($shop_id, $user_id)){
-            return true;
-        }
-        return false;
     }
     
 }
