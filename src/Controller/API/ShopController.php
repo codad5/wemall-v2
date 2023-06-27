@@ -4,6 +4,7 @@ namespace Codad5\Wemall\Controller\API;
 
 use Codad5\Wemall\Enums\AdminType;
 use Codad5\Wemall\Enums\ShopType;
+use Codad5\Wemall\Enums\UserError;
 use Codad5\Wemall\Libs\Exceptions\AuthException;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Exceptions\ShopException;
@@ -58,10 +59,12 @@ class ShopController
             return ResponseHandler::sendErrorResponse($res, $e->getMessage(), $e->getCode());
         }
     }
-    static function search_shop(Request $req, Response $res)
+    static function search_shop(Request $req, Response $res): Response
     {
         try{
-            $shops = Shop::where("type", $req->params('type'), true);
+            $type = ShopType::tryFrom($req->params('type'));
+            if (!$type) throw new CustomException("Invalid Shop type ({$req->params('type')})", UserError::INVALID_TYPE);
+            $shops = Shop::where("type", $type->value , true);
             return ResponseHandler::sendSuccessResponse($res, $shops, ["cache_data" => $req->path()]);
         }catch(\Exception $e){
             return ResponseHandler::sendErrorResponse($res, $e->getMessage(), $e->getCode());
@@ -72,8 +75,7 @@ class ShopController
         try{
             $shop = Shop::find($req->params('id'));
             if(!$shop) throw new ShopException("Shop not found", 404);
-            if ($req->query('with_product')) $shop->withProducts();
-            return ResponseHandler::sendSuccessResponse($res, $shop->creator->toArray(), ["cache_data" => $req->path()]);
+            return ResponseHandler::sendSuccessResponse($res, $shop->creator, ["cache_data" => $req->path()]);
         }catch(\Exception $e){
             return ResponseHandler::sendErrorResponse($res, $e->getMessage(), $e->getCode());
         }

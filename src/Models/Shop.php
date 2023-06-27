@@ -128,9 +128,11 @@ class Shop
         return strtoupper(substr('S'.$this->last_id()."A".md5(uniqid(rand(), true)), 0, 10));
     }
 
-    public static function where(string $string, mixed $params, true $true): array
+    public static function where(string $type, string $value, ?true $as_array): array
     {
-        return [];
+        $shops = (new self)->get_shop_by($type, $value);
+        if ($as_array) return $shops;
+        return array_map(fn($shop) => self::find($shop['shop_id']), $shops);
     }
 
     public function toArray(): array

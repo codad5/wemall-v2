@@ -13,7 +13,7 @@ class User
     public string $user_id;
     public string $username;
     public string $email;
-    public string $password;
+    protected string $password;
     public string $api_key;
     public string $created_at;
     readonly private Database $conn;
