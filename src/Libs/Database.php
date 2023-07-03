@@ -2,6 +2,7 @@
 namespace Codad5\Wemall\Libs;
 use Codad5\Wemall\Libs\Exceptions\CustomException;
 use Codad5\Wemall\Libs\Helper\Helper;
+use Codad5\Wemall\Enums\{APPError};
 class Database
 {
     private static Database $instance;
@@ -43,7 +44,9 @@ class Database
                 return $this->connect($config);
             }
             else{
-                echo $e->getMessage();
+                $this->errorHandler->handleException($e);
+                ViewLoader::load_error_page(500, "something went wrong on our side");
+                die();
             }
         }
     }

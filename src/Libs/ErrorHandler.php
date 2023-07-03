@@ -58,6 +58,7 @@ class ErrorHandler
         $error = error_get_last();
         if ($error) {
             // Log the error
+            var_dump($error);
             $this->logger->error("[{$error['type']}] {$error['message']} in {$error['file']}:{$error['line']}");
             // Return a custom response to the user
             if(isset($_ENV['env']) && $_ENV['env'] == 'development'){

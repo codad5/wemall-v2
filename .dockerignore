@@ -1,0 +1,11 @@
+.env
+/vendor
+/test
+/asset/images/products
+*.log
+log
+logs
+power
+index.json
+start.sh
+bin
