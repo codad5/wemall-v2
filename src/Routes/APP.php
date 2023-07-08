@@ -6,6 +6,7 @@ use Codad5\Wemall\Libs\ResponseHandler as CustomResponse;
 use Codad5\Wemall\Libs\Helper\Helper;
 use Codad5\PhpRouter\HTTP\Request as Request;
 use Codad5\PhpInex\Import as Import;
+use Codad5\Wemall\Libs\ViewLoader;
 
 
 $errorHandler = new ErrorHandler('app.php', false);
@@ -34,6 +35,11 @@ $shop_routes = Import::this('APP/Shop');
 $home_routes = Import::this('APP/Home');
 /** @var Router $auth_routes */
 $auth_routes = Import::this('APP/Auth');
+
+
+$router->get('/', function ($req, $res) {
+    return $res->send(ViewLoader::load("html/main.php"));
+});
 
 $router->use_route($home_routes);
 $router->use_route($shop_routes);

@@ -1,6 +1,7 @@
 <?php
 
 use Codad5\PhpRouter\Router as Router;
+use Codad5\Wemall\Libs\ViewLoader;
 use Codad5\Wemall\Controller\APP\{HomeController, ShopController};
 use Codad5\Wemall\Libs\Middleware;
 
@@ -8,9 +9,6 @@ $router = new Router(__DIR__ . "/src/view/", "/");
 
 $router->run([Middleware::class, "redirect_if_logged_out"]);
 
-$router->get('/', function ($req, $res) {
-    echo 'hello';
-});
 
 $router->get('/home', [HomeController::class, 'home_page']);
 
