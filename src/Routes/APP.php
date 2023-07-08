@@ -43,6 +43,10 @@ $router->use_route($auth_routes);
 // exit;
 
 // logout route
+$router->get('/', function(){
+    echo "Welcome to wemall";
+    var_dump($_SERVER);
+});
 $router->get('/logout', function (Request $req, Response $res) {
     session_destroy();
     $new_query = "";
