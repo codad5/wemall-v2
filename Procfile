@@ -1,1 +1,1 @@
-web: heroku-php-apache2 -C .htaccess
+web: heroku-php-apache2 -C .htaccess .
