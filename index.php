@@ -39,4 +39,5 @@ $api_routes = Import::this('src/Routes/API.php');
 $router->use_route($api_routes);
 $router->use_route($app_routes);
 
+echo 'test';
 $router->serve();
