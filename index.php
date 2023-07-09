@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 session_start();
 require(__DIR__ . '/vendor/autoload.php');
 
@@ -6,15 +7,12 @@ use Codad5\Wemall\Libs\ErrorHandler;
 use Codad5\PhpRouter\Router as Router;
 use Codad5\PhpInex\Import as Import;
 
-echo \Codad5\Wemall\Libs\ViewLoader::load('html/main.php');
-
 try{
 
 
 $errorHandler = new ErrorHandler('index.php', true);
 
 if (file_exists(__DIR__ . '/.env')) {
-    echo file_get_contents('.env');
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 }
