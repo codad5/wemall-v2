@@ -1,11 +1,12 @@
 <?php
-error_reporting(E_ALL);
 session_start();
 require(__DIR__ . '/vendor/autoload.php');
 
 use Codad5\Wemall\Libs\ErrorHandler;
 use Codad5\PhpRouter\Router as Router;
 use Codad5\PhpInex\Import as Import;
+
+try{
 
 
 $errorHandler = new ErrorHandler('index.php', true);
@@ -39,5 +40,9 @@ $api_routes = Import::this('src/Routes/API.php');
 $router->use_route($api_routes);
 $router->use_route($app_routes);
 
-echo 'test';
 $router->serve();
+}catch(Exception $e){
+    if(isset($_ENV['env']) && $_ENV['env'] == 'development') var_dump($);
+    phpinfo();
+    exit();
+}
