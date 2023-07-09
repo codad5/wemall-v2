@@ -11,6 +11,7 @@ use Codad5\PhpInex\Import as Import;
 $errorHandler = new ErrorHandler('index.php', true);
 
 if (file_exists(__DIR__ . '/.env')) {
+    echo file_get_contents('.env');
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
     $dotenv->load();
 }

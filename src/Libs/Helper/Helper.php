@@ -1,9 +1,6 @@
 <?php
 namespace Codad5\Wemall\Libs\Helper;
-use Dotenv\Dotenv;
 
-$dotenv = Dotenv::createImmutable(__DIR__.'/../../../');
-$dotenv->load();
 
 Class Helper {
     function getHost($url): false|string
