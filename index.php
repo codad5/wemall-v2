@@ -42,7 +42,7 @@ $router->use_route($app_routes);
 
 $router->serve();
 }catch(Exception $e){
-    if(isset($_ENV['env']) && $_ENV['env'] == 'development') var_dump($);
+    if(isset($_ENV['env']) && $_ENV['env'] == 'development') var_dump($e);
     phpinfo();
     exit();
 }
