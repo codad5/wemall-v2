@@ -6,17 +6,24 @@ use Codad5\Wemall\Libs\ErrorHandler;
 use Codad5\PhpRouter\Router as Router;
 use Codad5\PhpInex\Import as Import;
 
-echo "test";
 $errorHandler = new ErrorHandler('index.php', true);
-try{
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-}catch (Exception $e) {
-    var_dump($e);
+if (file_exists(__DIR__ . '/.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
 }
+
+$envVariables = getenv();
+if (is_array($envVariables)) {
+    foreach ($envVariables as $key => $value) {
+        $_ENV[$key] = $value;
+    }
+}
+
+
+
 $router = new Router(__DIR__ . "/src/view/", "/");
-echo 'test';
+
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
 
 
