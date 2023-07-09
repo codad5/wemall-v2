@@ -6,7 +6,7 @@ use Codad5\Wemall\Libs\ErrorHandler;
 use Codad5\PhpRouter\Router as Router;
 use Codad5\PhpInex\Import as Import;
 
-
+echo "test";
 $errorHandler = new ErrorHandler('index.php', true);
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
