@@ -8,11 +8,15 @@ use Codad5\PhpInex\Import as Import;
 
 echo "test";
 $errorHandler = new ErrorHandler('index.php', true);
+try{
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
-
+}catch (Exception $e) {
+    var_dump($e);
+}
 $router = new Router(__DIR__ . "/src/view/", "/");
-
+echo 'test';
 $router->allowed(['application/json', 'application/xml', 'text/html', 'text/plain', 'application/x-www-form-urlencoded', 'multipart/form-data']);
 
 
