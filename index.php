@@ -35,12 +35,12 @@ echo "test";
 $app_routes = Import::this('src/Routes/APP.php');
 echo "test";
 /** @var Router $api_routes */
-$api_routes = Import::this('src/Routes/API.php');
-echo "test";
+//$api_routes = Import::this('src/Routes/API.php');
+//echo "test";
 
 
-$router->use_route($api_routes);
-echo "test";
+//$router->use_route($api_routes);
+//echo "test";
 $router->use_route($app_routes);
 echo "test";
 
