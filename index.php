@@ -6,6 +6,8 @@ use Codad5\Wemall\Libs\ErrorHandler;
 use Codad5\PhpRouter\Router as Router;
 use Codad5\PhpInex\Import as Import;
 
+echo \Codad5\Wemall\Libs\ViewLoader::load('html/main.php');
+
 try{
 
 
