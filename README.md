@@ -1,6 +1,6 @@
 # wemall-v2
 
-This is an open sources CMS to make full stack ecommerce development very easy 
+This is an open sources CMS to make full stack ecommerce development very easy with the api of allowing frontend devs created e-commerce app by consuming our api
 
 ## ADDING A NEW SHOP/PRODUCT TYPE
 - Go to [src/enums/ShopType.php](/src/enums/ShopType.php) and add your new enum case
